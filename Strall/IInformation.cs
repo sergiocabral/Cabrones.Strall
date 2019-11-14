@@ -1,31 +1,38 @@
-﻿namespace Strall
+﻿using System;
+
+namespace Strall
 {
-    public interface IUnitData
+    public interface IInformation
     {
         /// <summary>
         /// Identificador.
         /// </summary>
-        long Id { get; set; }
+        Guid Id { get; set; }
+        
+        /// <summary>
+        /// Descrição.
+        /// </summary>
+        string? Description { get; set; }
         
         /// <summary>
         /// Conteúdo.
         /// </summary>
-        string? Content { get; set; }
+        object? Content { get; set; }
         
         /// <summary>
-        /// Tipo.
+        /// Tipo de conteúdo
         /// </summary>
-        string? Type { get; set; }
+        InformationType Type { get; set; }
         
         /// <summary>
         /// Informação de onde esta é filha.
         /// </summary>
-        UnitData? Parent { get; set; }
+        IInformation? Parent { get; set; }
         
         /// <summary>
         /// Informação de onde esta é um clone.
         /// </summary>
-        UnitData? CloneFrom { get; set; }
+        IInformation? Clone { get; set; }
         
         /// <summary>
         /// Ordem de exibição entre informações irmãs.
