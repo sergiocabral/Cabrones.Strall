@@ -7,7 +7,7 @@ namespace Strall
     public class TestInformation
     {
         [Theory]
-        [InlineData(typeof(Information), 14)]
+        [InlineData(typeof(Information), 16)]
         public void verifica_se_o_total_de_métodos_públicos_declarados_está_correto_neste_tipo(Type tipo, int totalDeMétodosEsperado) =>
             tipo.TestMethodsCount(totalDeMétodosEsperado);
 

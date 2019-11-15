@@ -28,6 +28,11 @@ namespace Strall
         /// Informação de onde esta é filha.
         /// </summary>
         Guid ParentId { get; set; }
+
+        /// <summary>
+        /// Relação de parentesco.
+        /// </summary>
+        string ParentRelation { get; set; }
         
         /// <summary>
         /// Informação de onde esta é um clone.

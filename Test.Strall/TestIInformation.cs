@@ -7,7 +7,7 @@ namespace Strall
     public class TestIInformation
     {
         [Theory]
-        [InlineData(typeof(IInformation), 14)]
+        [InlineData(typeof(IInformation), 16)]
         public void verifica_se_o_total_de_métodos_públicos_declarados_está_correto_neste_tipo(Type tipo, int totalDeMétodosEsperado) =>
             tipo.TestMethodsCount(totalDeMétodosEsperado);
 
@@ -22,6 +22,8 @@ namespace Strall
         [InlineData(typeof(IInformation), "Void set_ContentType(String)")]
         [InlineData(typeof(IInformation), "Guid get_ParentId()")]
         [InlineData(typeof(IInformation), "Void set_ParentId(Guid)")]
+        [InlineData(typeof(IInformation), "String get_ParentRelation()")]
+        [InlineData(typeof(IInformation), "Void set_ParentRelation(String)")]
         [InlineData(typeof(IInformation), "Guid get_CloneId()")]
         [InlineData(typeof(IInformation), "Void set_CloneId(Guid)")]
         [InlineData(typeof(IInformation), "Int32 get_SiblingOrder()")]
