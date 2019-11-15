@@ -12,31 +12,31 @@ namespace Strall
         /// <summary>
         /// Descrição.
         /// </summary>
-        string? Description { get; set; }
+        string Description { get; set; }
         
         /// <summary>
         /// Conteúdo.
         /// </summary>
-        object? Content { get; set; }
+        string Content { get; set; }
         
         /// <summary>
         /// Tipo de conteúdo
         /// </summary>
-        InformationType Type { get; set; }
+        string ContentType { get; set; }
         
         /// <summary>
         /// Informação de onde esta é filha.
         /// </summary>
-        IInformation? Parent { get; set; }
+        Guid ParentId { get; set; }
         
         /// <summary>
         /// Informação de onde esta é um clone.
         /// </summary>
-        IInformation? Clone { get; set; }
+        Guid CloneId { get; set; }
         
         /// <summary>
         /// Ordem de exibição entre informações irmãs.
         /// </summary>
-        int Order { get; set; }
+        int SiblingOrder { get; set; }
     }
 }
