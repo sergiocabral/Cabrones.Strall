@@ -15,6 +15,51 @@ namespace Strall.Persistence.SQLite
         /// Conexão com o SQLite.
         /// </summary>
         public SqliteConnection? Connection { get; private set; }
+
+        /// <summary>
+        /// Nomes no contexto do SQL.
+        /// </summary>
+        public ISqlNames SqlNames { get; set; } = new SqlNames() as ISqlNames;
+        
+        /// <summary>
+        /// Cria a estrutura do banco de dados.
+        /// </summary>
+        public void CreateStructure()
+        {
+            if (Connection == null) throw new StrallConnectionIsCloseException();
+            
+            var commandText = $@"
+CREATE TABLE IF NOT EXISTS {SqlNames.TableInformation} (
+    {SqlNames.TableInformationColumnId} TEXT,
+    {SqlNames.TableInformationColumnDescription} TEXT,
+    {SqlNames.TableInformationColumnContent} TEXT,
+    {SqlNames.TableInformationColumnContentType} TEXT,
+    {SqlNames.TableInformationColumnParentId} TEXT,
+    {SqlNames.TableInformationColumnParentRelation} TEXT,
+    {SqlNames.TableInformationColumnCloneId} TEXT,
+    {SqlNames.TableInformationColumnSiblingOrder} INTEGER,
+    PRIMARY KEY ({SqlNames.TableInformationColumnId}), 
+    FOREIGN KEY ({SqlNames.TableInformationColumnParentId})
+        REFERENCES {SqlNames.TableInformation} ({SqlNames.TableInformationColumnId})
+            ON DELETE RESTRICT
+            ON UPDATE RESTRICT,
+    FOREIGN KEY ({SqlNames.TableInformationColumnCloneId})
+        REFERENCES {SqlNames.TableInformation} ({SqlNames.TableInformationColumnId})
+            ON DELETE RESTRICT
+            ON UPDATE RESTRICT
+) WITHOUT ROWID;
+
+CREATE INDEX IDX_{SqlNames.TableInformation}_{SqlNames.TableInformationColumnSiblingOrder}
+    ON {SqlNames.TableInformation} (
+        {SqlNames.TableInformationColumnParentId},
+        {SqlNames.TableInformationColumnSiblingOrder}
+    );
+".Trim();
+                
+            using var command = Connection.CreateCommand();
+            command.CommandText = commandText;
+            command.ExecuteNonQuery(); 
+        }    
         
         /// <summary>
         /// Inicia a conexão.
@@ -22,9 +67,15 @@ namespace Strall.Persistence.SQLite
         /// <param name="connectionInfo">Informações para conexão.</param>
         public void Open(IConnectionInfo connectionInfo)
         {
-            if (Connection != null) throw new StrallConnectionIsAlreadyOpenException();
-            Connection = new SqliteConnection(connectionInfo.CreateDatabase().ConnectionString);
+            if (Connection != null) throw new StrallConnectionIsOpenException();
+            
+            var createdDatabase = connectionInfo.CreateDatabase();
+            
+            Connection = new SqliteConnection(connectionInfo.ConnectionString);
             Connection.Open();
+            
+            if (createdDatabase) CreateStructure();
+            
             Mode = PersistenceProviderMode.Opened;
         }
 
@@ -33,7 +84,7 @@ namespace Strall.Persistence.SQLite
         /// </summary>
         public void Close()
         {
-            if (Connection == null) throw new StrallConnectionIsAlreadyCloseException();
+            if (Connection == null) throw new StrallConnectionIsCloseException();
             Dispose();
         }
 

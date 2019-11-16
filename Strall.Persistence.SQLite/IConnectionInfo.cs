@@ -23,6 +23,7 @@
         /// <summary>
         /// Cria o arquivo do banco de dados.
         /// </summary>
-        ConnectionInfo CreateDatabase();
+        /// <returns>Indica se foi criado.</returns>
+        bool CreateDatabase();
     }
 }

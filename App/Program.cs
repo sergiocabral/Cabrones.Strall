@@ -6,12 +6,8 @@ namespace App
     {
         private static void Main()
         {
-            using var persistence = new PersistenceProviderSqLite();
-            persistence.Open(new ConnectionInfo
-            {
-                Filename = "teste.db", 
-                CreateDatabaseIfNotExists = true
-            });
+            using var persistence = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
+            persistence.Open(new ConnectionInfo { Filename = "teste.db" });
         }
     }
 }

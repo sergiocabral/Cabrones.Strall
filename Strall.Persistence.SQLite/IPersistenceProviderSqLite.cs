@@ -12,5 +12,15 @@ namespace Strall.Persistence.SQLite
         /// Conexão com o SQLite.
         /// </summary>
         SqliteConnection? Connection { get; }
+        
+        /// <summary>
+        /// Nomes no contexto do SQL.
+        /// </summary>
+        ISqlNames SqlNames { get; set; }
+
+        /// <summary>
+        /// Cria a estrutura do banco de dados.
+        /// </summary>
+        void CreateStructure();
     }
 }

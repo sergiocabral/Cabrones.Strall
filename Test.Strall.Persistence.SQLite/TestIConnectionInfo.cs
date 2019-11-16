@@ -17,7 +17,7 @@ namespace Strall.Persistence.SQLite
         [InlineData(typeof(IConnectionInfo), "Boolean get_CreateDatabaseIfNotExists()")]
         [InlineData(typeof(IConnectionInfo), "Void set_CreateDatabaseIfNotExists(Boolean)")]
         [InlineData(typeof(IConnectionInfo), "String get_ConnectionString()")]
-        [InlineData(typeof(IConnectionInfo), "ConnectionInfo CreateDatabase()")]
+        [InlineData(typeof(IConnectionInfo), "Boolean CreateDatabase()")]
         public void verifica_se_os_métodos_existem_com_base_na_assinatura(Type tipo, string assinaturaEsperada) =>
             tipo.TestMethodPresence(assinaturaEsperada);
     }

@@ -16,7 +16,7 @@ namespace Strall.Persistence.SQLite
         /// <summary>
         /// Cria o arquivo do banco de dados caso não exista.
         /// </summary>
-        public bool CreateDatabaseIfNotExists { get; set; }
+        public bool CreateDatabaseIfNotExists { get; set; } = true;
 
         /// <summary>
         /// String de conexão pronta.
@@ -26,12 +26,13 @@ namespace Strall.Persistence.SQLite
         /// <summary>
         /// Cria o arquivo do banco de dados.
         /// </summary>
-        public ConnectionInfo CreateDatabase()
+        /// <returns>Indica se foi criado.</returns>
+        public bool CreateDatabase()
         {
-            if (File.Exists(Filename)) return this;
+            if (File.Exists(Filename)) return false;
             if (!CreateDatabaseIfNotExists) throw new StrallConnectionException();
             File.Create(Filename).Close();
-            return this;
+            return true;
         }
     }
 }
