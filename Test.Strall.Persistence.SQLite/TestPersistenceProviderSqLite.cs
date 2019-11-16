@@ -238,7 +238,7 @@ namespace Strall.Persistence.SQLite
             sqlNames.TableInformationColumnContentType.Returns($"col_{this.Fixture().Create<string>().Substring(0, 8)}");
             sqlNames.TableInformationColumnParentId.Returns($"col_{this.Fixture().Create<string>().Substring(0, 8)}");
             sqlNames.TableInformationColumnParentRelation.Returns($"col_{this.Fixture().Create<string>().Substring(0, 8)}");
-            sqlNames.TableInformationColumnCloneId.Returns($"col_{this.Fixture().Create<string>().Substring(0, 8)}");
+            sqlNames.TableInformationColumnCloneFromId.Returns($"col_{this.Fixture().Create<string>().Substring(0, 8)}");
             sqlNames.TableInformationColumnSiblingOrder.Returns($"col_{this.Fixture().Create<string>().Substring(0, 8)}");
             
             // Act, When
@@ -260,7 +260,7 @@ namespace Strall.Persistence.SQLite
             ddl.Should().Contain(sqlNames.TableInformationColumnContentType);
             ddl.Should().Contain(sqlNames.TableInformationColumnParentId);
             ddl.Should().Contain(sqlNames.TableInformationColumnParentRelation);
-            ddl.Should().Contain(sqlNames.TableInformationColumnCloneId);
+            ddl.Should().Contain(sqlNames.TableInformationColumnCloneFromId);
             ddl.Should().Contain(sqlNames.TableInformationColumnSiblingOrder);
         }
 

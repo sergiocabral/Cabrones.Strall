@@ -50,7 +50,7 @@
         /// Tabela: Information
         /// Coluna: CloneId 
         /// </summary>
-        string TableInformationColumnCloneId { get; }
+        string TableInformationColumnCloneFromId { get; }
         
         /// <summary>
         /// Tabela: Information

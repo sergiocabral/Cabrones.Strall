@@ -24,8 +24,8 @@ namespace Strall
         [InlineData(typeof(IInformationRaw), "Void set_ParentId(Guid)")]
         [InlineData(typeof(IInformationRaw), "String get_ParentRelation()")]
         [InlineData(typeof(IInformationRaw), "Void set_ParentRelation(String)")]
-        [InlineData(typeof(IInformationRaw), "Guid get_CloneId()")]
-        [InlineData(typeof(IInformationRaw), "Void set_CloneId(Guid)")]
+        [InlineData(typeof(IInformationRaw), "Guid get_CloneFromId()")]
+        [InlineData(typeof(IInformationRaw), "Void set_CloneFromId(Guid)")]
         [InlineData(typeof(IInformationRaw), "Int32 get_SiblingOrder()")]
         [InlineData(typeof(IInformationRaw), "Void set_SiblingOrder(Int32)")]
         public void verifica_se_os_métodos_existem_com_base_na_assinatura(Type tipo, string assinaturaEsperada) =>

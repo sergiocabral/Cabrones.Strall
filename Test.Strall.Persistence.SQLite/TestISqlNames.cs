@@ -19,7 +19,7 @@ namespace Strall.Persistence.SQLite
         [InlineData(typeof(ISqlNames), "String get_TableInformationColumnContentType()")]
         [InlineData(typeof(ISqlNames), "String get_TableInformationColumnParentId()")]
         [InlineData(typeof(ISqlNames), "String get_TableInformationColumnParentRelation()")]
-        [InlineData(typeof(ISqlNames), "String get_TableInformationColumnCloneId()")]
+        [InlineData(typeof(ISqlNames), "String get_TableInformationColumnCloneFromId()")]
         [InlineData(typeof(ISqlNames), "String get_TableInformationColumnSiblingOrder()")]
         public void verifica_se_os_métodos_existem_com_base_na_assinatura(Type tipo, string assinaturaEsperada) =>
             tipo.TestMethodPresence(assinaturaEsperada);

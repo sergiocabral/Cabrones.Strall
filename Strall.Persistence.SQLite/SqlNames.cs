@@ -50,7 +50,7 @@
         /// Tabela: Information
         /// Coluna: CloneId 
         /// </summary>
-        public string TableInformationColumnCloneId => "CloneId";
+        public string TableInformationColumnCloneFromId => "CloneFromId";
         
         /// <summary>
         /// Tabela: Information

@@ -34,7 +34,7 @@ namespace Strall.Persistence.SQLite
             instância.TableInformationColumnContentType.Should().Be("ContentType");
             instância.TableInformationColumnParentId.Should().Be("ParentId");
             instância.TableInformationColumnParentRelation.Should().Be("ParentRelation");
-            instância.TableInformationColumnCloneId.Should().Be("CloneId");
+            instância.TableInformationColumnCloneFromId.Should().Be("CloneFromId");
             instância.TableInformationColumnSiblingOrder.Should().Be("SiblingOrder");
         }
     }

@@ -8,8 +8,8 @@ namespace Strall
     {
         [Theory]
         [InlineData(typeof(InformationType), 1)]
-        public void verifica_se_o_total_de_valores_declarados_está_correto_neste_enum(Type tipo, int totalDeMétodosEsperado) =>
-            tipo.TestEnumValuesCount(totalDeMétodosEsperado);
+        public void verifica_se_o_total_de_valores_declarados_está_correto_neste_enum(Type tipo, int totalDeValoresEsperado) =>
+            tipo.TestEnumValuesCount(totalDeValoresEsperado);
 
         [Theory]
         [InlineData(typeof(InformationType), "Text", 0b_0010)]

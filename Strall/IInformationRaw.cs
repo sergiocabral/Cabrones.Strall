@@ -2,6 +2,9 @@
 
 namespace Strall
 {
+    /// <summary>
+    /// Representa uma informação pura, como é armazenada no banco de dados.
+    /// </summary>
     public interface IInformationRaw
     {
         /// <summary>
@@ -37,7 +40,7 @@ namespace Strall
         /// <summary>
         /// Informação de onde esta é um clone.
         /// </summary>
-        Guid CloneId { get; set; }
+        Guid CloneFromId { get; set; }
         
         /// <summary>
         /// Ordem de exibição entre informações irmãs.

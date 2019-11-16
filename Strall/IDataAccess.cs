@@ -21,7 +21,7 @@ namespace Strall
         /// </summary>
         /// <param name="informationId"></param>
         /// <returns>Informação.</returns>
-        InformationRaw? Get(Guid informationId);
+        IInformationRaw? Get(Guid informationId);
 
         /// <summary>
         /// Cria uma informação.
@@ -29,7 +29,7 @@ namespace Strall
         /// </summary>
         /// <param name="informationRaw">Informação.</param>
         /// <returns>Id.</returns>
-        Guid Create(InformationRaw informationRaw);
+        Guid Create(IInformationRaw informationRaw);
         
         /// <summary>
         /// Atualiza uma informação.
@@ -37,7 +37,7 @@ namespace Strall
         /// </summary>
         /// <param name="informationRaw">Informação.</param>
         /// <returns>Resposta de sucesso.</returns>
-        bool Update(InformationRaw informationRaw);
+        bool Update(IInformationRaw informationRaw);
 
         /// <summary>
         /// Apaga uma informação.
@@ -70,13 +70,13 @@ namespace Strall
         /// </summary>
         /// <param name="informationId"></param>
         /// <returns></returns>
-        bool HasClones(Guid informationId);
+        bool HasClonesTo(Guid informationId);
         
         /// <summary>
         /// Retorna a lista de clones.
         /// </summary>
         /// <param name="informationId">Id</param>
         /// <returns>Lista</returns>
-        IEnumerable<Guid> Clones(Guid informationId);
+        IEnumerable<Guid> ClonesTo(Guid informationId);
     }
 }

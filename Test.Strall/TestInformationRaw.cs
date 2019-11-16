@@ -34,7 +34,7 @@ namespace Strall
             instância.ContentType.Should().Be(InformationType.Text.ToString());
             instância.ParentId.Should().BeEmpty();
             instância.ParentRelation.Should().BeEmpty();
-            instância.CloneId.Should().BeEmpty();
+            instância.CloneFromId.Should().BeEmpty();
             instância.SiblingOrder.Should().Be(0);
         }
 
@@ -54,7 +54,7 @@ namespace Strall
             instância.ContentType = instânciaDeComparação.ContentType;
             instância.ParentId = instânciaDeComparação.ParentId;
             instância.ParentRelation = instânciaDeComparação.ParentRelation;
-            instância.CloneId = instânciaDeComparação.CloneId;
+            instância.CloneFromId = instânciaDeComparação.CloneFromId;
             instância.SiblingOrder = instânciaDeComparação.SiblingOrder;
             
             // Assert, Then
@@ -65,7 +65,7 @@ namespace Strall
             instância.ContentType.Should().Be(instânciaDeComparação.ContentType);
             instância.ParentId.Should().Be(instânciaDeComparação.ParentId);
             instância.ParentRelation.Should().Be(instânciaDeComparação.ParentRelation);
-            instância.CloneId.Should().Be(instânciaDeComparação.CloneId);
+            instância.CloneFromId.Should().Be(instânciaDeComparação.CloneFromId);
             instância.SiblingOrder.Should().Be(instânciaDeComparação.SiblingOrder);
         }
 

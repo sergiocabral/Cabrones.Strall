@@ -55,9 +55,9 @@ namespace Strall.Persistence.SQLite
                 () => persistence.HasChildren(Guid.Empty),
                 // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
                 () => persistence.Children(Guid.Empty).ToList(),
-                () => persistence.HasClones(Guid.Empty),
+                () => persistence.HasClonesTo(Guid.Empty),
                 // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-                () => persistence.Clones(Guid.Empty).ToList()
+                () => persistence.ClonesTo(Guid.Empty).ToList()
             };
 
             // Assert, Then
@@ -212,7 +212,7 @@ namespace Strall.Persistence.SQLite
             foreach (var filho in filhos)
             {
                 filho.ParentId = informaçãoComIdInformadoQueExisteComFilhos.Id;
-                filho.CloneId = Guid.Empty;
+                filho.CloneFromId = Guid.Empty;
                 _sut.Create(filho);
             }
             
@@ -249,7 +249,7 @@ namespace Strall.Persistence.SQLite
             foreach (var filho in filhos)
             {
                 filho.ParentId = informaçãoComIdInformadoQueExisteComFilhos.Id;
-                filho.CloneId = Guid.Empty;
+                filho.CloneFromId = Guid.Empty;
                 _sut.Create(filho);
             }
             
@@ -286,17 +286,17 @@ namespace Strall.Persistence.SQLite
             var filhos = this.Fixture().CreateMany<InformationRaw>();
             foreach (var filho in filhos)
             {
-                filho.CloneId = informaçãoComIdInformadoQueExisteComFilhos.Id;
+                filho.CloneFromId = informaçãoComIdInformadoQueExisteComFilhos.Id;
                 filho.ParentId = Guid.Empty;
                 _sut.Create(filho);
             }
             
             // Act, When
 
-            var resultadoParaInformaçãoComIdVazio = _sut.HasClones(informaçãoComIdVazio.Id);
-            var resultadoParaInformaçãoComIdInformadoQueNãoExiste = _sut.HasClones(informaçãoComIdInformadoQueNãoExiste.Id);
-            var resultadoParaInformaçãoComIdInformadoQueExiste = _sut.HasClones(informaçãoComIdInformadoQueExiste.Id);
-            var resultadoParaInformaçãoComIdInformadoQueExisteComFilhos = _sut.HasClones(informaçãoComIdInformadoQueExisteComFilhos.Id);
+            var resultadoParaInformaçãoComIdVazio = _sut.HasClonesTo(informaçãoComIdVazio.Id);
+            var resultadoParaInformaçãoComIdInformadoQueNãoExiste = _sut.HasClonesTo(informaçãoComIdInformadoQueNãoExiste.Id);
+            var resultadoParaInformaçãoComIdInformadoQueExiste = _sut.HasClonesTo(informaçãoComIdInformadoQueExiste.Id);
+            var resultadoParaInformaçãoComIdInformadoQueExisteComFilhos = _sut.HasClonesTo(informaçãoComIdInformadoQueExisteComFilhos.Id);
 
             // Assert, Then
 
@@ -323,17 +323,17 @@ namespace Strall.Persistence.SQLite
             var filhos = this.Fixture().CreateMany<InformationRaw>().ToList();
             foreach (var filho in filhos)
             {
-                filho.CloneId = informaçãoComIdInformadoQueExisteComFilhos.Id;
+                filho.CloneFromId = informaçãoComIdInformadoQueExisteComFilhos.Id;
                 filho.ParentId = Guid.Empty;
                 _sut.Create(filho);
             }
             
             // Act, When
 
-            var resultadoParaInformaçãoComIdVazio = _sut.Clones(informaçãoComIdVazio.Id).ToList();
-            var resultadoParaInformaçãoComIdInformadoQueNãoExiste = _sut.Clones(informaçãoComIdInformadoQueNãoExiste.Id).ToList();
-            var resultadoParaInformaçãoComIdInformadoQueExiste = _sut.Clones(informaçãoComIdInformadoQueExiste.Id).ToList();
-            var resultadoParaInformaçãoComIdInformadoQueExisteComFilhos = _sut.Clones(informaçãoComIdInformadoQueExisteComFilhos.Id).ToList();
+            var resultadoParaInformaçãoComIdVazio = _sut.ClonesTo(informaçãoComIdVazio.Id).ToList();
+            var resultadoParaInformaçãoComIdInformadoQueNãoExiste = _sut.ClonesTo(informaçãoComIdInformadoQueNãoExiste.Id).ToList();
+            var resultadoParaInformaçãoComIdInformadoQueExiste = _sut.ClonesTo(informaçãoComIdInformadoQueExiste.Id).ToList();
+            var resultadoParaInformaçãoComIdInformadoQueExisteComFilhos = _sut.ClonesTo(informaçãoComIdInformadoQueExisteComFilhos.Id).ToList();
 
             // Assert, Then
 

@@ -37,14 +37,14 @@ CREATE TABLE IF NOT EXISTS {SqlNames.TableInformation} (
     {SqlNames.TableInformationColumnContentType} TEXT,
     {SqlNames.TableInformationColumnParentId} TEXT,
     {SqlNames.TableInformationColumnParentRelation} TEXT,
-    {SqlNames.TableInformationColumnCloneId} TEXT,
+    {SqlNames.TableInformationColumnCloneFromId} TEXT,
     {SqlNames.TableInformationColumnSiblingOrder} INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY ({SqlNames.TableInformationColumnId}), 
     FOREIGN KEY ({SqlNames.TableInformationColumnParentId})
         REFERENCES {SqlNames.TableInformation} ({SqlNames.TableInformationColumnId})
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
-    FOREIGN KEY ({SqlNames.TableInformationColumnCloneId})
+    FOREIGN KEY ({SqlNames.TableInformationColumnCloneFromId})
         REFERENCES {SqlNames.TableInformation} ({SqlNames.TableInformationColumnId})
             ON DELETE RESTRICT
             ON UPDATE RESTRICT
@@ -157,9 +157,9 @@ CREATE INDEX IF NOT EXISTS IDX_{SqlNames.TableInformation}_{SqlNames.TableInform
                 },
                 new SqliteParameter
                 {
-                    ParameterName = SqlNames.TableInformationColumnCloneId,
+                    ParameterName = SqlNames.TableInformationColumnCloneFromId,
                     SqliteType = SqliteType.Text,
-                    Value = informationRaw.CloneId.ToDatabaseText()
+                    Value = informationRaw.CloneFromId.ToDatabaseText()
                 },
                 new SqliteParameter
                 {
@@ -214,7 +214,7 @@ SELECT {SqlNames.TableInformationColumnId}
         /// </summary>
         /// <param name="informationId"></param>
         /// <returns>Informação.</returns>
-        public InformationRaw? Get(Guid informationId)
+        public IInformationRaw? Get(Guid informationId)
         {
             if (Connection == null) throw new StrallConnectionIsCloseException();
             if (informationId == Guid.Empty) return null;
@@ -226,7 +226,7 @@ SELECT {SqlNames.TableInformationColumnId},
        {SqlNames.TableInformationColumnContentType},
        {SqlNames.TableInformationColumnParentId},
        {SqlNames.TableInformationColumnParentRelation},
-       {SqlNames.TableInformationColumnCloneId},
+       {SqlNames.TableInformationColumnCloneFromId},
        {SqlNames.TableInformationColumnSiblingOrder}
   FROM {SqlNames.TableInformation}
  WHERE {SqlNames.TableInformationColumnId} = @{SqlNames.TableInformationColumnId}
@@ -248,7 +248,7 @@ SELECT {SqlNames.TableInformationColumnId},
                 ContentType = $"{reader.GetValue(++i)}",
                 ParentId = reader.GetValue(++i).ToGuid(),
                 ParentRelation = $"{reader.GetValue(++i)}",
-                CloneId = reader.GetValue(++i).ToGuid(),
+                CloneFromId = reader.GetValue(++i).ToGuid(),
                 SiblingOrder = reader.GetFieldValue<int>(++i)
             };
         }
@@ -259,7 +259,7 @@ SELECT {SqlNames.TableInformationColumnId},
         /// </summary>
         /// <param name="informationRaw">Informação.</param>
         /// <returns>Id.</returns>
-        public Guid Create(InformationRaw informationRaw)
+        public Guid Create(IInformationRaw informationRaw)
         {
             if (Connection == null) throw new StrallConnectionIsCloseException();
             if (informationRaw == null) return Guid.Empty;
@@ -273,7 +273,7 @@ INSERT INTO {SqlNames.TableInformation} (
     {SqlNames.TableInformationColumnContentType},
     {SqlNames.TableInformationColumnParentId},
     {SqlNames.TableInformationColumnParentRelation},
-    {SqlNames.TableInformationColumnCloneId},
+    {SqlNames.TableInformationColumnCloneFromId},
     {SqlNames.TableInformationColumnSiblingOrder}
 ) VALUES (
     @{SqlNames.TableInformationColumnId},
@@ -282,7 +282,7 @@ INSERT INTO {SqlNames.TableInformation} (
     @{SqlNames.TableInformationColumnContentType},
     @{SqlNames.TableInformationColumnParentId},
     @{SqlNames.TableInformationColumnParentRelation},
-    @{SqlNames.TableInformationColumnCloneId},
+    @{SqlNames.TableInformationColumnCloneFromId},
     @{SqlNames.TableInformationColumnSiblingOrder}
 );
 ";
@@ -302,7 +302,7 @@ INSERT INTO {SqlNames.TableInformation} (
         /// </summary>
         /// <param name="informationRaw">Informação.</param>
         /// <returns>Resposta de sucesso.</returns>
-        public bool Update(InformationRaw informationRaw)
+        public bool Update(IInformationRaw informationRaw)
         {
             if (Connection == null) throw new StrallConnectionIsCloseException();
             if (informationRaw == null) return false;
@@ -314,7 +314,7 @@ UPDATE {SqlNames.TableInformation} SET
     {SqlNames.TableInformationColumnContentType} = @{SqlNames.TableInformationColumnContentType},
     {SqlNames.TableInformationColumnParentId} = @{SqlNames.TableInformationColumnParentId},
     {SqlNames.TableInformationColumnParentRelation} = @{SqlNames.TableInformationColumnParentRelation},
-    {SqlNames.TableInformationColumnCloneId} = @{SqlNames.TableInformationColumnCloneId},
+    {SqlNames.TableInformationColumnCloneFromId} = @{SqlNames.TableInformationColumnCloneFromId},
     {SqlNames.TableInformationColumnSiblingOrder} = @{SqlNames.TableInformationColumnSiblingOrder}
 WHERE
     {SqlNames.TableInformationColumnId} = @{SqlNames.TableInformationColumnId};
@@ -374,8 +374,8 @@ WHERE
         /// </summary>
         /// <param name="informationId"></param>
         /// <returns>Resposta de existência.</returns>
-        public bool HasClones(Guid informationId) =>
-            HasRecords(SqlNames.TableInformationColumnCloneId, informationId);
+        public bool HasClonesTo(Guid informationId) =>
+            HasRecords(SqlNames.TableInformationColumnCloneFromId, informationId);
 
         /// <summary>
         /// Retorna a lista de clones.
@@ -383,8 +383,8 @@ WHERE
         /// </summary>
         /// <param name="informationId">Id</param>
         /// <returns>Lista</returns>
-        public IEnumerable<Guid> Clones(Guid informationId) =>
-            Records(SqlNames.TableInformationColumnCloneId, informationId);
+        public IEnumerable<Guid> ClonesTo(Guid informationId) =>
+            Records(SqlNames.TableInformationColumnCloneFromId, informationId);
 
         /// <summary>
         /// Verifica se tem registros.
