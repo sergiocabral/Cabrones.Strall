@@ -21,23 +21,23 @@ namespace Strall
         /// </summary>
         /// <param name="informationId"></param>
         /// <returns>Informação.</returns>
-        Information? Get(Guid informationId);
+        InformationRaw? Get(Guid informationId);
 
         /// <summary>
         /// Cria uma informação.
         /// Equivalente a INSERT.
         /// </summary>
-        /// <param name="information">Informação.</param>
+        /// <param name="informationRaw">Informação.</param>
         /// <returns>Id.</returns>
-        Guid Create(Information information);
+        Guid Create(InformationRaw informationRaw);
         
         /// <summary>
         /// Atualiza uma informação.
         /// Equivalente a UPDATE.
         /// </summary>
-        /// <param name="information">Informação.</param>
+        /// <param name="informationRaw">Informação.</param>
         /// <returns>Resposta de sucesso.</returns>
-        bool Update(Information information);
+        bool Update(InformationRaw informationRaw);
 
         /// <summary>
         /// Apaga uma informação.

@@ -49,8 +49,8 @@ namespace Strall.Persistence.SQLite
             {
                 () => persistence.Exists(Guid.Empty),
                 () => persistence.Get(Guid.Empty),
-                () => persistence.Create(new Information()),
-                () => persistence.Update(new Information()),
+                () => persistence.Create(new InformationRaw()),
+                () => persistence.Update(new InformationRaw()),
                 () => persistence.Delete(Guid.Empty),
                 () => persistence.HasChildren(Guid.Empty),
                 // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
@@ -73,11 +73,11 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var informaçãoIndefinida = new Information{ Id = Guid.Empty };
+            var informaçãoIndefinida = new InformationRaw{ Id = Guid.Empty };
             
-            var informaçãoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoQueNãoExiste = new InformationRaw{ Id = Guid.NewGuid() };
             
-            var informaçãoQueExiste = new Information();
+            var informaçãoQueExiste = new InformationRaw();
             informaçãoQueExiste.Id = _sut.Create(informaçãoQueExiste);
             
             // Act, When
@@ -98,11 +98,11 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var informaçãoIndefinida = new Information{ Id = Guid.Empty };
+            var informaçãoIndefinida = new InformationRaw{ Id = Guid.Empty };
             
-            var informaçãoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoQueNãoExiste = new InformationRaw{ Id = Guid.NewGuid() };
             
-            var informaçãoQueExiste = new Information();
+            var informaçãoQueExiste = new InformationRaw();
             informaçãoQueExiste.Id = _sut.Create(informaçãoQueExiste);
             
             // Act, When
@@ -116,7 +116,7 @@ namespace Strall.Persistence.SQLite
             resultadoParaInformaçãoIndefinida.Should().BeNull();
             resultadoParaInformaçãoQueNãoExiste.Should().BeNull();
             resultadoParaInformaçãoQueExiste.Should().NotBeNull().And
-                .Subject.As<IInformation>().Id.Should().Be(informaçãoQueExiste.Id);
+                .Subject.As<IInformationRaw>().Id.Should().Be(informaçãoQueExiste.Id);
         }
         
         [Fact]
@@ -124,8 +124,8 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var informaçãoComIdVazio = new Information{ Id = Guid.Empty };
-            var informaçãoComIdInformado = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdVazio = new InformationRaw{ Id = Guid.Empty };
+            var informaçãoComIdInformado = new InformationRaw{ Id = Guid.NewGuid() };
             
             // Act, When
 
@@ -149,10 +149,10 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var informaçãoComIdVazio = new Information{ Id = Guid.Empty };
-            var informaçãoComIdInformadoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdVazio = new InformationRaw{ Id = Guid.Empty };
+            var informaçãoComIdInformadoQueNãoExiste = new InformationRaw{ Id = Guid.NewGuid() };
             
-            var informaçãoComIdInformadoQueExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdInformadoQueExiste = new InformationRaw{ Id = Guid.NewGuid() };
             _sut.Create(informaçãoComIdInformadoQueExiste);
             
             // Act, When
@@ -175,10 +175,10 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var informaçãoComIdVazio = new Information{ Id = Guid.Empty };
-            var informaçãoComIdInformadoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdVazio = new InformationRaw{ Id = Guid.Empty };
+            var informaçãoComIdInformadoQueNãoExiste = new InformationRaw{ Id = Guid.NewGuid() };
             
-            var informaçãoComIdInformadoQueExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdInformadoQueExiste = new InformationRaw{ Id = Guid.NewGuid() };
             _sut.Create(informaçãoComIdInformadoQueExiste);
             
             // Act, When
@@ -199,16 +199,16 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var informaçãoComIdVazio = new Information{ Id = Guid.Empty };
-            var informaçãoComIdInformadoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdVazio = new InformationRaw{ Id = Guid.Empty };
+            var informaçãoComIdInformadoQueNãoExiste = new InformationRaw{ Id = Guid.NewGuid() };
             
-            var informaçãoComIdInformadoQueExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdInformadoQueExiste = new InformationRaw{ Id = Guid.NewGuid() };
             _sut.Create(informaçãoComIdInformadoQueExiste);
             
-            var informaçãoComIdInformadoQueExisteComFilhos = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdInformadoQueExisteComFilhos = new InformationRaw{ Id = Guid.NewGuid() };
             _sut.Create(informaçãoComIdInformadoQueExisteComFilhos);
 
-            var filhos = this.Fixture().CreateMany<Information>();
+            var filhos = this.Fixture().CreateMany<InformationRaw>();
             foreach (var filho in filhos)
             {
                 filho.ParentId = informaçãoComIdInformadoQueExisteComFilhos.Id;
@@ -236,16 +236,16 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var informaçãoComIdVazio = new Information{ Id = Guid.Empty };
-            var informaçãoComIdInformadoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdVazio = new InformationRaw{ Id = Guid.Empty };
+            var informaçãoComIdInformadoQueNãoExiste = new InformationRaw{ Id = Guid.NewGuid() };
             
-            var informaçãoComIdInformadoQueExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdInformadoQueExiste = new InformationRaw{ Id = Guid.NewGuid() };
             _sut.Create(informaçãoComIdInformadoQueExiste);
             
-            var informaçãoComIdInformadoQueExisteComFilhos = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdInformadoQueExisteComFilhos = new InformationRaw{ Id = Guid.NewGuid() };
             _sut.Create(informaçãoComIdInformadoQueExisteComFilhos);
 
-            var filhos = this.Fixture().CreateMany<Information>().ToList();
+            var filhos = this.Fixture().CreateMany<InformationRaw>().ToList();
             foreach (var filho in filhos)
             {
                 filho.ParentId = informaçãoComIdInformadoQueExisteComFilhos.Id;
@@ -274,16 +274,16 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var informaçãoComIdVazio = new Information{ Id = Guid.Empty };
-            var informaçãoComIdInformadoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdVazio = new InformationRaw{ Id = Guid.Empty };
+            var informaçãoComIdInformadoQueNãoExiste = new InformationRaw{ Id = Guid.NewGuid() };
             
-            var informaçãoComIdInformadoQueExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdInformadoQueExiste = new InformationRaw{ Id = Guid.NewGuid() };
             _sut.Create(informaçãoComIdInformadoQueExiste);
             
-            var informaçãoComIdInformadoQueExisteComFilhos = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdInformadoQueExisteComFilhos = new InformationRaw{ Id = Guid.NewGuid() };
             _sut.Create(informaçãoComIdInformadoQueExisteComFilhos);
 
-            var filhos = this.Fixture().CreateMany<Information>();
+            var filhos = this.Fixture().CreateMany<InformationRaw>();
             foreach (var filho in filhos)
             {
                 filho.CloneId = informaçãoComIdInformadoQueExisteComFilhos.Id;
@@ -311,16 +311,16 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var informaçãoComIdVazio = new Information{ Id = Guid.Empty };
-            var informaçãoComIdInformadoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdVazio = new InformationRaw{ Id = Guid.Empty };
+            var informaçãoComIdInformadoQueNãoExiste = new InformationRaw{ Id = Guid.NewGuid() };
             
-            var informaçãoComIdInformadoQueExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdInformadoQueExiste = new InformationRaw{ Id = Guid.NewGuid() };
             _sut.Create(informaçãoComIdInformadoQueExiste);
             
-            var informaçãoComIdInformadoQueExisteComFilhos = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdInformadoQueExisteComFilhos = new InformationRaw{ Id = Guid.NewGuid() };
             _sut.Create(informaçãoComIdInformadoQueExisteComFilhos);
 
-            var filhos = this.Fixture().CreateMany<Information>().ToList();
+            var filhos = this.Fixture().CreateMany<InformationRaw>().ToList();
             foreach (var filho in filhos)
             {
                 filho.CloneId = informaçãoComIdInformadoQueExisteComFilhos.Id;

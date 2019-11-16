@@ -2,7 +2,7 @@
 
 namespace Strall
 {
-    public class Information: IInformation
+    public class InformationRaw: IInformationRaw
     {
         /// <summary>
         /// Identificador.

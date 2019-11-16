@@ -114,58 +114,58 @@ CREATE INDEX IF NOT EXISTS IDX_{SqlNames.TableInformation}_{SqlNames.TableInform
         /// <summary>
         /// Monta uma lista de parâmetros.
         /// </summary>
-        /// <param name="information">Informação.</param>
+        /// <param name="informationRaw">Informação.</param>
         /// <returns>Lista de parâmetros.</returns>
-        private IEnumerable<SqliteParameter> FactoryParameters(IInformation information) =>
+        private IEnumerable<SqliteParameter> FactoryParameters(IInformationRaw informationRaw) =>
             new List<SqliteParameter>
             {
                 new SqliteParameter
                 {
                     ParameterName = SqlNames.TableInformationColumnId,
                     SqliteType = SqliteType.Text,
-                    Value = information.Id.ToDatabaseText()
+                    Value = informationRaw.Id.ToDatabaseText()
                 },
                 new SqliteParameter
                 {
                     ParameterName = SqlNames.TableInformationColumnDescription,
                     SqliteType = SqliteType.Text,
-                    Value = information.Description
+                    Value = informationRaw.Description
                 },
                 new SqliteParameter
                 {
                     ParameterName = SqlNames.TableInformationColumnContent,
                     SqliteType = SqliteType.Text,
-                    Value = information.Content
+                    Value = informationRaw.Content
                 },
                 new SqliteParameter
                 {
                     ParameterName = SqlNames.TableInformationColumnContentType,
                     SqliteType = SqliteType.Text,
-                    Value = information.ContentType
+                    Value = informationRaw.ContentType
                 },
                 new SqliteParameter
                 {
                     ParameterName = SqlNames.TableInformationColumnParentId,
                     SqliteType = SqliteType.Text,
-                    Value = information.ParentId.ToDatabaseText()
+                    Value = informationRaw.ParentId.ToDatabaseText()
                 },
                 new SqliteParameter
                 {
                     ParameterName = SqlNames.TableInformationColumnParentRelation,
                     SqliteType = SqliteType.Text,
-                    Value = information.ParentRelation
+                    Value = informationRaw.ParentRelation
                 },
                 new SqliteParameter
                 {
                     ParameterName = SqlNames.TableInformationColumnCloneId,
                     SqliteType = SqliteType.Text,
-                    Value = information.CloneId.ToDatabaseText()
+                    Value = informationRaw.CloneId.ToDatabaseText()
                 },
                 new SqliteParameter
                 {
                     ParameterName = SqlNames.TableInformationColumnSiblingOrder,
                     SqliteType = SqliteType.Integer,
-                    Value = information.SiblingOrder
+                    Value = informationRaw.SiblingOrder
                 }
             };
 
@@ -214,7 +214,7 @@ SELECT {SqlNames.TableInformationColumnId}
         /// </summary>
         /// <param name="informationId"></param>
         /// <returns>Informação.</returns>
-        public Information? Get(Guid informationId)
+        public InformationRaw? Get(Guid informationId)
         {
             if (Connection == null) throw new StrallConnectionIsCloseException();
             if (informationId == Guid.Empty) return null;
@@ -240,7 +240,7 @@ SELECT {SqlNames.TableInformationColumnId},
             if (!reader.Read()) return null;
 
             var i = -1;
-            return new Information
+            return new InformationRaw
             {
                 Id = reader.GetValue(++i).ToGuid(),
                 Description = $"{reader.GetValue(++i)}",
@@ -257,14 +257,14 @@ SELECT {SqlNames.TableInformationColumnId},
         /// Cria uma informação.
         /// Equivalente a INSERT.
         /// </summary>
-        /// <param name="information">Informação.</param>
+        /// <param name="informationRaw">Informação.</param>
         /// <returns>Id.</returns>
-        public Guid Create(Information information)
+        public Guid Create(InformationRaw informationRaw)
         {
             if (Connection == null) throw new StrallConnectionIsCloseException();
-            if (information == null) return Guid.Empty;
+            if (informationRaw == null) return Guid.Empty;
             
-            var id = information.Id != Guid.Empty ? information.Id : Guid.NewGuid();
+            var id = informationRaw.Id != Guid.Empty ? informationRaw.Id : Guid.NewGuid();
             var commandText = $@"
 INSERT INTO {SqlNames.TableInformation} (
     {SqlNames.TableInformationColumnId},
@@ -289,7 +289,7 @@ INSERT INTO {SqlNames.TableInformation} (
             
             using var command = Connection.CreateCommand();
             command.CommandText = commandText;
-            command.Parameters.AddRange(FactoryParameters(information));
+            command.Parameters.AddRange(FactoryParameters(informationRaw));
             command.Parameters[SqlNames.TableInformationColumnId].Value = id.ToDatabaseText();
             command.ExecuteNonQuery();
 
@@ -300,12 +300,12 @@ INSERT INTO {SqlNames.TableInformation} (
         /// Atualiza uma informação.
         /// Equivalente a UPDATE.
         /// </summary>
-        /// <param name="information">Informação.</param>
+        /// <param name="informationRaw">Informação.</param>
         /// <returns>Resposta de sucesso.</returns>
-        public bool Update(Information information)
+        public bool Update(InformationRaw informationRaw)
         {
             if (Connection == null) throw new StrallConnectionIsCloseException();
-            if (information == null) return false;
+            if (informationRaw == null) return false;
 
             var commandText = $@"
 UPDATE {SqlNames.TableInformation} SET
@@ -322,7 +322,7 @@ WHERE
             
             using var command = Connection.CreateCommand();
             command.CommandText = commandText;
-            command.Parameters.AddRange(FactoryParameters(information));
+            command.Parameters.AddRange(FactoryParameters(informationRaw));
             return command.ExecuteNonQuery() > 0;
         }
 

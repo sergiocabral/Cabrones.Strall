@@ -13,9 +13,9 @@ namespace Strall
 
         [Theory]
         [InlineData(typeof(IDataAccess), "Boolean Exists(Guid)")]
-        [InlineData(typeof(IDataAccess), "Information Get(Guid)")]
-        [InlineData(typeof(IDataAccess), "Guid Create(Information)")]
-        [InlineData(typeof(IDataAccess), "Boolean Update(Information)")]
+        [InlineData(typeof(IDataAccess), "InformationRaw Get(Guid)")]
+        [InlineData(typeof(IDataAccess), "Guid Create(InformationRaw)")]
+        [InlineData(typeof(IDataAccess), "Boolean Update(InformationRaw)")]
         [InlineData(typeof(IDataAccess), "Boolean Delete(Guid)")]
         [InlineData(typeof(IDataAccess), "Boolean HasChildren(Guid)")]
         [InlineData(typeof(IDataAccess), "IEnumerable<Guid> Children(Guid)")]

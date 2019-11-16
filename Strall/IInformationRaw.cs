@@ -2,7 +2,7 @@
 
 namespace Strall
 {
-    public interface IInformation
+    public interface IInformationRaw
     {
         /// <summary>
         /// Identificador.

@@ -5,15 +5,15 @@ using Xunit;
 
 namespace Strall
 {
-    public class TestInformation
+    public class TestInformationRaw
     {
         [Theory]
-        [InlineData(typeof(Information), 16)]
+        [InlineData(typeof(InformationRaw), 16)]
         public void verifica_se_o_total_de_métodos_públicos_declarados_está_correto_neste_tipo(Type tipo, int totalDeMétodosEsperado) =>
             tipo.TestMethodsCount(totalDeMétodosEsperado);
 
         [Theory]
-        [InlineData(typeof(Information), typeof(Information))]
+        [InlineData(typeof(InformationRaw), typeof(InformationRaw))]
         public void verifica_se_classe_implementa_os_tipos_necessários(Type tipo, params Type[] tiposQueDeveSerImplementado) =>
             tipo.TestImplementations(tiposQueDeveSerImplementado);
 
@@ -23,7 +23,7 @@ namespace Strall
             // Arrange, Given
             // Act, When
 
-            var instância = new Information();
+            var instância = new InformationRaw();
             
             // Assert, Then
 
