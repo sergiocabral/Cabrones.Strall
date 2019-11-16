@@ -1,6 +1,7 @@
 ﻿using System;
 using Cabrones.Test;
 using FluentAssertions;
+using NSubstitute;
 using Xunit;
 
 namespace Strall
@@ -30,11 +31,42 @@ namespace Strall
             instância.Id.Should().BeEmpty();
             instância.Description.Should().BeEmpty();
             instância.Content.Should().BeEmpty();
-            instância.ContentType.Should().BeEmpty();
+            instância.ContentType.Should().Be(InformationType.Text.ToString());
             instância.ParentId.Should().BeEmpty();
             instância.ParentRelation.Should().BeEmpty();
             instância.CloneId.Should().BeEmpty();
             instância.SiblingOrder.Should().Be(0);
+        }
+
+        [Fact]
+        public void verificar_se_as_propriedades_são_capazes_de_receber_valores()
+        {
+            // Arrange, Given
+
+            var instânciaDeComparação = Substitute.For<IInformationRaw>();
+            var instância = new InformationRaw() as IInformationRaw;
+            
+            // Act, When
+            
+            instância.Id = instânciaDeComparação.Id;
+            instância.Description = instânciaDeComparação.Description;
+            instância.Content = instânciaDeComparação.Content;
+            instância.ContentType = instânciaDeComparação.ContentType;
+            instância.ParentId = instânciaDeComparação.ParentId;
+            instância.ParentRelation = instânciaDeComparação.ParentRelation;
+            instância.CloneId = instânciaDeComparação.CloneId;
+            instância.SiblingOrder = instânciaDeComparação.SiblingOrder;
+            
+            // Assert, Then
+
+            instância.Id.Should().Be(instânciaDeComparação.Id);
+            instância.Description.Should().Be(instânciaDeComparação.Description);
+            instância.Content.Should().Be(instânciaDeComparação.Content);
+            instância.ContentType.Should().Be(instânciaDeComparação.ContentType);
+            instância.ParentId.Should().Be(instânciaDeComparação.ParentId);
+            instância.ParentRelation.Should().Be(instânciaDeComparação.ParentRelation);
+            instância.CloneId.Should().Be(instânciaDeComparação.CloneId);
+            instância.SiblingOrder.Should().Be(instânciaDeComparação.SiblingOrder);
         }
 
     }

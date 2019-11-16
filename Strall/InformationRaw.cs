@@ -22,7 +22,7 @@ namespace Strall
         /// <summary>
         /// Tipo de conteúdo
         /// </summary>
-        public string ContentType { get; set; } = string.Empty;
+        public string ContentType { get; set; } = InformationType.Text.ToString();
         
         /// <summary>
         /// Informação de onde esta é filha.
