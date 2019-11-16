@@ -1,17 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Data.Sqlite;
+using Strall.Exceptions;
 
 namespace Strall.Persistence.SQLite
 {
-    public class PersistenceProviderSqLite: IPersistenceProvider<string>
+    /// <summary>
+    /// Provê os meios de gravação das informações.
+    /// Banco de dados SQLite.
+    /// </summary>
+    public class PersistenceProviderSqLite: IPersistenceProviderSqLite
     {
+        /// <summary>
+        /// Conexão com o SQLite.
+        /// </summary>
+        public SqliteConnection? Connection { get; private set; }
+        
         /// <summary>
         /// Inicia a conexão.
         /// </summary>
-        /// <param name="connection">Informações para conexão.</param>
-        public void Open(string connection)
+        /// <param name="connectionInfo">Informações para conexão.</param>
+        public void Open(IConnectionInfo connectionInfo)
         {
-            throw new NotImplementedException();
+            if (Connection != null) throw new StrallConnectionIsAlreadyOpenException();
+            Connection = new SqliteConnection(connectionInfo.CreateDatabase().ConnectionString);
+            Connection.Open();
+            Mode = PersistenceProviderMode.Opened;
         }
 
         /// <summary>
@@ -19,13 +33,14 @@ namespace Strall.Persistence.SQLite
         /// </summary>
         public void Close()
         {
-            throw new NotImplementedException();
+            if (Connection == null) throw new StrallConnectionIsAlreadyCloseException();
+            Dispose();
         }
 
         /// <summary>
         /// Modo atual.
         /// </summary>
-        public PersistenceProviderMode Mode { get; } = PersistenceProviderMode.Closed;
+        public PersistenceProviderMode Mode { get; private set; } = PersistenceProviderMode.Closed;
         
         /// <summary>
         /// Verifica se uma informação existe.
@@ -109,7 +124,11 @@ namespace Strall.Persistence.SQLite
         /// </summary>
         public void Dispose()
         {
-            throw new NotImplementedException();
+            if (Connection == null) return;
+            Connection.Close();
+            Connection.Dispose();
+            Connection = null;
+            Mode = PersistenceProviderMode.Closed;
         }
     }
 }

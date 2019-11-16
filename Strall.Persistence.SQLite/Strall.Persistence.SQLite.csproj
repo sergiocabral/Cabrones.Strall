@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>0.0.0.9</Version>
+        <Version>0.0.0.35</Version>
         <Nullable>enable</Nullable>
         <TargetFramework>netcoreapp3.0</TargetFramework>
     </PropertyGroup>
@@ -21,6 +21,10 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Strall\Strall.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Data.Sqlite" Version="3.0.0" />
     </ItemGroup>
 
 </Project>
