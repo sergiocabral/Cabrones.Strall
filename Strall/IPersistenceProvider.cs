@@ -84,5 +84,20 @@ namespace Strall
         /// <param name="informationId">Id</param>
         /// <returns>Lista</returns>
         IEnumerable<Guid> Children(Guid informationId);
+
+        /// <summary>
+        /// Verifica se tem clones.
+        /// Equivalente a SELECT TOP 1
+        /// </summary>
+        /// <param name="informationId"></param>
+        /// <returns></returns>
+        bool HasClones(Guid informationId);
+        
+        /// <summary>
+        /// Retorna a lista de clones.
+        /// </summary>
+        /// <param name="informationId">Id</param>
+        /// <returns>Lista</returns>
+        IEnumerable<Guid> Clones(Guid informationId);
     }
 }

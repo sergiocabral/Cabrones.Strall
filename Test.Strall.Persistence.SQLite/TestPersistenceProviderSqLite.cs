@@ -11,10 +11,10 @@ using Xunit;
 
 namespace Strall.Persistence.SQLite
 {
-    public class TestPersistenceProviderSqLite
+    public partial class TestPersistenceProviderSqLite
     {
         [Theory]
-        [InlineData(typeof(PersistenceProviderSqLite), 15)]
+        [InlineData(typeof(PersistenceProviderSqLite), 17)]
         public void verifica_se_o_total_de_métodos_públicos_declarados_está_correto_neste_tipo(Type tipo, int totalDeMétodosEsperado) =>
             tipo.TestMethodsCount(totalDeMétodosEsperado);
 

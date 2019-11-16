@@ -7,7 +7,7 @@ namespace Strall
         /// <summary>
         /// Identificador.
         /// </summary>
-        public Guid Id { get; set; } = Guid.Empty;
+        public Guid Id { get; set; }
         
         /// <summary>
         /// Descrição.
@@ -27,7 +27,7 @@ namespace Strall
         /// <summary>
         /// Informação de onde esta é filha.
         /// </summary>
-        public Guid ParentId { get; set; } = Guid.Empty;
+        public Guid ParentId { get; set; }
 
         /// <summary>
         /// Relação de parentesco.
@@ -37,11 +37,11 @@ namespace Strall
         /// <summary>
         /// Informação de onde esta é um clone.
         /// </summary>
-        public Guid CloneId { get; set; } = Guid.Empty;
+        public Guid CloneId { get; set; }
 
         /// <summary>
         /// Ordem de exibição entre informações irmãs.
         /// </summary>
-        public int SiblingOrder { get; set; } = 0;
+        public int SiblingOrder { get; set; }
     }
 }

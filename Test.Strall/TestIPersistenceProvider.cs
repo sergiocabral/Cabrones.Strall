@@ -7,7 +7,7 @@ namespace Strall
     public class TestIPersistenceProvider
     {
         [Theory]
-        [InlineData(typeof(IPersistenceProvider<object>), 11)]
+        [InlineData(typeof(IPersistenceProvider<object>), 13)]
         public void verifica_se_o_total_de_métodos_públicos_declarados_está_correto_neste_tipo(Type tipo, int totalDeMétodosEsperado) =>
             tipo.TestMethodsCount(totalDeMétodosEsperado);
 
@@ -23,6 +23,8 @@ namespace Strall
         [InlineData(typeof(IPersistenceProvider<object>), "Boolean Delete(Guid)")]
         [InlineData(typeof(IPersistenceProvider<object>), "Boolean HasChildren(Guid)")]
         [InlineData(typeof(IPersistenceProvider<object>), "IEnumerable<Guid> Children(Guid)")]
+        [InlineData(typeof(IPersistenceProvider<object>), "Boolean HasClones(Guid)")]
+        [InlineData(typeof(IPersistenceProvider<object>), "IEnumerable<Guid> Clones(Guid)")]
         public void verifica_se_os_métodos_existem_com_base_na_assinatura(Type tipo, string assinaturaEsperada) =>
             tipo.TestMethodPresence(assinaturaEsperada);
     }
