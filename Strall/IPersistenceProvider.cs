@@ -9,15 +9,20 @@ namespace Strall
     public interface IPersistenceProvider<in TConnectionInfo>: IDisposable
     {
         /// <summary>
+        /// Cria a estrutura do banco de dados.
+        /// </summary>
+        IPersistenceProvider<TConnectionInfo> CreateStructure();
+        
+        /// <summary>
         /// Inicia a conexão.
         /// </summary>
         /// <param name="connection">Informações para conexão.</param>
-        void Open(TConnectionInfo connection);
+        IPersistenceProvider<TConnectionInfo> Open(TConnectionInfo connection);
 
         /// <summary>
         /// Fecha a conexão.
         /// </summary>
-        void Close();
+        IPersistenceProvider<TConnectionInfo> Close();
         
         /// <summary>
         /// Modo atual.

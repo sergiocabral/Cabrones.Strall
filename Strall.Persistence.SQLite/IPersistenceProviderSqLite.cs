@@ -17,10 +17,5 @@ namespace Strall.Persistence.SQLite
         /// Nomes no contexto do SQL.
         /// </summary>
         ISqlNames SqlNames { get; set; }
-
-        /// <summary>
-        /// Cria a estrutura do banco de dados.
-        /// </summary>
-        void CreateStructure();
     }
 }

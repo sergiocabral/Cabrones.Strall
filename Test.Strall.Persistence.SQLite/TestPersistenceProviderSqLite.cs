@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using AutoFixture;
@@ -279,6 +280,35 @@ namespace Strall.Persistence.SQLite
             disposable.Should().NotThrow();
             disposable.Should().NotThrow();
             disposable.Should().NotThrow();
+        }
+
+        [Fact]
+        public void verifica_se_métodos_que_retornam_uma_auto_referência_está_fazendo_isso()
+        {
+            // Arrange, Given
+
+            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
+            var connectionInfo = new ConnectionInfo
+            {
+                Filename = Path.Combine(Environment.CurrentDirectory, this.Fixture().Create<string>()),
+                CreateDatabaseIfNotExists = true
+            } as IConnectionInfo;
+            
+            // Act, When
+
+            var retornos = new List<object>
+            {
+                persistenceProviderSqLite.Open(connectionInfo),
+                persistenceProviderSqLite.CreateStructure(),
+                persistenceProviderSqLite.Close()
+            };
+
+            // Assert, Then
+
+            foreach (var retorno in retornos)
+            {
+                retorno.Should().BeSameAs(persistenceProviderSqLite);
+            }
         }
     }
 }

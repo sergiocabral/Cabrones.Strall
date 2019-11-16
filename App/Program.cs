@@ -7,7 +7,7 @@ namespace App
         private static void Main()
         {
             using var persistence = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
-            persistence.Open(new ConnectionInfo { Filename = "teste.db" });
+            persistence.Open(new ConnectionInfo { Filename = "teste.db" }).CreateStructure();
         }
     }
 }

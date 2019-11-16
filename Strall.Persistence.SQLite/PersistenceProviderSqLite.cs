@@ -24,7 +24,7 @@ namespace Strall.Persistence.SQLite
         /// <summary>
         /// Cria a estrutura do banco de dados.
         /// </summary>
-        public void CreateStructure()
+        public IPersistenceProvider<IConnectionInfo> CreateStructure()
         {
             if (Connection == null) throw new StrallConnectionIsCloseException();
             
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS {SqlNames.TableInformation} (
             ON UPDATE RESTRICT
 ) WITHOUT ROWID;
 
-CREATE INDEX IDX_{SqlNames.TableInformation}_{SqlNames.TableInformationColumnSiblingOrder}
+CREATE INDEX IF NOT EXISTS IDX_{SqlNames.TableInformation}_{SqlNames.TableInformationColumnSiblingOrder}
     ON {SqlNames.TableInformation} (
         {SqlNames.TableInformationColumnParentId},
         {SqlNames.TableInformationColumnSiblingOrder}
@@ -58,14 +58,16 @@ CREATE INDEX IDX_{SqlNames.TableInformation}_{SqlNames.TableInformationColumnSib
                 
             using var command = Connection.CreateCommand();
             command.CommandText = commandText;
-            command.ExecuteNonQuery(); 
+            command.ExecuteNonQuery();
+
+            return this;
         }    
         
         /// <summary>
         /// Inicia a conexão.
         /// </summary>
         /// <param name="connectionInfo">Informações para conexão.</param>
-        public void Open(IConnectionInfo connectionInfo)
+        public IPersistenceProvider<IConnectionInfo> Open(IConnectionInfo connectionInfo)
         {
             if (Connection != null) throw new StrallConnectionIsOpenException();
             
@@ -77,15 +79,18 @@ CREATE INDEX IDX_{SqlNames.TableInformation}_{SqlNames.TableInformationColumnSib
             if (createdDatabase) CreateStructure();
             
             Mode = PersistenceProviderMode.Opened;
+
+            return this;
         }
 
         /// <summary>
         /// Fecha a conexão.
         /// </summary>
-        public void Close()
+        public IPersistenceProvider<IConnectionInfo> Close()
         {
             if (Connection == null) throw new StrallConnectionIsCloseException();
             Dispose();
+            return this;
         }
 
         /// <summary>

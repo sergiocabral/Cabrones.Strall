@@ -7,13 +7,14 @@ namespace Strall
     public class TestIPersistenceProvider
     {
         [Theory]
-        [InlineData(typeof(IPersistenceProvider<object>), 10)]
+        [InlineData(typeof(IPersistenceProvider<object>), 11)]
         public void verifica_se_o_total_de_métodos_públicos_declarados_está_correto_neste_tipo(Type tipo, int totalDeMétodosEsperado) =>
             tipo.TestMethodsCount(totalDeMétodosEsperado);
 
         [Theory]
-        [InlineData(typeof(IPersistenceProvider<object>), "Void Open(Object)")]
-        [InlineData(typeof(IPersistenceProvider<object>), "Void Close()")]
+        [InlineData(typeof(IPersistenceProvider<object>), "IPersistenceProvider<Object> CreateStructure()")]
+        [InlineData(typeof(IPersistenceProvider<object>), "IPersistenceProvider<Object> Open(Object)")]
+        [InlineData(typeof(IPersistenceProvider<object>), "IPersistenceProvider<Object> Close()")]
         [InlineData(typeof(IPersistenceProvider<object>), "PersistenceProviderMode get_Mode()")]
         [InlineData(typeof(IPersistenceProvider<object>), "Boolean Exists(Guid)")]
         [InlineData(typeof(IPersistenceProvider<object>), "Information Get(Guid)")]
