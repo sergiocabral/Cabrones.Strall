@@ -4,7 +4,6 @@
         <Version>0.0.0.8</Version>
         <Nullable>enable</Nullable>
         <TargetFramework>netcoreapp3.0</TargetFramework>
-        <OutputType>Exe</OutputType>
     </PropertyGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
@@ -19,5 +18,9 @@
     <PropertyGroup>
         <Copyright>sergiocabral.com</Copyright>
     </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Strall\Strall.csproj" />
+    </ItemGroup>
 
 </Project>

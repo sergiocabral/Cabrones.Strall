@@ -3,8 +3,8 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.0</TargetFramework>
         <IsPackable>false</IsPackable>
-        <Version>0.0.0.46</Version>
-        <RootNamespace>Strall</RootNamespace>
+        <Version>0.0.0.5</Version>
+        <RootNamespace>Strall.Persistence.SQLite</RootNamespace>
     </PropertyGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
@@ -12,7 +12,7 @@
     </Target>
 
     <ItemGroup>
-        <ProjectReference Include="..\Strall\Strall.csproj" />
+        <ProjectReference Include="..\Strall.Persistence.SQLite\Strall.Persistence.SQLite.csproj" />
     </ItemGroup>
 
     <ItemGroup>
