@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cabrones.Utils.Converter;
 using Microsoft.Data.Sqlite;
 using Strall.Exceptions;
 
@@ -122,7 +123,7 @@ CREATE INDEX IF NOT EXISTS IDX_{SqlNames.TableInformation}_{SqlNames.TableInform
                 {
                     ParameterName = SqlNames.TableInformationColumnId,
                     SqliteType = SqliteType.Text,
-                    Value = information.Id != Guid.Empty ? (object)information.Id : DBNull.Value
+                    Value = information.Id.ToDatabaseText()
                 },
                 new SqliteParameter
                 {
@@ -146,7 +147,7 @@ CREATE INDEX IF NOT EXISTS IDX_{SqlNames.TableInformation}_{SqlNames.TableInform
                 {
                     ParameterName = SqlNames.TableInformationColumnParentId,
                     SqliteType = SqliteType.Text,
-                    Value = information.ParentId != Guid.Empty ? (object)information.ParentId : DBNull.Value
+                    Value = information.ParentId.ToDatabaseText()
                 },
                 new SqliteParameter
                 {
@@ -158,7 +159,7 @@ CREATE INDEX IF NOT EXISTS IDX_{SqlNames.TableInformation}_{SqlNames.TableInform
                 {
                     ParameterName = SqlNames.TableInformationColumnCloneId,
                     SqliteType = SqliteType.Text,
-                    Value = information.CloneId != Guid.Empty ? (object)information.CloneId : DBNull.Value
+                    Value = information.CloneId.ToDatabaseText()
                 },
                 new SqliteParameter
                 {
@@ -180,17 +181,9 @@ CREATE INDEX IF NOT EXISTS IDX_{SqlNames.TableInformation}_{SqlNames.TableInform
                 {
                     ParameterName = SqlNames.TableInformationColumnId,
                     SqliteType = SqliteType.Text,
-                    Value = informationId != Guid.Empty ? (object)informationId : DBNull.Value
+                    Value = informationId.ToDatabaseText()
                 }
             };
-
-        /// <summary>
-        /// Converte um valor para Guid.
-        /// </summary>
-        /// <param name="value">Valor.</param>
-        /// <returns>Guid</returns>
-        private static Guid ConvertToGuid(object value) => 
-            value != null && value != DBNull.Value ? Guid.Parse($"{value}") : Guid.Empty;
         
         /// <summary>
         /// Verifica se uma informação existe.
@@ -249,13 +242,13 @@ SELECT {SqlNames.TableInformationColumnId},
             var i = -1;
             return new Information
             {
-                Id = ConvertToGuid(reader.GetValue(++i)),
+                Id = reader.GetValue(++i).ToGuid(),
                 Description = $"{reader.GetValue(++i)}",
                 Content = $"{reader.GetValue(++i)}",
                 ContentType = $"{reader.GetValue(++i)}",
-                ParentId = ConvertToGuid(reader.GetValue(++i)),
+                ParentId = reader.GetValue(++i).ToGuid(),
                 ParentRelation = $"{reader.GetValue(++i)}",
-                CloneId = ConvertToGuid(reader.GetValue(++i)),
+                CloneId = reader.GetValue(++i).ToGuid(),
                 SiblingOrder = reader.GetFieldValue<int>(++i)
             };
         }
@@ -297,7 +290,7 @@ INSERT INTO {SqlNames.TableInformation} (
             using var command = Connection.CreateCommand();
             command.CommandText = commandText;
             command.Parameters.AddRange(FactoryParameters(information));
-            command.Parameters[SqlNames.TableInformationColumnId].Value = id;
+            command.Parameters[SqlNames.TableInformationColumnId].Value = id.ToDatabaseText();
             command.ExecuteNonQuery();
 
             return id;
@@ -440,7 +433,7 @@ SELECT {SqlNames.TableInformationColumnId}
             command.CommandText = commandText;
             command.Parameters.AddRange(FactoryParameters(informationId));
             using var reader = command.ExecuteReader();
-            while (reader.Read()) yield return ConvertToGuid(reader.GetValue(0));
+            while (reader.Read()) yield return reader.GetValue(0).ToGuid();
         }
     }
 }

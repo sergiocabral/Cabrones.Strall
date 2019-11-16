@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>0.0.0.83</Version>
+        <Version>0.0.0.87</Version>
         <Nullable>enable</Nullable>
         <TargetFramework>netcoreapp3.0</TargetFramework>
         <OutputType>Exe</OutputType>
@@ -23,6 +23,10 @@
     <ItemGroup>
       <ProjectReference Include="..\Strall.Persistence.SQLite\Strall.Persistence.SQLite.csproj" />
       <ProjectReference Include="..\Strall\Strall.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Cabrones.Utils" Version="2.0.0.8" />
     </ItemGroup>
 
 </Project>

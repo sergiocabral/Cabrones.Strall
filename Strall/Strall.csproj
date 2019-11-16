@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>0.0.0.197</Version>
+        <Version>0.0.0.205</Version>
         <Nullable>enable</Nullable>
         <TargetFramework>netcoreapp3.0</TargetFramework>
     </PropertyGroup>
@@ -18,5 +18,9 @@
     <PropertyGroup>
         <Copyright>sergiocabral.com</Copyright>
     </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Cabrones.Utils" Version="2.0.0.8" />
+    </ItemGroup>
 
 </Project>

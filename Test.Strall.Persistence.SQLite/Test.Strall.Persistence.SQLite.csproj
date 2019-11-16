@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.0</TargetFramework>
         <IsPackable>false</IsPackable>
-        <Version>0.0.0.152</Version>
+        <Version>0.0.0.160</Version>
         <RootNamespace>Strall.Persistence.SQLite</RootNamespace>
     </PropertyGroup>
 
@@ -16,7 +16,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Cabrones.Test" Version="1.0.0.571" />
+        <PackageReference Include="Cabrones.Test" Version="1.0.0.572" />
+        <PackageReference Include="Cabrones.Utils" Version="2.0.0.8" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0" />
         <PackageReference Include="xunit" Version="2.4.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
