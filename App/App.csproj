@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <Version>0.0.0.8</Version>
@@ -19,5 +19,10 @@
     <PropertyGroup>
         <Copyright>sergiocabral.com</Copyright>
     </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Strall.Persistence.SQLite\Strall.Persistence.SQLite.csproj" />
+      <ProjectReference Include="..\Strall\Strall.csproj" />
+    </ItemGroup>
 
 </Project>

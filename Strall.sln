@@ -6,9 +6,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Strall", "Test.Strall\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "App\App.csproj", "{A5C6F5E7-DE5F-42AC-81F8-151C25220B5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strall.Persistence.SQLite", "Strall.Persistence.SQLite\Strall.Persistence.SQLite.csproj", "{852ED4F8-EE48-4421-AB2C-BC7A8C7D5656}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strall.Persistence.SqLite", "Strall.Persistence.SqLite\Strall.Persistence.SqLite.csproj", "{852ED4F8-EE48-4421-AB2C-BC7A8C7D5656}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Strall.Persistence.SQLite", "Test.Strall.Persistence.SQLite\Test.Strall.Persistence.SQLite.csproj", "{8D72EFAD-57E2-4EA8-A5BE-ABEC647B8BF3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Strall.Persistence.SqLite", "Test.Strall.Persistence.SqLite\Test.Strall.Persistence.SqLite.csproj", "{8D72EFAD-57E2-4EA8-A5BE-ABEC647B8BF3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

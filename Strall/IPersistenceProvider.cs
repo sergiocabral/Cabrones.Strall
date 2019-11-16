@@ -6,8 +6,24 @@ namespace Strall
     /// <summary>
     /// Provê os meios de gravação das informações.
     /// </summary>
-    public interface IPersistenceProvider
+    public interface IPersistenceProvider<in TConnectionInfo>: IDisposable
     {
+        /// <summary>
+        /// Inicia a conexão.
+        /// </summary>
+        /// <param name="connection">Informações para conexão.</param>
+        void Open(TConnectionInfo connection);
+
+        /// <summary>
+        /// Fecha a conexão.
+        /// </summary>
+        void Close();
+        
+        /// <summary>
+        /// Modo atual.
+        /// </summary>
+        PersistenceProviderMode Mode { get; }
+        
         /// <summary>
         /// Verifica se uma informação existe.
         /// Equivalente a SELECT TOP 1

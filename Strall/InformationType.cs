@@ -8,6 +8,6 @@
         /// <summary>
         /// Texto.
         /// </summary>
-        Text
+        Text = 1 << 1
     }
 }

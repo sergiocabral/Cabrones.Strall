@@ -3,8 +3,30 @@ using System.Collections.Generic;
 
 namespace Strall.Persistence.SQLite
 {
-    public class PersistenceProviderSqLite: IPersistenceProvider
+    public class PersistenceProviderSqLite: IPersistenceProvider<string>
     {
+        /// <summary>
+        /// Inicia a conexão.
+        /// </summary>
+        /// <param name="connection">Informações para conexão.</param>
+        public void Open(string connection)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Fecha a conexão.
+        /// </summary>
+        public void Close()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Modo atual.
+        /// </summary>
+        public PersistenceProviderMode Mode { get; } = PersistenceProviderMode.Closed;
+        
         /// <summary>
         /// Verifica se uma informação existe.
         /// Equivalente a SELECT TOP 1
@@ -78,6 +100,14 @@ namespace Strall.Persistence.SQLite
         /// <param name="informationId">Id</param>
         /// <returns>Lista</returns>
         public IEnumerable<Guid> Children(Guid informationId)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Liberação tipo IDispose.
+        /// </summary>
+        public void Dispose()
         {
             throw new NotImplementedException();
         }
