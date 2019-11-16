@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Strall.Persistence.SQLite
 {
-    public partial class TestPersistenceProviderSqLite: IDisposable
+    public class TestPersistenceProviderSqLiteIDataAccess: IDisposable
     {
         /// <summary>
         /// Sistema sob teste (SUT = System Under Test)
@@ -20,12 +20,12 @@ namespace Strall.Persistence.SQLite
         /// <summary>
         /// Arquivo do banco de dados para este teste.
         /// </summary>
-        private const string Database = "TestPersistenceProviderSqLiteCrud";
+        private const string Database = "TestPersistenceProviderSqLiteIDataAccess";
 
         /// <summary>
         /// Setup do teste.
         /// </summary>
-        public TestPersistenceProviderSqLite()
+        public TestPersistenceProviderSqLiteIDataAccess()
         {
             _sut = new PersistenceProviderSqLite();
             _sut.Open(new ConnectionInfo { Filename = Path.Combine(Environment.CurrentDirectory, Database) });

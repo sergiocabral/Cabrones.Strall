@@ -7,7 +7,7 @@ namespace Strall
     public class TestIPersistenceProvider
     {
         [Theory]
-        [InlineData(typeof(IPersistenceProvider<object>), 13)]
+        [InlineData(typeof(IPersistenceProvider<object>), 4)]
         public void verifica_se_o_total_de_métodos_públicos_declarados_está_correto_neste_tipo(Type tipo, int totalDeMétodosEsperado) =>
             tipo.TestMethodsCount(totalDeMétodosEsperado);
 
@@ -16,15 +16,6 @@ namespace Strall
         [InlineData(typeof(IPersistenceProvider<object>), "IPersistenceProvider<Object> Open(Object)")]
         [InlineData(typeof(IPersistenceProvider<object>), "IPersistenceProvider<Object> Close()")]
         [InlineData(typeof(IPersistenceProvider<object>), "PersistenceProviderMode get_Mode()")]
-        [InlineData(typeof(IPersistenceProvider<object>), "Boolean Exists(Guid)")]
-        [InlineData(typeof(IPersistenceProvider<object>), "Information Get(Guid)")]
-        [InlineData(typeof(IPersistenceProvider<object>), "Guid Create(Information)")]
-        [InlineData(typeof(IPersistenceProvider<object>), "Boolean Update(Information)")]
-        [InlineData(typeof(IPersistenceProvider<object>), "Boolean Delete(Guid)")]
-        [InlineData(typeof(IPersistenceProvider<object>), "Boolean HasChildren(Guid)")]
-        [InlineData(typeof(IPersistenceProvider<object>), "IEnumerable<Guid> Children(Guid)")]
-        [InlineData(typeof(IPersistenceProvider<object>), "Boolean HasClones(Guid)")]
-        [InlineData(typeof(IPersistenceProvider<object>), "IEnumerable<Guid> Clones(Guid)")]
         public void verifica_se_os_métodos_existem_com_base_na_assinatura(Type tipo, string assinaturaEsperada) =>
             tipo.TestMethodPresence(assinaturaEsperada);
     }

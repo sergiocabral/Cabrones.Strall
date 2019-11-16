@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Strall.Persistence.SQLite
 {
-    public partial class TestPersistenceProviderSqLite
+    public class TestPersistenceProviderSqLite
     {
         [Theory]
         [InlineData(typeof(PersistenceProviderSqLite), 17)]
@@ -19,7 +19,7 @@ namespace Strall.Persistence.SQLite
             tipo.TestMethodsCount(totalDeMétodosEsperado);
 
         [Theory]
-        [InlineData(typeof(PersistenceProviderSqLite), typeof(IPersistenceProviderSqLite), typeof(IPersistenceProvider<IConnectionInfo>), typeof(IDisposable))]
+        [InlineData(typeof(PersistenceProviderSqLite), typeof(IPersistenceProviderSqLite), typeof(IPersistenceProvider<IConnectionInfo>), typeof(IDataAccess), typeof(IDisposable))]
         public void verifica_se_classe_implementa_os_tipos_necessários(Type tipoDaClasse, params Type[] tiposQueDeveSerImplementado) =>
             tipoDaClasse.TestImplementations(tiposQueDeveSerImplementado);
         
