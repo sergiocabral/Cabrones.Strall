@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using AutoFixture;
 using Cabrones.Test;
 using FluentAssertions;
 using Strall.Exceptions;
@@ -208,7 +207,7 @@ namespace Strall.Persistence.SQLite
             var informaçãoComIdInformadoQueExisteComFilhos = new InformationRaw{ Id = Guid.NewGuid() };
             _sut.Create(informaçãoComIdInformadoQueExisteComFilhos);
 
-            var filhos = this.Fixture().CreateMany<InformationRaw>();
+            var filhos = this.FixtureMany<InformationRaw>();
             foreach (var filho in filhos)
             {
                 filho.ParentId = informaçãoComIdInformadoQueExisteComFilhos.Id;
@@ -245,7 +244,7 @@ namespace Strall.Persistence.SQLite
             var informaçãoComIdInformadoQueExisteComFilhos = new InformationRaw{ Id = Guid.NewGuid() };
             _sut.Create(informaçãoComIdInformadoQueExisteComFilhos);
 
-            var filhos = this.Fixture().CreateMany<InformationRaw>().ToList();
+            var filhos = this.FixtureMany<InformationRaw>().ToList();
             foreach (var filho in filhos)
             {
                 filho.ParentId = informaçãoComIdInformadoQueExisteComFilhos.Id;
@@ -283,7 +282,7 @@ namespace Strall.Persistence.SQLite
             var informaçãoComIdInformadoQueExisteComFilhos = new InformationRaw{ Id = Guid.NewGuid() };
             _sut.Create(informaçãoComIdInformadoQueExisteComFilhos);
 
-            var filhos = this.Fixture().CreateMany<InformationRaw>();
+            var filhos = this.FixtureMany<InformationRaw>();
             foreach (var filho in filhos)
             {
                 filho.CloneFromId = informaçãoComIdInformadoQueExisteComFilhos.Id;
@@ -307,7 +306,7 @@ namespace Strall.Persistence.SQLite
         }
         
         [Fact]
-        public void verifica_funcionamento_do_método_Clones()
+        public void verifica_funcionamento_do_método_ClonesTo()
         {
             // Arrange, Given
 
@@ -320,7 +319,7 @@ namespace Strall.Persistence.SQLite
             var informaçãoComIdInformadoQueExisteComFilhos = new InformationRaw{ Id = Guid.NewGuid() };
             _sut.Create(informaçãoComIdInformadoQueExisteComFilhos);
 
-            var filhos = this.Fixture().CreateMany<InformationRaw>().ToList();
+            var filhos = this.FixtureMany<InformationRaw>().ToList();
             foreach (var filho in filhos)
             {
                 filho.CloneFromId = informaçãoComIdInformadoQueExisteComFilhos.Id;
@@ -342,6 +341,40 @@ namespace Strall.Persistence.SQLite
             resultadoParaInformaçãoComIdInformadoQueExiste.Should().HaveCount(0);
             resultadoParaInformaçãoComIdInformadoQueExisteComFilhos.Should().HaveCount(filhos.Count).And
                 .Subject.Should().BeEquivalentTo(filhos.Select(a => a.Id));
+        }
+
+        [Fact]
+        public void verifica_funcionamento_do_método_CloneFrom()
+        {
+            // Arrange, Given
+
+            var informações = new List<IInformationRaw>();
+            for (var i = 0; i < 3; i++)
+            {
+                var informação = new InformationRaw
+                {
+                    Id = Guid.NewGuid(),
+                    CloneFromId = informações.LastOrDefault()?.Id ?? Guid.Empty
+                };
+                _sut.Create(informação);
+                informações.Add(informação);
+            }
+
+            var informaçãoEmLoop = new InformationRaw {Id = Guid.NewGuid()};
+            informaçãoEmLoop.CloneFromId = informaçãoEmLoop.Id;
+            _sut.Create(informaçãoEmLoop);
+            
+            // Act, When
+
+            var origemDoPrimeiro = _sut.CloneFrom(informações.First().Id);
+            var origemDoÚltimo = _sut.CloneFrom(informações.Last().Id);
+            var origemDoLoop = _sut.CloneFrom(informaçãoEmLoop.Id);
+
+            // Assert, Then
+
+            origemDoPrimeiro.Should().Be(informações.First().Id);
+            origemDoÚltimo.Should().Be(informações.First().Id);
+            origemDoLoop.Should().BeEmpty();
         }
     }
 }

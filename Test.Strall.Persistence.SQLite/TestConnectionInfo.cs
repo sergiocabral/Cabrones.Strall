@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using AutoFixture;
 using Cabrones.Test;
 using FluentAssertions;
 using Strall.Exceptions;
@@ -10,15 +9,21 @@ namespace Strall.Persistence.SQLite
 {
     public class TestConnectionInfo
     {
-        [Theory]
-        [InlineData(typeof(ConnectionInfo), 6)]
-        public void verifica_se_o_total_de_métodos_públicos_declarados_está_correto_neste_tipo(Type tipo, int totalDeMétodosEsperado) =>
-            tipo.TestMethodsCount(totalDeMétodosEsperado);
+        [Fact]
+        public void verificações_declarativas()
+        {
+            // Arrange, Given
+            // Act, When
 
-        [Theory]
-        [InlineData(typeof(ConnectionInfo), typeof(IConnectionInfo))]
-        public void verifica_se_classe_implementa_os_tipos_necessários(Type tipoDaClasse, params Type[] tiposQueDeveSerImplementado) =>
-            tipoDaClasse.TestImplementations(tiposQueDeveSerImplementado);
+            var sut = typeof(ConnectionInfo);
+
+            // Assert, Then
+
+            sut.AssertMyImplementations(typeof(IConnectionInfo));
+            sut.AssertMyOwnImplementations(typeof(IConnectionInfo));
+            sut.AssertMyOwnPublicPropertiesCount(0);
+            sut.AssertMyOwnPublicMethodsCount(0);
+        }
 
         [Fact]
         public void deve_ter_construtor_sem_parâmetros()
@@ -42,7 +47,7 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var arquivo = this.Fixture().Create<string>();
+            var arquivo = this.Fixture<string>();
             var connectionInfo = new ConnectionInfo
             {
                 Filename = arquivo
@@ -63,7 +68,7 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var arquivo = Path.Combine(Environment.CurrentDirectory, this.Fixture().Create<string>());
+            var arquivo = Path.Combine(Environment.CurrentDirectory, this.Fixture<string>());
             var connectionInfo = new ConnectionInfo
             {
                 Filename = arquivo,
@@ -84,7 +89,7 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var arquivo = Path.Combine(Environment.CurrentDirectory, this.Fixture().Create<string>());
+            var arquivo = Path.Combine(Environment.CurrentDirectory, this.Fixture<string>());
             var connectionInfo = new ConnectionInfo
             {
                 Filename = arquivo,
@@ -106,8 +111,8 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var arquivo = Path.Combine(Environment.CurrentDirectory, this.Fixture().Create<string>());
-            var conteúdoEscrito = this.Fixture().Create<string>();
+            var arquivo = Path.Combine(Environment.CurrentDirectory, this.Fixture<string>());
+            var conteúdoEscrito = this.Fixture<string>();
             File.WriteAllText(arquivo, conteúdoEscrito);
 
             var connectionInfo = new ConnectionInfo
@@ -145,8 +150,8 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var valorInicialParaFilename = this.Fixture().Create<string>();
-            var valorInicialParaCreateDatabaseIfNotExists = this.Fixture().Create<bool>();
+            var valorInicialParaFilename = this.Fixture<string>();
+            var valorInicialParaCreateDatabaseIfNotExists = this.Fixture<bool>();
             
             var connectionInfo = new ConnectionInfo
             {
@@ -156,7 +161,7 @@ namespace Strall.Persistence.SQLite
             
             // Act, When
             
-            connectionInfo.Filename = this.Fixture().Create<string>();
+            connectionInfo.Filename = this.Fixture<string>();
             connectionInfo.CreateDatabaseIfNotExists = !connectionInfo.CreateDatabaseIfNotExists;
 
             // Assert, Then

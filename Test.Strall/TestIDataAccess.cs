@@ -1,27 +1,34 @@
-﻿using System;
-using Cabrones.Test;
+﻿using Cabrones.Test;
 using Xunit;
 
 namespace Strall
 {
     public class TestIDataAccess
     {
-        [Theory]
-        [InlineData(typeof(IDataAccess), 9)]
-        public void verifica_se_o_total_de_métodos_públicos_declarados_está_correto_neste_tipo(Type tipo, int totalDeMétodosEsperado) =>
-            tipo.TestMethodsCount(totalDeMétodosEsperado);
+        [Fact]
+        public void verificações_declarativas()
+        {
+            // Arrange, Given
+            // Act, When
 
-        [Theory]
-        [InlineData(typeof(IDataAccess), "Boolean Exists(Guid)")]
-        [InlineData(typeof(IDataAccess), "IInformationRaw Get(Guid)")]
-        [InlineData(typeof(IDataAccess), "Guid Create(IInformationRaw)")]
-        [InlineData(typeof(IDataAccess), "Boolean Update(IInformationRaw)")]
-        [InlineData(typeof(IDataAccess), "Boolean Delete(Guid)")]
-        [InlineData(typeof(IDataAccess), "Boolean HasChildren(Guid)")]
-        [InlineData(typeof(IDataAccess), "IEnumerable<Guid> Children(Guid)")]
-        [InlineData(typeof(IDataAccess), "Boolean HasClonesTo(Guid)")]
-        [InlineData(typeof(IDataAccess), "IEnumerable<Guid> ClonesTo(Guid)")]
-        public void verifica_se_os_métodos_existem_com_base_na_assinatura(Type tipo, string assinaturaEsperada) =>
-            tipo.TestMethodPresence(assinaturaEsperada);
+            var sut = typeof(IDataAccess);
+
+            // Assert, Then
+
+            sut.AssertMyImplementations();
+            sut.AssertMyOwnImplementations();
+            sut.AssertMyOwnPublicPropertiesCount(0);
+            sut.AssertMyOwnPublicMethodsCount(10);
+            sut.AssertPublicMethodPresence("Boolean Exists(Guid)");
+            sut.AssertPublicMethodPresence("IInformationRaw Get(Guid)");
+            sut.AssertPublicMethodPresence("Guid Create(IInformationRaw)");
+            sut.AssertPublicMethodPresence("Boolean Update(IInformationRaw)");
+            sut.AssertPublicMethodPresence("Boolean Delete(Guid)");
+            sut.AssertPublicMethodPresence("Boolean HasChildren(Guid)");
+            sut.AssertPublicMethodPresence("IEnumerable<Guid> Children(Guid)");
+            sut.AssertPublicMethodPresence("Boolean HasClonesTo(Guid)");
+            sut.AssertPublicMethodPresence("IEnumerable<Guid> ClonesTo(Guid)");
+            sut.AssertPublicMethodPresence("Guid CloneFrom(Guid)");
+        }
     }
 }

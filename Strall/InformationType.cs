@@ -8,6 +8,11 @@
         /// <summary>
         /// Texto.
         /// </summary>
-        Text = 1 << 1
+        Text = 1 << 1,
+        
+        /// <summary>
+        /// Numérico.
+        /// </summary>
+        Numeric = 1 << 2
     }
 }

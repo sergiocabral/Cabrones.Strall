@@ -78,5 +78,15 @@ namespace Strall
         /// <param name="informationId">Id</param>
         /// <returns>Lista</returns>
         IEnumerable<Guid> ClonesTo(Guid informationId);
+
+        /// <summary>
+        /// Localiza a origem de um clone
+        /// </summary>
+        /// <param name="informationId">Id</param>
+        /// <returns>
+        /// Id da origem. Em caso de loop retorna Guid.Empty.
+        /// Caso não seja clone retorna o mesmo id.
+        /// </returns>
+        Guid CloneFrom(Guid informationId);
     }
 }

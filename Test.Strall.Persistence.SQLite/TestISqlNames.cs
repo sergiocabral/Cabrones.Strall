@@ -1,27 +1,33 @@
-﻿using System;
-using Cabrones.Test;
+﻿using Cabrones.Test;
 using Xunit;
 
 namespace Strall.Persistence.SQLite
 {
     public class TestISqlNames
     {
-        [Theory]
-        [InlineData(typeof(ISqlNames), 9)]
-        public void verifica_se_o_total_de_métodos_públicos_declarados_está_correto_neste_tipo(Type tipo, int totalDeMétodosEsperado) =>
-            tipo.TestMethodsCount(totalDeMétodosEsperado);
-        
-        [Theory]
-        [InlineData(typeof(ISqlNames), "String get_TableInformation()")]
-        [InlineData(typeof(ISqlNames), "String get_TableInformationColumnId()")]
-        [InlineData(typeof(ISqlNames), "String get_TableInformationColumnDescription()")]
-        [InlineData(typeof(ISqlNames), "String get_TableInformationColumnContent()")]
-        [InlineData(typeof(ISqlNames), "String get_TableInformationColumnContentType()")]
-        [InlineData(typeof(ISqlNames), "String get_TableInformationColumnParentId()")]
-        [InlineData(typeof(ISqlNames), "String get_TableInformationColumnParentRelation()")]
-        [InlineData(typeof(ISqlNames), "String get_TableInformationColumnCloneFromId()")]
-        [InlineData(typeof(ISqlNames), "String get_TableInformationColumnSiblingOrder()")]
-        public void verifica_se_os_métodos_existem_com_base_na_assinatura(Type tipo, string assinaturaEsperada) =>
-            tipo.TestMethodPresence(assinaturaEsperada);
+        [Fact]
+        public void verificações_declarativas()
+        {
+            // Arrange, Given
+            // Act, When
+
+            var sut = typeof(ISqlNames);
+
+            // Assert, Then
+
+            sut.AssertMyImplementations();
+            sut.AssertMyOwnImplementations();
+            sut.AssertMyOwnPublicPropertiesCount(9);
+            sut.AssertPublicPropertyPresence("String TableInformation { get; }");
+            sut.AssertPublicPropertyPresence("String TableInformationColumnId { get; }");
+            sut.AssertPublicPropertyPresence("String TableInformationColumnDescription { get; }");
+            sut.AssertPublicPropertyPresence("String TableInformationColumnContent { get; }");
+            sut.AssertPublicPropertyPresence("String TableInformationColumnContentType { get; }");
+            sut.AssertPublicPropertyPresence("String TableInformationColumnParentId { get; }");
+            sut.AssertPublicPropertyPresence("String TableInformationColumnParentRelation { get; }");
+            sut.AssertPublicPropertyPresence("String TableInformationColumnCloneFromId { get; }");
+            sut.AssertPublicPropertyPresence("String TableInformationColumnSiblingOrder { get; }");
+            sut.AssertMyOwnPublicMethodsCount(0);
+        }
     }
 }

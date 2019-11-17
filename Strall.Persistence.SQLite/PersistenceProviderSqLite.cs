@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cabrones.Utils.Converter;
 using Microsoft.Data.Sqlite;
 using Strall.Exceptions;
@@ -385,6 +386,52 @@ WHERE
         /// <returns>Lista</returns>
         public IEnumerable<Guid> ClonesTo(Guid informationId) =>
             Records(SqlNames.TableInformationColumnCloneFromId, informationId);
+
+        /// <summary>
+        /// Localiza a origem de um clone
+        /// </summary>
+        /// <param name="informationId">Id</param>
+        /// <returns>
+        /// Id da origem.
+        /// Caso não seja clone retorna o mesmo id.
+        /// Em caso de loop ou de referência não encontrada retorna Guid.Empty.
+        /// </returns>
+        public Guid CloneFrom(Guid informationId)
+        {
+            if (Connection == null) throw new StrallConnectionIsCloseException();
+            if (informationId == Guid.Empty) return Guid.Empty;
+
+            var commandText = $@"
+SELECT {SqlNames.TableInformationColumnCloneFromId}
+  FROM {SqlNames.TableInformation}
+ WHERE {SqlNames.TableInformationColumnId} = @{SqlNames.TableInformationColumnId}
+ LIMIT 1;
+";
+
+            var chain = new List<Guid> { informationId };
+            do
+            {
+                using var command = Connection.CreateCommand();
+                command.CommandText = commandText;
+                command.Parameters.AddRange(FactoryParameters(informationId));
+                using var reader = command.ExecuteReader();
+                
+                // Referência do clone ficou perdida no meio do caminho.
+                if (!reader.Read()) return Guid.Empty;
+
+                // Lê o próximo id para chegar na origem.
+                informationId = reader.GetValue(0).ToGuid();
+                
+                //Adiciona na lista de id já verificados.
+                if (informationId != Guid.Empty) chain.Add(informationId);
+                
+                // Fim da linha. Origem encontrada.
+                if (informationId == Guid.Empty) return chain.Last();
+                    
+                // Loop detectado. 
+                if (chain.Count(a => a == informationId) > 1) return Guid.Empty;
+            } while (true);
+        }
 
         /// <summary>
         /// Verifica se tem registros.

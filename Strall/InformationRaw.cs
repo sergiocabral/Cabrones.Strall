@@ -46,5 +46,11 @@ namespace Strall
         /// Ordem de exibição entre informações irmãs.
         /// </summary>
         public int SiblingOrder { get; set; }
+
+        /// <summary>
+        /// Faz uma cópia desta instância para uma nova instância.
+        /// </summary>
+        /// <returns>Nova instância.</returns>
+        public object Clone() => this.Copy();
     }
 }

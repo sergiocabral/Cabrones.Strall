@@ -8,15 +8,21 @@ namespace Strall
 {
     public class TestInformationRaw
     {
-        [Theory]
-        [InlineData(typeof(InformationRaw), 16)]
-        public void verifica_se_o_total_de_métodos_públicos_declarados_está_correto_neste_tipo(Type tipo, int totalDeMétodosEsperado) =>
-            tipo.TestMethodsCount(totalDeMétodosEsperado);
+        [Fact]
+        public void verificações_declarativas()
+        {
+            // Arrange, Given
+            // Act, When
 
-        [Theory]
-        [InlineData(typeof(InformationRaw), typeof(InformationRaw))]
-        public void verifica_se_classe_implementa_os_tipos_necessários(Type tipo, params Type[] tiposQueDeveSerImplementado) =>
-            tipo.TestImplementations(tiposQueDeveSerImplementado);
+            var sut = typeof(InformationRaw);
+
+            // Assert, Then
+
+            sut.AssertMyImplementations(typeof(IInformationRaw), typeof(ICloneable));
+            sut.AssertMyOwnImplementations(typeof(IInformationRaw));
+            sut.AssertMyOwnPublicPropertiesCount(0);
+            sut.AssertMyOwnPublicMethodsCount(0);
+        }
 
         [Fact]
         public void verificar_se_as_propriedades_foram_inicializadas()
@@ -69,5 +75,40 @@ namespace Strall
             instância.SiblingOrder.Should().Be(instânciaDeComparação.SiblingOrder);
         }
 
+        [Fact]
+        public void a_classe_deve_implementar_ICloneable_corretamente()
+        {
+            // Arrange, Given
+
+            var original = new InformationRaw
+            {
+                Id = Guid.NewGuid(),
+                Description = this.Fixture<string>(),
+                Content = this.Fixture<string>(),
+                ContentType = this.Fixture<string>(),
+                ParentId = Guid.NewGuid(),
+                ParentRelation = this.Fixture<string>(),
+                CloneFromId = Guid.NewGuid(),
+                SiblingOrder = this.Fixture<int>()
+            };
+
+            // Act, When
+
+            var clone = (InformationRaw)original.Clone();
+
+            // Assert, Then
+
+            clone.Should().NotBeNull();
+            clone.Should().NotBeSameAs(original);
+            clone.GetType().Should().Be(original.GetType());
+            clone.Id.Should().Be(original.Id);
+            clone.Description.Should().Be(original.Description);
+            clone.Content.Should().Be(original.Content);
+            clone.ContentType.Should().Be(original.ContentType);
+            clone.ParentId.Should().Be(original.ParentId);
+            clone.ParentRelation.Should().Be(original.ParentRelation);
+            clone.CloneFromId.Should().Be(original.CloneFromId);
+            clone.SiblingOrder.Should().Be(original.SiblingOrder);
+        }
     }
 }

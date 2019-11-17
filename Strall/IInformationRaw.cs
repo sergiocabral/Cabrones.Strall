@@ -5,7 +5,7 @@ namespace Strall
     /// <summary>
     /// Representa uma informação pura, como é armazenada no banco de dados.
     /// </summary>
-    public interface IInformationRaw
+    public interface IInformationRaw: ICloneable
     {
         /// <summary>
         /// Identificador.

@@ -1,5 +1,4 @@
-﻿using System;
-using Cabrones.Test;
+﻿using Cabrones.Test;
 using FluentAssertions;
 using Xunit;
 
@@ -7,16 +6,22 @@ namespace Strall.Persistence.SQLite
 {
     public class TestSqlNames
     {
-        [Theory]
-        [InlineData(typeof(SqlNames), 9)]
-        public void verifica_se_o_total_de_métodos_públicos_declarados_está_correto_neste_tipo(Type tipo, int totalDeMétodosEsperado) =>
-            tipo.TestMethodsCount(totalDeMétodosEsperado);
+        [Fact]
+        public void verificações_declarativas()
+        {
+            // Arrange, Given
+            // Act, When
 
-        [Theory]
-        [InlineData(typeof(SqlNames), typeof(ISqlNames))]
-        public void verifica_se_classe_implementa_os_tipos_necessários(Type tipoDaClasse, params Type[] tiposQueDeveSerImplementado) =>
-            tipoDaClasse.TestImplementations(tiposQueDeveSerImplementado);
+            var sut = typeof(SqlNames);
 
+            // Assert, Then
+
+            sut.AssertMyImplementations(typeof(ISqlNames));
+            sut.AssertMyOwnImplementations(typeof(ISqlNames));
+            sut.AssertMyOwnPublicPropertiesCount(0);
+            sut.AssertMyOwnPublicMethodsCount(0);
+        }
+        
         [Fact]
         public void verifica_se_os_valores_das_propriedades_estão_corretas()
         {

@@ -6,16 +6,22 @@ namespace Strall.Persistence.SQLite
 {
     public class TestIPersistenceProviderSqLite
     {
-        [Theory]
-        [InlineData(typeof(IPersistenceProviderSqLite), 3)]
-        public void verifica_se_o_total_de_métodos_públicos_declarados_está_correto_neste_tipo(Type tipo, int totalDeMétodosEsperado) =>
-            tipo.TestMethodsCount(totalDeMétodosEsperado);
-        
-        [Theory]
-        [InlineData(typeof(IPersistenceProviderSqLite), "SqliteConnection get_Connection()")]
-        [InlineData(typeof(IPersistenceProviderSqLite), "ISqlNames get_SqlNames()")]
-        [InlineData(typeof(IPersistenceProviderSqLite), "Void set_SqlNames(ISqlNames)")]
-        public void verifica_se_os_métodos_existem_com_base_na_assinatura(Type tipo, string assinaturaEsperada) =>
-            tipo.TestMethodPresence(assinaturaEsperada);
+        [Fact]
+        public void verificações_declarativas()
+        {
+            // Arrange, Given
+            // Act, When
+
+            var sut = typeof(IPersistenceProviderSqLite);
+
+            // Assert, Then
+
+            sut.AssertMyImplementations(typeof(IPersistenceProvider<IConnectionInfo>), typeof(IDataAccess), typeof(IDisposable));
+            sut.AssertMyOwnImplementations();
+            sut.AssertMyOwnPublicPropertiesCount(3);
+            sut.AssertPublicPropertyPresence("SqliteConnection Connection { get; }");
+            sut.AssertPublicPropertyPresence("ISqlNames SqlNames { get; set; }");
+            sut.AssertMyOwnPublicMethodsCount(0);
+        }
     }
 }
