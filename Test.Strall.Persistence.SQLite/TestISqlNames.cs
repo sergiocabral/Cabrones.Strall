@@ -23,9 +23,9 @@ namespace Strall.Persistence.SQLite
             sut.AssertPublicPropertyPresence("String TableInformationColumnDescription { get; }");
             sut.AssertPublicPropertyPresence("String TableInformationColumnContent { get; }");
             sut.AssertPublicPropertyPresence("String TableInformationColumnContentType { get; }");
+            sut.AssertPublicPropertyPresence("String TableInformationColumnContentFromId { get; }");
             sut.AssertPublicPropertyPresence("String TableInformationColumnParentId { get; }");
             sut.AssertPublicPropertyPresence("String TableInformationColumnParentRelation { get; }");
-            sut.AssertPublicPropertyPresence("String TableInformationColumnCloneFromId { get; }");
             sut.AssertPublicPropertyPresence("String TableInformationColumnSiblingOrder { get; }");
             sut.AssertMyOwnPublicMethodsCount(0);
         }

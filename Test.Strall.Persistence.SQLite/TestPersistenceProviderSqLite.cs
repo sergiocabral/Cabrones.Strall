@@ -244,9 +244,9 @@ namespace Strall.Persistence.SQLite
             sqlNames.TableInformationColumnDescription.Returns($"col_{this.Fixture<string>().Substring(0, 8)}");
             sqlNames.TableInformationColumnContent.Returns($"col_{this.Fixture<string>().Substring(0, 8)}");
             sqlNames.TableInformationColumnContentType.Returns($"col_{this.Fixture<string>().Substring(0, 8)}");
+            sqlNames.TableInformationColumnContentFromId.Returns($"col_{this.Fixture<string>().Substring(0, 8)}");
             sqlNames.TableInformationColumnParentId.Returns($"col_{this.Fixture<string>().Substring(0, 8)}");
             sqlNames.TableInformationColumnParentRelation.Returns($"col_{this.Fixture<string>().Substring(0, 8)}");
-            sqlNames.TableInformationColumnCloneFromId.Returns($"col_{this.Fixture<string>().Substring(0, 8)}");
             sqlNames.TableInformationColumnSiblingOrder.Returns($"col_{this.Fixture<string>().Substring(0, 8)}");
             
             // Act, When
@@ -266,9 +266,9 @@ namespace Strall.Persistence.SQLite
             ddl.Should().Contain(sqlNames.TableInformationColumnDescription);
             ddl.Should().Contain(sqlNames.TableInformationColumnContent);
             ddl.Should().Contain(sqlNames.TableInformationColumnContentType);
+            ddl.Should().Contain(sqlNames.TableInformationColumnContentFromId);
             ddl.Should().Contain(sqlNames.TableInformationColumnParentId);
             ddl.Should().Contain(sqlNames.TableInformationColumnParentRelation);
-            ddl.Should().Contain(sqlNames.TableInformationColumnCloneFromId);
             ddl.Should().Contain(sqlNames.TableInformationColumnSiblingOrder);
         }
 
@@ -354,7 +354,7 @@ namespace Strall.Persistence.SQLite
                 var informação = new InformationRaw
                 {
                     Id = Guid.NewGuid(),
-                    CloneFromId = informações.LastOrDefault()?.Id ?? Guid.NewGuid()
+                    ContentFromId = informações.LastOrDefault()?.Id ?? Guid.NewGuid()
                 };
                 informações.Add(informação);
                 persistenceProviderSqLite.Create(informação);
@@ -362,7 +362,7 @@ namespace Strall.Persistence.SQLite
             
             // Act, When
 
-            var origemDoClone = persistenceProviderSqLite.CloneFrom(informações.Last().Id);
+            var origemDoClone = persistenceProviderSqLite.ContentFrom(informações.Last().Id);
 
             // Assert, Then
 

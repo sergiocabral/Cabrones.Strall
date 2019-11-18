@@ -36,16 +36,16 @@ CREATE TABLE IF NOT EXISTS {SqlNames.TableInformation} (
     {SqlNames.TableInformationColumnDescription} TEXT,
     {SqlNames.TableInformationColumnContent} TEXT,
     {SqlNames.TableInformationColumnContentType} TEXT,
+    {SqlNames.TableInformationColumnContentFromId} TEXT,
     {SqlNames.TableInformationColumnParentId} TEXT,
     {SqlNames.TableInformationColumnParentRelation} TEXT,
-    {SqlNames.TableInformationColumnCloneFromId} TEXT,
     {SqlNames.TableInformationColumnSiblingOrder} INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY ({SqlNames.TableInformationColumnId}), 
-    FOREIGN KEY ({SqlNames.TableInformationColumnParentId})
+    FOREIGN KEY ({SqlNames.TableInformationColumnContentFromId})
         REFERENCES {SqlNames.TableInformation} ({SqlNames.TableInformationColumnId})
             ON DELETE RESTRICT
             ON UPDATE RESTRICT,
-    FOREIGN KEY ({SqlNames.TableInformationColumnCloneFromId})
+    FOREIGN KEY ({SqlNames.TableInformationColumnParentId})
         REFERENCES {SqlNames.TableInformation} ({SqlNames.TableInformationColumnId})
             ON DELETE RESTRICT
             ON UPDATE RESTRICT
@@ -146,6 +146,12 @@ CREATE INDEX IF NOT EXISTS IDX_{SqlNames.TableInformation}_{SqlNames.TableInform
                 },
                 new SqliteParameter
                 {
+                    ParameterName = SqlNames.TableInformationColumnContentFromId,
+                    SqliteType = SqliteType.Text,
+                    Value = informationRaw.ContentFromId.ToDatabaseText()
+                },
+                new SqliteParameter
+                {
                     ParameterName = SqlNames.TableInformationColumnParentId,
                     SqliteType = SqliteType.Text,
                     Value = informationRaw.ParentId.ToDatabaseText()
@@ -155,12 +161,6 @@ CREATE INDEX IF NOT EXISTS IDX_{SqlNames.TableInformation}_{SqlNames.TableInform
                     ParameterName = SqlNames.TableInformationColumnParentRelation,
                     SqliteType = SqliteType.Text,
                     Value = informationRaw.ParentRelation
-                },
-                new SqliteParameter
-                {
-                    ParameterName = SqlNames.TableInformationColumnCloneFromId,
-                    SqliteType = SqliteType.Text,
-                    Value = informationRaw.CloneFromId.ToDatabaseText()
                 },
                 new SqliteParameter
                 {
@@ -225,9 +225,9 @@ SELECT {SqlNames.TableInformationColumnId},
        {SqlNames.TableInformationColumnDescription},
        {SqlNames.TableInformationColumnContent},
        {SqlNames.TableInformationColumnContentType},
+       {SqlNames.TableInformationColumnContentFromId},
        {SqlNames.TableInformationColumnParentId},
        {SqlNames.TableInformationColumnParentRelation},
-       {SqlNames.TableInformationColumnCloneFromId},
        {SqlNames.TableInformationColumnSiblingOrder}
   FROM {SqlNames.TableInformation}
  WHERE {SqlNames.TableInformationColumnId} = @{SqlNames.TableInformationColumnId}
@@ -247,9 +247,9 @@ SELECT {SqlNames.TableInformationColumnId},
                 Description = $"{reader.GetValue(++i)}",
                 Content = $"{reader.GetValue(++i)}",
                 ContentType = $"{reader.GetValue(++i)}",
+                ContentFromId = reader.GetValue(++i).ToGuid(),
                 ParentId = reader.GetValue(++i).ToGuid(),
                 ParentRelation = $"{reader.GetValue(++i)}",
-                CloneFromId = reader.GetValue(++i).ToGuid(),
                 SiblingOrder = reader.GetFieldValue<int>(++i)
             };
         }
@@ -272,18 +272,18 @@ INSERT INTO {SqlNames.TableInformation} (
     {SqlNames.TableInformationColumnDescription},
     {SqlNames.TableInformationColumnContent},
     {SqlNames.TableInformationColumnContentType},
+    {SqlNames.TableInformationColumnContentFromId},
     {SqlNames.TableInformationColumnParentId},
     {SqlNames.TableInformationColumnParentRelation},
-    {SqlNames.TableInformationColumnCloneFromId},
     {SqlNames.TableInformationColumnSiblingOrder}
 ) VALUES (
     @{SqlNames.TableInformationColumnId},
     @{SqlNames.TableInformationColumnDescription},
     @{SqlNames.TableInformationColumnContent},
     @{SqlNames.TableInformationColumnContentType},
+    @{SqlNames.TableInformationColumnContentFromId},
     @{SqlNames.TableInformationColumnParentId},
     @{SqlNames.TableInformationColumnParentRelation},
-    @{SqlNames.TableInformationColumnCloneFromId},
     @{SqlNames.TableInformationColumnSiblingOrder}
 );
 ";
@@ -313,9 +313,9 @@ UPDATE {SqlNames.TableInformation} SET
     {SqlNames.TableInformationColumnDescription} = @{SqlNames.TableInformationColumnDescription},
     {SqlNames.TableInformationColumnContent} = @{SqlNames.TableInformationColumnContent},
     {SqlNames.TableInformationColumnContentType} = @{SqlNames.TableInformationColumnContentType},
+    {SqlNames.TableInformationColumnContentFromId} = @{SqlNames.TableInformationColumnContentFromId},
     {SqlNames.TableInformationColumnParentId} = @{SqlNames.TableInformationColumnParentId},
     {SqlNames.TableInformationColumnParentRelation} = @{SqlNames.TableInformationColumnParentRelation},
-    {SqlNames.TableInformationColumnCloneFromId} = @{SqlNames.TableInformationColumnCloneFromId},
     {SqlNames.TableInformationColumnSiblingOrder} = @{SqlNames.TableInformationColumnSiblingOrder}
 WHERE
     {SqlNames.TableInformationColumnId} = @{SqlNames.TableInformationColumnId};
@@ -352,31 +352,13 @@ WHERE
         }
 
         /// <summary>
-        /// Verifica se tem filhos.
-        /// Equivalente a SELECT TOP 1
-        /// </summary>
-        /// <param name="informationId"></param>
-        /// <returns>Resposta de existência.</returns>
-        public bool HasChildren(Guid informationId) =>
-            HasRecords(SqlNames.TableInformationColumnParentId, informationId);
-
-        /// <summary>
-        /// Retorna a lista de filhos imediatos.
-        /// Não é recursivo.
-        /// </summary>
-        /// <param name="informationId">Id</param>
-        /// <returns>Lista</returns>
-        public IEnumerable<Guid> Children(Guid informationId) =>
-            Records(SqlNames.TableInformationColumnParentId, informationId);
-
-        /// <summary>
         /// Verifica se tem clones.
         /// Equivalente a SELECT TOP 1
         /// </summary>
         /// <param name="informationId"></param>
         /// <returns>Resposta de existência.</returns>
-        public bool HasClonesTo(Guid informationId) =>
-            HasRecords(SqlNames.TableInformationColumnCloneFromId, informationId);
+        public bool HasContentTo(Guid informationId) =>
+            HasRecords(SqlNames.TableInformationColumnContentFromId, informationId);
 
         /// <summary>
         /// Retorna a lista de clones.
@@ -384,8 +366,8 @@ WHERE
         /// </summary>
         /// <param name="informationId">Id</param>
         /// <returns>Lista</returns>
-        public IEnumerable<Guid> ClonesTo(Guid informationId) =>
-            Records(SqlNames.TableInformationColumnCloneFromId, informationId);
+        public IEnumerable<Guid> ContentTo(Guid informationId) =>
+            Records(SqlNames.TableInformationColumnContentFromId, informationId);
 
         /// <summary>
         /// Localiza a origem de um clone
@@ -396,13 +378,13 @@ WHERE
         /// Caso não seja clone retorna o mesmo id.
         /// Em caso de loop ou de referência não encontrada retorna Guid.Empty.
         /// </returns>
-        public Guid CloneFrom(Guid informationId)
+        public Guid ContentFrom(Guid informationId)
         {
             if (Connection == null) throw new StrallConnectionIsCloseException();
             if (informationId == Guid.Empty) return Guid.Empty;
 
             var commandText = $@"
-SELECT {SqlNames.TableInformationColumnCloneFromId}
+SELECT {SqlNames.TableInformationColumnContentFromId}
   FROM {SqlNames.TableInformation}
  WHERE {SqlNames.TableInformationColumnId} = @{SqlNames.TableInformationColumnId}
  LIMIT 1;
@@ -432,6 +414,24 @@ SELECT {SqlNames.TableInformationColumnCloneFromId}
                 if (chain.Count(a => a == informationId) > 1) return Guid.Empty;
             } while (true);
         }
+
+        /// <summary>
+        /// Verifica se tem filhos.
+        /// Equivalente a SELECT TOP 1
+        /// </summary>
+        /// <param name="informationId"></param>
+        /// <returns>Resposta de existência.</returns>
+        public bool HasChildren(Guid informationId) =>
+            HasRecords(SqlNames.TableInformationColumnParentId, informationId);
+
+        /// <summary>
+        /// Retorna a lista de filhos imediatos.
+        /// Não é recursivo.
+        /// </summary>
+        /// <param name="informationId">Id</param>
+        /// <returns>Lista</returns>
+        public IEnumerable<Guid> Children(Guid informationId) =>
+            Records(SqlNames.TableInformationColumnParentId, informationId);
 
         /// <summary>
         /// Verifica se tem registros.

@@ -49,6 +49,31 @@ namespace Strall
         bool Delete(Guid informationId);
 
         /// <summary>
+        /// Verifica se tem clones.
+        /// Equivalente a SELECT TOP 1
+        /// </summary>
+        /// <param name="informationId"></param>
+        /// <returns></returns>
+        bool HasContentTo(Guid informationId);
+        
+        /// <summary>
+        /// Retorna a lista de clones.
+        /// </summary>
+        /// <param name="informationId">Id</param>
+        /// <returns>Lista</returns>
+        IEnumerable<Guid> ContentTo(Guid informationId);
+
+        /// <summary>
+        /// Localiza a origem de um clone
+        /// </summary>
+        /// <param name="informationId">Id</param>
+        /// <returns>
+        /// Id da origem. Em caso de loop retorna Guid.Empty.
+        /// Caso não seja clone retorna o mesmo id.
+        /// </returns>
+        Guid ContentFrom(Guid informationId);
+
+        /// <summary>
         /// Verifica se tem filhos.
         /// Equivalente a SELECT TOP 1
         /// </summary>
@@ -63,30 +88,5 @@ namespace Strall
         /// <param name="informationId">Id</param>
         /// <returns>Lista</returns>
         IEnumerable<Guid> Children(Guid informationId);
-
-        /// <summary>
-        /// Verifica se tem clones.
-        /// Equivalente a SELECT TOP 1
-        /// </summary>
-        /// <param name="informationId"></param>
-        /// <returns></returns>
-        bool HasClonesTo(Guid informationId);
-        
-        /// <summary>
-        /// Retorna a lista de clones.
-        /// </summary>
-        /// <param name="informationId">Id</param>
-        /// <returns>Lista</returns>
-        IEnumerable<Guid> ClonesTo(Guid informationId);
-
-        /// <summary>
-        /// Localiza a origem de um clone
-        /// </summary>
-        /// <param name="informationId">Id</param>
-        /// <returns>
-        /// Id da origem. Em caso de loop retorna Guid.Empty.
-        /// Caso não seja clone retorna o mesmo id.
-        /// </returns>
-        Guid CloneFrom(Guid informationId);
     }
 }

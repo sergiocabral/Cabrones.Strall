@@ -51,6 +51,20 @@ namespace Strall
         public InformationType ContentType { get; set; } = Enum.Parse<InformationType>(InformationDefault.ContentType);
 
         /// <summary>
+        /// Informação de onde este conteúdo é um clone.
+        /// </summary>
+        public Guid ContentFromId { get; set; } = InformationDefault.ContentFromId;
+
+        /// <summary>
+        /// Informação de onde este conteúdo é um clone.
+        /// </summary>
+        public IInformation? ContentFrom 
+        {
+            get => Get(DataAccess.ContentFrom(ContentFromId));
+            set => ContentFromId = value?.Id ?? Guid.Empty;
+        }
+        
+        /// <summary>
         /// Informação de onde esta é filha.
         /// </summary>
         public Guid ParentId { get; set; } = InformationDefault.ParentId;
@@ -69,20 +83,6 @@ namespace Strall
         /// </summary>
         public string ParentRelation { get; set; } = InformationDefault.ParentRelation;
         
-        /// <summary>
-        /// Informação de onde esta é um clone.
-        /// </summary>
-        public Guid CloneFromId { get; set; } = InformationDefault.CloneFromId;
-
-        /// <summary>
-        /// Informação de onde esta é um clone.
-        /// </summary>
-        public IInformation? CloneFrom 
-        {
-            get => Get(DataAccess.CloneFrom(CloneFromId));
-            set => CloneFromId = value?.Id ?? Guid.Empty;
-        }
-
         /// <summary>
         /// Ordem de exibição entre informações irmãs.
         /// </summary>

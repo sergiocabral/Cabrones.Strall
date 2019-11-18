@@ -20,8 +20,8 @@ namespace Strall
             sut.AssertMyOwnImplementations(typeof(IInformationRaw));
             sut.AssertMyOwnPublicPropertiesCount(6);
             sut.AssertPublicPropertyPresence("InformationType ContentType { get; set; }");
+            sut.AssertPublicPropertyPresence("IInformation ContentFrom { get; set; }");
             sut.AssertPublicPropertyPresence("IInformation Parent { get; set; }");
-            sut.AssertPublicPropertyPresence("IInformation CloneFrom { get; set; }");
             sut.AssertMyOwnPublicMethodsCount(0);
         }
     }

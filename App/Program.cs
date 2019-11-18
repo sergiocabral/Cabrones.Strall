@@ -21,7 +21,7 @@ namespace App
 //            information2.Id = Guid.Parse("136d803a-dfe1-49c8-bd2d-161dc0c3d401");
 //            information2.Get();
 //
-//            information2.CloneFrom = information1;
+//            information2.ContentFrom = information1;
 //            information2.UpdateOrCreate();
 //            information2.Get();
 //

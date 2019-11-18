@@ -45,9 +45,9 @@ namespace Strall
             destination.Description = source.Description;
             destination.Content = source.Content;
             destination.ContentType = source.ContentType;
+            destination.ContentFromId = source.ContentFromId;
             destination.ParentId = source.ParentId;
             destination.ParentRelation = source.ParentRelation;
-            destination.CloneFromId = source.CloneFromId;
             destination.SiblingOrder = source.SiblingOrder;
             return destination;
         }

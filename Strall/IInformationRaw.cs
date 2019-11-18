@@ -28,6 +28,11 @@ namespace Strall
         string ContentType { get; set; }
         
         /// <summary>
+        /// Informação de onde este conteúdo é um clone.
+        /// </summary>
+        Guid ContentFromId { get; set; }
+        
+        /// <summary>
         /// Informação de onde esta é filha.
         /// </summary>
         Guid ParentId { get; set; }
@@ -36,11 +41,6 @@ namespace Strall
         /// Relação de parentesco.
         /// </summary>
         string ParentRelation { get; set; }
-        
-        /// <summary>
-        /// Informação de onde esta é um clone.
-        /// </summary>
-        Guid CloneFromId { get; set; }
         
         /// <summary>
         /// Ordem de exibição entre informações irmãs.

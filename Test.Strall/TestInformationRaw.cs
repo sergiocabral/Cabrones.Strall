@@ -38,9 +38,9 @@ namespace Strall
             instância.Description.Should().BeEmpty();
             instância.Content.Should().BeEmpty();
             instância.ContentType.Should().Be(InformationType.Text.ToString());
+            instância.ContentFromId.Should().BeEmpty();
             instância.ParentId.Should().BeEmpty();
             instância.ParentRelation.Should().BeEmpty();
-            instância.CloneFromId.Should().BeEmpty();
             instância.SiblingOrder.Should().Be(0);
         }
 
@@ -58,9 +58,9 @@ namespace Strall
             instância.Description = instânciaDeComparação.Description;
             instância.Content = instânciaDeComparação.Content;
             instância.ContentType = instânciaDeComparação.ContentType;
+            instância.ContentFromId = instânciaDeComparação.ContentFromId;
             instância.ParentId = instânciaDeComparação.ParentId;
             instância.ParentRelation = instânciaDeComparação.ParentRelation;
-            instância.CloneFromId = instânciaDeComparação.CloneFromId;
             instância.SiblingOrder = instânciaDeComparação.SiblingOrder;
             
             // Assert, Then
@@ -69,9 +69,9 @@ namespace Strall
             instância.Description.Should().Be(instânciaDeComparação.Description);
             instância.Content.Should().Be(instânciaDeComparação.Content);
             instância.ContentType.Should().Be(instânciaDeComparação.ContentType);
+            instância.ContentFromId.Should().Be(instânciaDeComparação.ContentFromId);
             instância.ParentId.Should().Be(instânciaDeComparação.ParentId);
             instância.ParentRelation.Should().Be(instânciaDeComparação.ParentRelation);
-            instância.CloneFromId.Should().Be(instânciaDeComparação.CloneFromId);
             instância.SiblingOrder.Should().Be(instânciaDeComparação.SiblingOrder);
         }
 
@@ -86,9 +86,9 @@ namespace Strall
                 Description = this.Fixture<string>(),
                 Content = this.Fixture<string>(),
                 ContentType = this.Fixture<string>(),
+                ContentFromId = Guid.NewGuid(),
                 ParentId = Guid.NewGuid(),
                 ParentRelation = this.Fixture<string>(),
-                CloneFromId = Guid.NewGuid(),
                 SiblingOrder = this.Fixture<int>()
             };
 
@@ -105,9 +105,9 @@ namespace Strall
             clone.Description.Should().Be(original.Description);
             clone.Content.Should().Be(original.Content);
             clone.ContentType.Should().Be(original.ContentType);
+            clone.ContentFromId.Should().Be(original.ContentFromId);
             clone.ParentId.Should().Be(original.ParentId);
             clone.ParentRelation.Should().Be(original.ParentRelation);
-            clone.CloneFromId.Should().Be(original.CloneFromId);
             clone.SiblingOrder.Should().Be(original.SiblingOrder);
         }
     }

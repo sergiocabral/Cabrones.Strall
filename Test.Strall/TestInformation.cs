@@ -63,9 +63,9 @@ namespace Strall
                 Description = this.Fixture<string>(),
                 Content = this.Fixture<string>(),
                 ContentType = InformationType.Numeric,
+                ContentFromId = Guid.NewGuid(),
                 ParentId = Guid.NewGuid(),
                 ParentRelation = this.Fixture<string>(),
-                CloneFromId = Guid.NewGuid(),
                 SiblingOrder = this.Fixture<int>()
             };
 
@@ -82,9 +82,9 @@ namespace Strall
             clone.Description.Should().Be(original.Description);
             clone.Content.Should().Be(original.Content);
             clone.ContentType.Should().Be(original.ContentType);
+            clone.ContentFromId.Should().Be(original.ContentFromId);
             clone.ParentId.Should().Be(original.ParentId);
             clone.ParentRelation.Should().Be(original.ParentRelation);
-            clone.CloneFromId.Should().Be(original.CloneFromId);
             clone.SiblingOrder.Should().Be(original.SiblingOrder);
         }
 
@@ -107,14 +107,14 @@ namespace Strall
             information.Description.Should().Be(informationRaw.Description);
             information.Content.Should().Be(informationRaw.Content);
             ((IInformationRaw)information).ContentType.Should().Be(informationRaw.ContentType);
+            information.ContentFromId.Should().Be(informationRaw.ContentFromId);
             information.ParentId.Should().Be(informationRaw.ParentId);
             information.ParentRelation.Should().Be(informationRaw.ParentRelation);
-            information.CloneFromId.Should().Be(informationRaw.CloneFromId);
             information.SiblingOrder.Should().Be(informationRaw.SiblingOrder);
             
             information.ContentType.ToString().Should().Be(informationRaw.ContentType);
+            information.ContentFrom.Should().BeNull();
             information.Parent.Should().BeNull();
-            information.CloneFrom.Should().BeNull();
         }
 
         [Theory]
@@ -171,19 +171,19 @@ namespace Strall
 
             var information = new Information
             {
-                ParentId = Guid.NewGuid(), 
-                CloneFromId = Guid.NewGuid()
+                ContentFromId = Guid.NewGuid(),
+                ParentId = Guid.NewGuid() 
             } as IInformation;
 
             // Act, When
 
+            var informationContentFrom = information.ContentFrom;
             var informationParent = information.Parent;
-            var informationCloneFrom = information.CloneFrom;
 
             // Assert, Then
 
+            informationContentFrom.Should().BeNull();
             informationParent.Should().BeNull();
-            informationCloneFrom.Should().BeNull();
         }
 
         [Fact]
@@ -202,21 +202,21 @@ namespace Strall
 
             var information = new Information
             {
-                ParentId = informationRaw.Id, 
-                CloneFromId = informationRaw.Id
+                ContentFromId = informationRaw.Id,
+                ParentId = informationRaw.Id 
             } as IInformation;
 
             // Act, When
 
+            var informationContentFrom = information.ContentFrom;
             var informationParent = information.Parent;
-            var informationCloneFrom = information.CloneFrom;
 
             // Assert, Then
 
+            informationContentFrom.Should().NotBeNull();
+            informationContentFrom.Description.Should().Be(informationRaw.Description);
             informationParent.Should().NotBeNull();
             informationParent.Description.Should().Be(informationRaw.Description);
-            informationCloneFrom.Should().NotBeNull();
-            informationCloneFrom.Description.Should().Be(informationRaw.Description);
         }
 
         [Fact]
@@ -235,32 +235,32 @@ namespace Strall
 
             var information = new Information
             {
-                ParentId = informationRaw.Id, 
-                CloneFromId = informationRaw.Id
+                ContentFromId = informationRaw.Id,
+                ParentId = informationRaw.Id
             } as IInformation;
 
             // Act, When
 
+            var informationContentFrom1 = information.ContentFrom;
             var informationParent1 = information.Parent;
-            var informationCloneFrom1 = information.CloneFrom;
             
             informationRaw.Content = this.Fixture<string>();
             _persistence.Update(informationRaw);
 
+            var informationContentFrom2 = information.ContentFrom;
             var informationParent2 = information.Parent;
-            var informationCloneFrom2 = information.CloneFrom;
 
             // Assert, Then
+
+            informationContentFrom1.Should().NotBeNull();
+            informationContentFrom1.Should().BeSameAs(informationContentFrom2);
+            informationContentFrom1.Description.Should().Be(informationRaw.Description);
+            informationContentFrom1.Content.Should().NotBe(informationRaw.Content);
 
             informationParent1.Should().NotBeNull();
             informationParent1.Should().BeSameAs(informationParent2);
             informationParent1.Description.Should().Be(informationRaw.Description);
             informationParent1.Content.Should().NotBe(informationRaw.Content);
-
-            informationCloneFrom1.Should().NotBeNull();
-            informationCloneFrom1.Should().BeSameAs(informationCloneFrom2);
-            informationCloneFrom1.Description.Should().Be(informationRaw.Description);
-            informationCloneFrom1.Content.Should().NotBe(informationRaw.Content);
         }
 
         [Fact]
@@ -277,27 +277,27 @@ namespace Strall
 
             var information = new Information
             {
-                ParentId = informationRaw.Id, 
-                CloneFromId = informationRaw.Id
+                ContentFromId = informationRaw.Id,
+                ParentId = informationRaw.Id
             } as IInformation;
 
             // Act, When
 
+            var informationContentFrom1 = information.ContentFrom;
             var informationParent1 = information.Parent;
-            var informationCloneFrom1 = information.CloneFrom;
             
             _persistence.Create(informationRaw);
 
+            var informationContentFrom2 = information.ContentFrom;
             var informationParent2 = information.Parent;
-            var informationCloneFrom2 = information.CloneFrom;
 
             // Assert, Then
 
+            informationContentFrom1.Should().BeNull();
+            informationContentFrom2.Should().BeNull();
+
             informationParent1.Should().BeNull();
             informationParent2.Should().BeNull();
-
-            informationCloneFrom1.Should().BeNull();
-            informationCloneFrom2.Should().BeNull();
         }
 
         [Fact]
@@ -314,17 +314,17 @@ namespace Strall
 
             // Act, When
 
+            information.ContentFrom = informationParaAtribuir;
             information.Parent = informationParaAtribuir;
-            information.CloneFrom = informationParaAtribuir;
 
             // Assert, Then
 
+            information.ContentFromId.Should().Be(informationParaAtribuir.Id);
             information.ParentId.Should().Be(informationParaAtribuir.Id);
-            information.CloneFromId.Should().Be(informationParaAtribuir.Id);
         }
 
         [Fact]
-        public void consultar_propriedade_CloneFrom_deve_obter_a_origem_do_clone()
+        public void consultar_propriedade_ContentFrom_deve_obter_a_origem_do_clone()
         {
             // Arrange, Given
 
@@ -336,7 +336,7 @@ namespace Strall
                 var informação = new InformationRaw
                 {
                     Id = Guid.NewGuid(),
-                    CloneFromId = informações.LastOrDefault()?.Id ?? Guid.Empty
+                    ContentFromId = informações.LastOrDefault()?.Id ?? Guid.Empty
                 }.Copy(new Information());
                 informações.Add(informação);
                 _persistence.Create(informação);
@@ -345,7 +345,7 @@ namespace Strall
             // Act, When
 
             var informationInicial = informações.First();
-            var informaçãoFinal = informações.Last().CloneFrom;
+            var informaçãoFinal = informações.Last().ContentFrom;
 
             // Assert, Then
 

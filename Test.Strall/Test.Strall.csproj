@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.0</TargetFramework>
         <IsPackable>false</IsPackable>
-        <Version>0.0.0.305</Version>
+        <Version>0.0.0.308</Version>
         <RootNamespace>Strall</RootNamespace>
     </PropertyGroup>
 

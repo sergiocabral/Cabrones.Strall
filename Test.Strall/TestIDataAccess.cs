@@ -24,11 +24,11 @@ namespace Strall
             sut.AssertPublicMethodPresence("Guid Create(IInformationRaw)");
             sut.AssertPublicMethodPresence("Boolean Update(IInformationRaw)");
             sut.AssertPublicMethodPresence("Boolean Delete(Guid)");
+            sut.AssertPublicMethodPresence("Boolean HasContentTo(Guid)");
+            sut.AssertPublicMethodPresence("IEnumerable<Guid> ContentTo(Guid)");
+            sut.AssertPublicMethodPresence("Guid ContentFrom(Guid)");
             sut.AssertPublicMethodPresence("Boolean HasChildren(Guid)");
             sut.AssertPublicMethodPresence("IEnumerable<Guid> Children(Guid)");
-            sut.AssertPublicMethodPresence("Boolean HasClonesTo(Guid)");
-            sut.AssertPublicMethodPresence("IEnumerable<Guid> ClonesTo(Guid)");
-            sut.AssertPublicMethodPresence("Guid CloneFrom(Guid)");
         }
     }
 }

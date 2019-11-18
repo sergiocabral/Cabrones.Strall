@@ -36,6 +36,12 @@
         
         /// <summary>
         /// Tabela: Information
+        /// Coluna: CloneId 
+        /// </summary>
+        string TableInformationColumnContentFromId { get; }
+        
+        /// <summary>
+        /// Tabela: Information
         /// Coluna: ParentId 
         /// </summary>
         string TableInformationColumnParentId { get; }
@@ -45,12 +51,6 @@
         /// Coluna: ParentRelation 
         /// </summary>
         string TableInformationColumnParentRelation { get; }
-        
-        /// <summary>
-        /// Tabela: Information
-        /// Coluna: CloneId 
-        /// </summary>
-        string TableInformationColumnCloneFromId { get; }
         
         /// <summary>
         /// Tabela: Information

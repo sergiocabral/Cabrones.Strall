@@ -36,6 +36,12 @@
         
         /// <summary>
         /// Tabela: Information
+        /// Coluna: CloneId 
+        /// </summary>
+        public string TableInformationColumnContentFromId => "ContentFromId";
+        
+        /// <summary>
+        /// Tabela: Information
         /// Coluna: ParentId 
         /// </summary>
         public string TableInformationColumnParentId => "ParentId";
@@ -45,12 +51,6 @@
         /// Coluna: ParentRelation 
         /// </summary>
         public string TableInformationColumnParentRelation => "ParentRelation";
-        
-        /// <summary>
-        /// Tabela: Information
-        /// Coluna: CloneId 
-        /// </summary>
-        public string TableInformationColumnCloneFromId => "CloneFromId";
         
         /// <summary>
         /// Tabela: Information

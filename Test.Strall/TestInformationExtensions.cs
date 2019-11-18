@@ -126,9 +126,9 @@ namespace Strall
                 Description = this.Fixture<string>(),
                 Content = this.Fixture<string>(),
                 ContentType = this.Fixture<string>(),
+                ContentFromId = Guid.NewGuid(),
                 ParentId = Guid.NewGuid(),
                 ParentRelation = this.Fixture<string>(),
-                CloneFromId = Guid.NewGuid(),
                 SiblingOrder = this.Fixture<int>()
             };
 
@@ -144,9 +144,9 @@ namespace Strall
             novaCópia.Description.Should().Be(informationRaw.Description);
             novaCópia.Content.Should().Be(informationRaw.Content);
             novaCópia.ContentType.Should().Be(informationRaw.ContentType);
+            novaCópia.ContentFromId.Should().Be(informationRaw.ContentFromId);
             novaCópia.ParentId.Should().Be(informationRaw.ParentId);
             novaCópia.ParentRelation.Should().Be(informationRaw.ParentRelation);
-            novaCópia.CloneFromId.Should().Be(informationRaw.CloneFromId);
             novaCópia.SiblingOrder.Should().Be(informationRaw.SiblingOrder);
         }
 
@@ -181,9 +181,9 @@ namespace Strall
                     Description = this.Fixture<string>(),
                     Content = this.Fixture<string>(),
                     ContentType = this.Fixture<string>(),
+                    ContentFromId = Guid.NewGuid(),
                     ParentId = Guid.NewGuid(),
                     ParentRelation = this.Fixture<string>(),
-                    CloneFromId = Guid.NewGuid(),
                     SiblingOrder = this.Fixture<int>()
                 };
             
@@ -202,9 +202,9 @@ namespace Strall
             cópia.Description.Should().Be(origem.Description);
             cópia.Content.Should().Be(origem.Content);
             cópia.ContentType.Should().Be(origem.ContentType);
+            cópia.ContentFromId.Should().Be(origem.ContentFromId);
             cópia.ParentId.Should().Be(origem.ParentId);
             cópia.ParentRelation.Should().Be(origem.ParentRelation);
-            cópia.CloneFromId.Should().Be(origem.CloneFromId);
             cópia.SiblingOrder.Should().Be(origem.SiblingOrder);
         }
     }

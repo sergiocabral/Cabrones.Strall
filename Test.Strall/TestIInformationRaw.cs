@@ -23,9 +23,9 @@ namespace Strall
             sut.AssertPublicPropertyPresence("String Description { get; set; }");
             sut.AssertPublicPropertyPresence("String Content { get; set; }");
             sut.AssertPublicPropertyPresence("String ContentType { get; set; }");
+            sut.AssertPublicPropertyPresence("Guid ContentFromId { get; set; }");
             sut.AssertPublicPropertyPresence("Guid ParentId { get; set; }");
             sut.AssertPublicPropertyPresence("String ParentRelation { get; set; }");
-            sut.AssertPublicPropertyPresence("Guid CloneFromId { get; set; }");
             sut.AssertPublicPropertyPresence("Int32 SiblingOrder { get; set; }");
             sut.AssertMyOwnPublicMethodsCount(0);
         }
