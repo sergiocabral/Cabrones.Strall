@@ -49,11 +49,21 @@ namespace Strall
             sut.AssertMyImplementations();
             sut.AssertMyOwnImplementations();
             sut.AssertMyOwnPublicPropertiesCount(0);
-            sut.AssertMyOwnPublicMethodsCount(4);
+            sut.AssertMyOwnPublicMethodsCount(14);
             sut.AssertPublicMethodPresence("TInformacao Copy<TInformacao>(IInformationRaw, TInformacao)");
             sut.AssertPublicMethodPresence("IInformationRaw Copy(IInformationRaw)");
             sut.AssertPublicMethodPresence("IInformationRaw SetDataAccess(IInformationRaw, IDataAccess)");
             sut.AssertPublicMethodPresence("IDataAccess GetDataAccess(IInformationRaw)");
+            sut.AssertPublicMethodPresence("Boolean Exists(IInformationRaw)");
+            sut.AssertPublicMethodPresence("IInformationRaw Get(IInformationRaw)");
+            sut.AssertPublicMethodPresence("IInformationRaw Create(IInformationRaw)");
+            sut.AssertPublicMethodPresence("Boolean Update(IInformationRaw)");
+            sut.AssertPublicMethodPresence("Boolean Delete(IInformationRaw)");
+            sut.AssertPublicMethodPresence("Boolean HasContentTo(IInformationRaw)");
+            sut.AssertPublicMethodPresence("IEnumerable<Guid> ContentTo(IInformationRaw)");
+            sut.AssertPublicMethodPresence("Guid ContentFrom(IInformationRaw)");
+            sut.AssertPublicMethodPresence("Boolean HasChildren(IInformationRaw)");
+            sut.AssertPublicMethodPresence("IEnumerable<Guid> Children(IInformationRaw)");
         }
         
         [Fact]
@@ -101,7 +111,7 @@ namespace Strall
             
             // Como a manipulação é em uma propriedade estática um tempo de espera
             // será aplicado para evitar conflitos com outros testes.
-            Thread.Sleep(1000);
+            Thread.Sleep(3000);
             
             var informationRaw = new InformationRaw();
             informationRaw.SetDataAccess(null);
@@ -112,7 +122,7 @@ namespace Strall
             
             // Assert, Then
 
-            lerDataAccessDefault.Should().ThrowExactly<StrallDataAccessException>();
+            lerDataAccessDefault.Should().ThrowExactly<StrallDataAccessIsNullException>();
         }
 
         [Fact]

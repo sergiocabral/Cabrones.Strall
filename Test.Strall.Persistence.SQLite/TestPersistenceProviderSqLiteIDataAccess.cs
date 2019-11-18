@@ -36,7 +36,7 @@ namespace Strall.Persistence.SQLite
         public void Dispose() => _sut?.Close();
 
         [Fact]
-        public void métodos_de_manipulação_de_dados_só_devem_funcionar_com_a_conexão_com_o_banco_de_dados_aberta()
+        public void para_manipular_dados_a_conexão_com_o_banco_de_dados_deve_estar_aberta()
         {
             // Arrange, Given
 
@@ -44,12 +44,42 @@ namespace Strall.Persistence.SQLite
             
             // Act, When
 
-            var métodos = new List<Action>
+            var métodosParaException = new List<Action>
+            {
+                () => persistence.Exists(Guid.NewGuid()),
+                () => persistence.Get(Guid.NewGuid()),
+                () => persistence.Create(new InformationRaw()),
+                () => persistence.Update(new InformationRaw()),
+                () => persistence.Delete(Guid.NewGuid()),
+                () => persistence.HasContentTo(Guid.NewGuid()),
+                // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+                () => persistence.ContentTo(Guid.NewGuid()).ToList(),
+                () => persistence.HasChildren(Guid.NewGuid()),
+                // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+                () => persistence.Children(Guid.NewGuid()).ToList()
+            };
+
+            // Assert, Then
+
+            foreach (var método in métodosParaException)
+            {
+                método.Should().ThrowExactly<StrallConnectionIsCloseException>();
+            }
+        }
+        
+        [Fact]
+        public void para_manipulações_conhecidas_por_não_chegar_no_banco_de_dados_não_deve_gerar_exception()
+        {
+            // Arrange, Given
+
+            var persistence = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
+            
+            // Act, When
+            
+            var métodosParaNãoException = new List<Action>
             {
                 () => persistence.Exists(Guid.Empty),
                 () => persistence.Get(Guid.Empty),
-                () => persistence.Create(new InformationRaw()),
-                () => persistence.Update(new InformationRaw()),
                 () => persistence.Delete(Guid.Empty),
                 () => persistence.HasContentTo(Guid.Empty),
                 // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
@@ -61,9 +91,9 @@ namespace Strall.Persistence.SQLite
 
             // Assert, Then
 
-            foreach (var método in métodos)
+            foreach (var método in métodosParaNãoException)
             {
-                método.Should().ThrowExactly<StrallConnectionIsCloseException>();
+                método.Should().NotThrow();
             }
         }
         

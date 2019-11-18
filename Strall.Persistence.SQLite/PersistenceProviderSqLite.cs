@@ -14,9 +14,21 @@ namespace Strall.Persistence.SQLite
     public class PersistenceProviderSqLite: IPersistenceProviderSqLite
     {
         /// <summary>
+        /// Valor para propriedade Connection.
+        /// </summary>
+        private SqliteConnection? _connection;
+
+        /// <summary>
         /// Conexão com o SQLite.
         /// </summary>
-        public SqliteConnection? Connection { get; private set; }
+        SqliteConnection? IPersistenceProviderSqLite.Connection 
+            => _connection;
+        
+        /// <summary>
+        /// Conexão com o SQLite.
+        /// </summary>
+        private SqliteConnection Connection => 
+            _connection ??  throw new StrallConnectionIsCloseException();
 
         /// <summary>
         /// Nomes no contexto do SQL.
@@ -28,8 +40,6 @@ namespace Strall.Persistence.SQLite
         /// </summary>
         public IPersistenceProvider<IConnectionInfo> CreateStructure()
         {
-            if (Connection == null) throw new StrallConnectionIsCloseException();
-            
             var commandText = $@"
 CREATE TABLE IF NOT EXISTS {SqlNames.TableInformation} (
     {SqlNames.TableInformationColumnId} TEXT,
@@ -71,12 +81,12 @@ CREATE INDEX IF NOT EXISTS IDX_{SqlNames.TableInformation}_{SqlNames.TableInform
         /// <param name="connectionInfo">Informações para conexão.</param>
         public IPersistenceProvider<IConnectionInfo> Open(IConnectionInfo connectionInfo)
         {
-            if (Connection != null) throw new StrallConnectionIsOpenException();
+            if (_connection != null) throw new StrallConnectionIsOpenException();
             
             var createdDatabase = connectionInfo.CreateDatabase();
             
-            Connection = new SqliteConnection(connectionInfo.ConnectionString);
-            Connection.Open();
+            _connection = new SqliteConnection(connectionInfo.ConnectionString);
+            _connection.Open();
             
             if (createdDatabase) CreateStructure();
             
@@ -90,8 +100,7 @@ CREATE INDEX IF NOT EXISTS IDX_{SqlNames.TableInformation}_{SqlNames.TableInform
         /// </summary>
         public IPersistenceProvider<IConnectionInfo> Close()
         {
-            if (Connection == null) throw new StrallConnectionIsCloseException();
-            Dispose();
+            if (Connection != null) Dispose();
             return this;
         }
 
@@ -105,10 +114,10 @@ CREATE INDEX IF NOT EXISTS IDX_{SqlNames.TableInformation}_{SqlNames.TableInform
         /// </summary>
         public void Dispose()
         {
-            if (Connection == null) return;
-            Connection.Close();
-            Connection.Dispose();
-            Connection = null;
+            if (_connection == null) return;
+            _connection.Close();
+            _connection.Dispose();
+            _connection = null;
             Mode = PersistenceProviderMode.Closed;
         }
 
@@ -194,7 +203,6 @@ CREATE INDEX IF NOT EXISTS IDX_{SqlNames.TableInformation}_{SqlNames.TableInform
         /// <returns>Resposta de existência.</returns>
         public bool Exists(Guid informationId)
         {
-            if (Connection == null) throw new StrallConnectionIsCloseException();
             if (informationId == Guid.Empty) return false;
 
             var commandText = $@"
@@ -217,7 +225,6 @@ SELECT {SqlNames.TableInformationColumnId}
         /// <returns>Informação.</returns>
         public IInformationRaw? Get(Guid informationId)
         {
-            if (Connection == null) throw new StrallConnectionIsCloseException();
             if (informationId == Guid.Empty) return null;
 
             var commandText = $@"
@@ -262,7 +269,6 @@ SELECT {SqlNames.TableInformationColumnId},
         /// <returns>Id.</returns>
         public Guid Create(IInformationRaw informationRaw)
         {
-            if (Connection == null) throw new StrallConnectionIsCloseException();
             if (informationRaw == null) return Guid.Empty;
             
             var id = informationRaw.Id != Guid.Empty ? informationRaw.Id : Guid.NewGuid();
@@ -305,7 +311,6 @@ INSERT INTO {SqlNames.TableInformation} (
         /// <returns>Resposta de sucesso.</returns>
         public bool Update(IInformationRaw informationRaw)
         {
-            if (Connection == null) throw new StrallConnectionIsCloseException();
             if (informationRaw == null) return false;
 
             var commandText = $@"
@@ -336,7 +341,6 @@ WHERE
         /// <returns>Resposta de sucesso.</returns>
         public bool Delete(Guid informationId)
         {
-            if (Connection == null) throw new StrallConnectionIsCloseException();
             if (informationId == Guid.Empty) return false;
 
             var commandText = $@"
@@ -380,7 +384,6 @@ WHERE
         /// </returns>
         public Guid ContentFrom(Guid informationId)
         {
-            if (Connection == null) throw new StrallConnectionIsCloseException();
             if (informationId == Guid.Empty) return Guid.Empty;
 
             var commandText = $@"
@@ -442,7 +445,6 @@ SELECT {SqlNames.TableInformationColumnContentFromId}
         /// <returns>Resposta de existência.</returns>
         private bool HasRecords(string column, Guid informationId)
         {
-            if (Connection == null) throw new StrallConnectionIsCloseException();
             if (informationId == Guid.Empty) return false;
             
             var commandText = $@"
@@ -467,7 +469,6 @@ SELECT {SqlNames.TableInformationColumnId}
         /// <returns>Lista</returns>
         private IEnumerable<Guid> Records(string column, Guid informationId)
         {
-            if (Connection == null) throw new StrallConnectionIsCloseException();
             if (informationId == Guid.Empty) yield break;
 
             var commandText = $@"
