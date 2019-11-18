@@ -348,10 +348,10 @@ namespace Strall.Persistence.SQLite
 
             RemoverConstraintsDoBancoDeDados(persistenceProviderSqLite);
 
-            var informações = new List<IInformationRaw>();
+            var informações = new List<IInformation>();
             for (var i = 0; i < 3; i++)
             {
-                var informação = new InformationRaw
+                var informação = new Information
                 {
                     Id = Guid.NewGuid(),
                     ContentFromId = informações.LastOrDefault()?.Id ?? Guid.NewGuid()

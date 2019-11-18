@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Strall.Exceptions;
 
 namespace Strall
 {
     /// <summary>
-    /// Classes de Extensions para funcionalidades relacionadas a IInformationRaw
+    /// Classes de Extensions para funcionalidades relacionadas a IInformation
     /// </summary>
     public static class InformationExtensions
     {
@@ -27,7 +28,7 @@ namespace Strall
         /// É necessário definir este valor para trabalhar com instâncias dessa classe.
         /// </summary>
         /// <returns>O retorno é o mesmo que toReturn.</returns>
-        public static IInformationRaw? SetDataAccess(this IInformationRaw? toReturn, IDataAccess? dataAccess)
+        public static IInformation? SetDataAccess(this IInformation? toReturn, IDataAccess? dataAccess)
         {
             _dataAccess = dataAccess;
             return toReturn;
@@ -38,7 +39,7 @@ namespace Strall
         /// É necessário definir este valor para trabalhar com instâncias dessa classe.
         /// </summary>
         // ReSharper disable once UnusedParameter.Global
-        public static IDataAccess GetDataAccess(this IInformationRaw? _) => 
+        public static IDataAccess GetDataAccess(this IInformation? _) => 
             DataAccess;
         
         /// <summary>
@@ -47,8 +48,8 @@ namespace Strall
         /// <param name="source">Origem.</param>
         /// <param name="destination">Destino.</param>
         /// <returns>Retorna a mesma referência de destination.</returns>
-        public static TInformacao Copy<TInformacao>(this IInformationRaw source, TInformacao destination) 
-            where TInformacao : IInformationRaw
+        public static TInformacao Copy<TInformacao>(this IInformation source, TInformacao destination) 
+            where TInformacao : IInformation
         {
             destination.Id = source.Id;
             destination.Description = source.Description;
@@ -66,10 +67,10 @@ namespace Strall
         /// </summary>
         /// <param name="source">Origem.</param>
         /// <returns>Retorna a referência para a nova instância.</returns>
-        public static IInformationRaw Copy(this IInformationRaw source)
+        public static IInformation Copy(this IInformation source)
         {
             var type = source.GetType();
-            var instance = (IInformationRaw?)type.GetConstructor(new Type[0])?.Invoke(new object[0]);
+            var instance = (IInformation?)type.GetConstructor(new Type[0])?.Invoke(new object[0]);
             if (instance == null) throw new NotImplementedException();
             return source.Copy(instance);
         }
@@ -80,8 +81,16 @@ namespace Strall
         /// </summary>
         /// <param name="information">Informação.</param>
         /// <returns>Resposta de existência.</returns>
-        public static bool Exists(this IInformationRaw information) =>
+        public static bool Exists(this IInformation information) =>
             DataAccess.Exists(information.Id);
+
+        /// <summary>
+        /// Obtem uma informação.
+        /// </summary>
+        /// <param name="informationId">Informação.</param>
+        /// <returns>Informação.</returns>
+        public static IInformation? GetInformation(this Guid informationId) =>
+            DataAccess.Get(informationId);
 
         /// <summary>
         /// Obtem uma informação.
@@ -89,9 +98,11 @@ namespace Strall
         /// </summary>
         /// <param name="information">Informação.</param>
         /// <returns>Informação.</returns>
-        public static IInformationRaw Get(this IInformationRaw information)
+        public static IInformation Get(this IInformation information)
         {
-            var returned = DataAccess.Get(information.Id);
+            var d = information.Children().Select(a => a.GetInformation()).ToList();
+            d.Clear();
+            var returned = information.Id.GetInformation();
             if (returned == null) information.Id = Guid.Empty;
             else returned.Copy(information);
             return information;
@@ -103,7 +114,7 @@ namespace Strall
         /// </summary>
         /// <param name="information">Informação.</param>
         /// <returns>Id.</returns>
-        public static IInformationRaw Create(this IInformationRaw information)
+        public static IInformation Create(this IInformation information)
         {
             information.Id = DataAccess.Create(information);
             return information;
@@ -115,18 +126,32 @@ namespace Strall
         /// </summary>
         /// <param name="information">Informação.</param>
         /// <returns>Resposta de sucesso.</returns>
-        public static bool Update(this IInformationRaw information) =>
+        public static bool Update(this IInformation information) =>
             DataAccess.Update(information);
+
+        /// <summary>
+        /// Atualiza, ou cria se não existir, esta informação.
+        /// </summary>
+        /// <returns>Total de registro afetados.</returns>
+        public static IInformation UpdateOrCreate(this IInformation information)
+        {
+            if (!information.Exists()) return information.Create();
+            information.Update();
+            return information;
+        }
 
         /// <summary>
         /// Apaga uma informação.
         /// Equivalente a DELETE.
-        /// Não é recursivo para seus filhos.
         /// </summary>
         /// <param name="information">Informação.</param>
+        /// <param name="recursively">Apagar recursivamente todos os filhos.</param>
         /// <returns>Resposta de sucesso.</returns>
-        public static bool Delete(this IInformationRaw information) =>
-            DataAccess.Delete(information.Id);
+        public static bool Delete(this IInformation information, bool recursively = false)
+        {
+            //TODO: recursively, clone passa  para outro.
+            return DataAccess.Delete(information.Id);
+        }
 
         /// <summary>
         /// Verifica se tem clones.
@@ -134,7 +159,7 @@ namespace Strall
         /// </summary>
         /// <param name="information">Informação.</param>
         /// <returns></returns>
-        public static bool HasContentTo(this IInformationRaw information) =>
+        public static bool HasContentTo(this IInformation information) =>
             DataAccess.HasContentTo(information.Id);
         
         /// <summary>
@@ -142,7 +167,7 @@ namespace Strall
         /// </summary>
         /// <param name="information">Informação.</param>
         /// <returns>Lista</returns>
-        public static IEnumerable<Guid> ContentTo(this IInformationRaw information) =>
+        public static IEnumerable<Guid> ContentTo(this IInformation information) =>
             DataAccess.ContentTo(information.Id);
 
         /// <summary>
@@ -153,7 +178,7 @@ namespace Strall
         /// Id da origem. Em caso de loop retorna Guid.Empty.
         /// Caso não seja clone retorna o mesmo id.
         /// </returns>
-        public static Guid ContentFrom(this IInformationRaw information) =>
+        public static Guid ContentFrom(this IInformation information) =>
             DataAccess.ContentFrom(information.Id);
 
         /// <summary>
@@ -162,7 +187,7 @@ namespace Strall
         /// </summary>
         /// <param name="information">Informação.</param>
         /// <returns></returns>
-        public static bool HasChildren(this IInformationRaw information) =>
+        public static bool HasChildren(this IInformation information) =>
             DataAccess.HasChildren(information.Id);
         
         /// <summary>
@@ -171,7 +196,7 @@ namespace Strall
         /// </summary>
         /// <param name="information">Informação.</param>
         /// <returns>Lista</returns>
-        public static IEnumerable<Guid> Children(this IInformationRaw information) =>
+        public static IEnumerable<Guid> Children(this IInformation information) =>
             DataAccess.Children(information.Id);
     }
 }

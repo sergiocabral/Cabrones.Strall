@@ -20,9 +20,9 @@ namespace Strall
             sut.AssertMyOwnPublicPropertiesCount(0);
             sut.AssertMyOwnPublicMethodsCount(10);
             sut.AssertPublicMethodPresence("Boolean Exists(Guid)");
-            sut.AssertPublicMethodPresence("IInformationRaw Get(Guid)");
-            sut.AssertPublicMethodPresence("Guid Create(IInformationRaw)");
-            sut.AssertPublicMethodPresence("Boolean Update(IInformationRaw)");
+            sut.AssertPublicMethodPresence("IInformation Get(Guid)");
+            sut.AssertPublicMethodPresence("Guid Create(IInformation)");
+            sut.AssertPublicMethodPresence("Boolean Update(IInformation)");
             sut.AssertPublicMethodPresence("Boolean Delete(Guid)");
             sut.AssertPublicMethodPresence("Boolean HasContentTo(Guid)");
             sut.AssertPublicMethodPresence("IEnumerable<Guid> ContentTo(Guid)");

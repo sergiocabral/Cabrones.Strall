@@ -124,58 +124,58 @@ CREATE INDEX IF NOT EXISTS IDX_{SqlNames.TableInformation}_{SqlNames.TableInform
         /// <summary>
         /// Monta uma lista de parâmetros.
         /// </summary>
-        /// <param name="informationRaw">Informação.</param>
+        /// <param name="information">Informação.</param>
         /// <returns>Lista de parâmetros.</returns>
-        private IEnumerable<SqliteParameter> FactoryParameters(IInformationRaw informationRaw) =>
+        private IEnumerable<SqliteParameter> FactoryParameters(IInformation information) =>
             new List<SqliteParameter>
             {
                 new SqliteParameter
                 {
                     ParameterName = SqlNames.TableInformationColumnId,
                     SqliteType = SqliteType.Text,
-                    Value = informationRaw.Id.ToDatabaseText()
+                    Value = information.Id.ToDatabaseText()
                 },
                 new SqliteParameter
                 {
                     ParameterName = SqlNames.TableInformationColumnDescription,
                     SqliteType = SqliteType.Text,
-                    Value = informationRaw.Description
+                    Value = information.Description
                 },
                 new SqliteParameter
                 {
                     ParameterName = SqlNames.TableInformationColumnContent,
                     SqliteType = SqliteType.Text,
-                    Value = informationRaw.Content
+                    Value = information.Content
                 },
                 new SqliteParameter
                 {
                     ParameterName = SqlNames.TableInformationColumnContentType,
                     SqliteType = SqliteType.Text,
-                    Value = informationRaw.ContentType
+                    Value = information.ContentType.ToString()
                 },
                 new SqliteParameter
                 {
                     ParameterName = SqlNames.TableInformationColumnContentFromId,
                     SqliteType = SqliteType.Text,
-                    Value = informationRaw.ContentFromId.ToDatabaseText()
+                    Value = information.ContentFromId.ToDatabaseText()
                 },
                 new SqliteParameter
                 {
                     ParameterName = SqlNames.TableInformationColumnParentId,
                     SqliteType = SqliteType.Text,
-                    Value = informationRaw.ParentId.ToDatabaseText()
+                    Value = information.ParentId.ToDatabaseText()
                 },
                 new SqliteParameter
                 {
                     ParameterName = SqlNames.TableInformationColumnParentRelation,
                     SqliteType = SqliteType.Text,
-                    Value = informationRaw.ParentRelation
+                    Value = information.ParentRelation
                 },
                 new SqliteParameter
                 {
                     ParameterName = SqlNames.TableInformationColumnSiblingOrder,
                     SqliteType = SqliteType.Integer,
-                    Value = informationRaw.SiblingOrder
+                    Value = information.SiblingOrder
                 }
             };
 
@@ -223,7 +223,7 @@ SELECT {SqlNames.TableInformationColumnId}
         /// </summary>
         /// <param name="informationId"></param>
         /// <returns>Informação.</returns>
-        public IInformationRaw? Get(Guid informationId)
+        public IInformation? Get(Guid informationId)
         {
             if (informationId == Guid.Empty) return null;
 
@@ -248,12 +248,15 @@ SELECT {SqlNames.TableInformationColumnId},
             if (!reader.Read()) return null;
 
             var i = -1;
-            return new InformationRaw
+            return new Information
             {
                 Id = reader.GetValue(++i).ToGuid(),
                 Description = $"{reader.GetValue(++i)}",
                 Content = $"{reader.GetValue(++i)}",
-                ContentType = $"{reader.GetValue(++i)}",
+                ContentType =
+                    Enum.TryParse<InformationType>($"{reader.GetValue(++i)}", true, out var contentType)
+                        ? contentType
+                        : InformationType.Text,
                 ContentFromId = reader.GetValue(++i).ToGuid(),
                 ParentId = reader.GetValue(++i).ToGuid(),
                 ParentRelation = $"{reader.GetValue(++i)}",
@@ -265,13 +268,13 @@ SELECT {SqlNames.TableInformationColumnId},
         /// Cria uma informação.
         /// Equivalente a INSERT.
         /// </summary>
-        /// <param name="informationRaw">Informação.</param>
+        /// <param name="information">Informação.</param>
         /// <returns>Id.</returns>
-        public Guid Create(IInformationRaw informationRaw)
+        public Guid Create(IInformation information)
         {
-            if (informationRaw == null) return Guid.Empty;
+            if (information == null) return Guid.Empty;
             
-            var id = informationRaw.Id != Guid.Empty ? informationRaw.Id : Guid.NewGuid();
+            var id = information.Id != Guid.Empty ? information.Id : Guid.NewGuid();
             var commandText = $@"
 INSERT INTO {SqlNames.TableInformation} (
     {SqlNames.TableInformationColumnId},
@@ -296,7 +299,7 @@ INSERT INTO {SqlNames.TableInformation} (
             
             using var command = Connection.CreateCommand();
             command.CommandText = commandText;
-            command.Parameters.AddRange(FactoryParameters(informationRaw));
+            command.Parameters.AddRange(FactoryParameters(information));
             command.Parameters[SqlNames.TableInformationColumnId].Value = id.ToDatabaseText();
             command.ExecuteNonQuery();
 
@@ -307,11 +310,11 @@ INSERT INTO {SqlNames.TableInformation} (
         /// Atualiza uma informação.
         /// Equivalente a UPDATE.
         /// </summary>
-        /// <param name="informationRaw">Informação.</param>
+        /// <param name="information">Informação.</param>
         /// <returns>Resposta de sucesso.</returns>
-        public bool Update(IInformationRaw informationRaw)
+        public bool Update(IInformation information)
         {
-            if (informationRaw == null) return false;
+            if (information == null) return false;
 
             var commandText = $@"
 UPDATE {SqlNames.TableInformation} SET
@@ -328,7 +331,7 @@ WHERE
             
             using var command = Connection.CreateCommand();
             command.CommandText = commandText;
-            command.Parameters.AddRange(FactoryParameters(informationRaw));
+            command.Parameters.AddRange(FactoryParameters(information));
             return command.ExecuteNonQuery() > 0;
         }
 

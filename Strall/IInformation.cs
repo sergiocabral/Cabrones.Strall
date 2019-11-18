@@ -1,23 +1,50 @@
-﻿namespace Strall
+﻿using System;
+
+namespace Strall
 {
     /// <summary>
-    /// Representa uma informação.
+    /// Representa uma informação pura, como é armazenada no banco de dados.
     /// </summary>
-    public interface IInformation: IInformationRaw
+    public interface IInformation: ICloneable
     {
+        /// <summary>
+        /// Identificador.
+        /// </summary>
+        Guid Id { get; set; }
+        
+        /// <summary>
+        /// Descrição.
+        /// </summary>
+        string Description { get; set; }
+        
+        /// <summary>
+        /// Conteúdo.
+        /// </summary>
+        string Content { get; set; }
+        
         /// <summary>
         /// Tipo de conteúdo
         /// </summary>
-        new InformationType ContentType { get; set; }
-
+        InformationType ContentType { get; set; }
+        
         /// <summary>
         /// Informação de onde este conteúdo é um clone.
         /// </summary>
-        IInformation? ContentFrom { get; set; }
+        Guid ContentFromId { get; set; }
         
         /// <summary>
         /// Informação de onde esta é filha.
         /// </summary>
-        IInformation? Parent { get; set; }
+        Guid ParentId { get; set; }
+
+        /// <summary>
+        /// Relação de parentesco.
+        /// </summary>
+        string ParentRelation { get; set; }
+        
+        /// <summary>
+        /// Ordem de exibição entre informações irmãs.
+        /// </summary>
+        int SiblingOrder { get; set; }
     }
 }

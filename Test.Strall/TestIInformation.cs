@@ -16,12 +16,17 @@ namespace Strall
 
             // Assert, Then
 
-            sut.AssertMyImplementations(typeof(IInformationRaw), typeof(ICloneable));
-            sut.AssertMyOwnImplementations(typeof(IInformationRaw));
-            sut.AssertMyOwnPublicPropertiesCount(6);
+            sut.AssertMyImplementations(typeof(ICloneable));
+            sut.AssertMyOwnImplementations();
+            sut.AssertMyOwnPublicPropertiesCount(16);
+            sut.AssertPublicPropertyPresence("Guid Id { get; set; }");
+            sut.AssertPublicPropertyPresence("String Description { get; set; }");
+            sut.AssertPublicPropertyPresence("String Content { get; set; }");
             sut.AssertPublicPropertyPresence("InformationType ContentType { get; set; }");
-            sut.AssertPublicPropertyPresence("IInformation ContentFrom { get; set; }");
-            sut.AssertPublicPropertyPresence("IInformation Parent { get; set; }");
+            sut.AssertPublicPropertyPresence("Guid ContentFromId { get; set; }");
+            sut.AssertPublicPropertyPresence("Guid ParentId { get; set; }");
+            sut.AssertPublicPropertyPresence("String ParentRelation { get; set; }");
+            sut.AssertPublicPropertyPresence("Int32 SiblingOrder { get; set; }");
             sut.AssertMyOwnPublicMethodsCount(0);
         }
     }

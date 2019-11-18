@@ -49,21 +49,23 @@ namespace Strall
             sut.AssertMyImplementations();
             sut.AssertMyOwnImplementations();
             sut.AssertMyOwnPublicPropertiesCount(0);
-            sut.AssertMyOwnPublicMethodsCount(14);
-            sut.AssertPublicMethodPresence("TInformacao Copy<TInformacao>(IInformationRaw, TInformacao)");
-            sut.AssertPublicMethodPresence("IInformationRaw Copy(IInformationRaw)");
-            sut.AssertPublicMethodPresence("IInformationRaw SetDataAccess(IInformationRaw, IDataAccess)");
-            sut.AssertPublicMethodPresence("IDataAccess GetDataAccess(IInformationRaw)");
-            sut.AssertPublicMethodPresence("Boolean Exists(IInformationRaw)");
-            sut.AssertPublicMethodPresence("IInformationRaw Get(IInformationRaw)");
-            sut.AssertPublicMethodPresence("IInformationRaw Create(IInformationRaw)");
-            sut.AssertPublicMethodPresence("Boolean Update(IInformationRaw)");
-            sut.AssertPublicMethodPresence("Boolean Delete(IInformationRaw)");
-            sut.AssertPublicMethodPresence("Boolean HasContentTo(IInformationRaw)");
-            sut.AssertPublicMethodPresence("IEnumerable<Guid> ContentTo(IInformationRaw)");
-            sut.AssertPublicMethodPresence("Guid ContentFrom(IInformationRaw)");
-            sut.AssertPublicMethodPresence("Boolean HasChildren(IInformationRaw)");
-            sut.AssertPublicMethodPresence("IEnumerable<Guid> Children(IInformationRaw)");
+            sut.AssertMyOwnPublicMethodsCount(16);
+            sut.AssertPublicMethodPresence("TInformacao Copy<TInformacao>(IInformation, TInformacao)");
+            sut.AssertPublicMethodPresence("IInformation Copy(IInformation)");
+            sut.AssertPublicMethodPresence("IInformation SetDataAccess(IInformation, IDataAccess)");
+            sut.AssertPublicMethodPresence("IDataAccess GetDataAccess(IInformation)");
+            sut.AssertPublicMethodPresence("Boolean Exists(IInformation)");
+            sut.AssertPublicMethodPresence("IInformation GetInformation(Guid)");
+            sut.AssertPublicMethodPresence("IInformation Get(IInformation)");
+            sut.AssertPublicMethodPresence("IInformation Create(IInformation)");
+            sut.AssertPublicMethodPresence("Boolean Update(IInformation)");
+            sut.AssertPublicMethodPresence("IInformation UpdateOrCreate(IInformation)");
+            sut.AssertPublicMethodPresence("Boolean Delete(IInformation, Boolean = 'False')");
+            sut.AssertPublicMethodPresence("Boolean HasContentTo(IInformation)");
+            sut.AssertPublicMethodPresence("IEnumerable<Guid> ContentTo(IInformation)");
+            sut.AssertPublicMethodPresence("Guid ContentFrom(IInformation)");
+            sut.AssertPublicMethodPresence("Boolean HasChildren(IInformation)");
+            sut.AssertPublicMethodPresence("IEnumerable<Guid> Children(IInformation)");
         }
         
         [Fact]
@@ -71,12 +73,12 @@ namespace Strall
         {
             // Arrange, Given
             
-            var informationRaw = new InformationRaw();
+            var information = new Information();
             
             // Act, When
 
-            informationRaw.SetDataAccess(_persistence);
-            var persistênciaDefinida = informationRaw.GetDataAccess(); 
+            information.SetDataAccess(_persistence);
+            var persistênciaDefinida = information.GetDataAccess(); 
             
             // Assert, Then
             
@@ -88,20 +90,20 @@ namespace Strall
         {
             // Arrange, Given
             
-            var informationRawNula = (InformationRaw)null;
-            var informationRaw = new InformationRaw();
+            var informationNula = (Information)null;
+            var information = new Information();
             
             // Act, When
 
             // ReSharper disable once ExpressionIsAlwaysNull
-            var retornoParaInformationRawNula = informationRawNula.SetDataAccess(_persistence);
-            var retornoParaInformationRaw = informationRaw.SetDataAccess(_persistence);
+            var retornoParaInformationNula = informationNula.SetDataAccess(_persistence);
+            var retornoParaInformation = information.SetDataAccess(_persistence);
             
             // Assert, Then
             
             // ReSharper disable once ExpressionIsAlwaysNull
-            retornoParaInformationRawNula.Should().BeSameAs(informationRawNula);
-            retornoParaInformationRaw.Should().BeSameAs(informationRaw);
+            retornoParaInformationNula.Should().BeSameAs(informationNula);
+            retornoParaInformation.Should().BeSameAs(information);
         }
 
         [Fact]
@@ -113,12 +115,12 @@ namespace Strall
             // será aplicado para evitar conflitos com outros testes.
             Thread.Sleep(3000);
             
-            var informationRaw = new InformationRaw();
-            informationRaw.SetDataAccess(null);
+            var information = new Information();
+            information.SetDataAccess(null);
 
             // Act, When
 
-            Func<IDataAccess> lerDataAccessDefault = () => informationRaw.GetDataAccess();
+            Func<IDataAccess> lerDataAccessDefault = () => information.GetDataAccess();
             
             // Assert, Then
 
@@ -130,12 +132,12 @@ namespace Strall
         {
             // Arrange, Given
 
-            var informationRaw = new InformationRaw
+            var information = new Information
             {
                 Id = Guid.NewGuid(),
                 Description = this.Fixture<string>(),
                 Content = this.Fixture<string>(),
-                ContentType = this.Fixture<string>(),
+                ContentType = InformationType.Numeric,
                 ContentFromId = Guid.NewGuid(),
                 ParentId = Guid.NewGuid(),
                 ParentRelation = this.Fixture<string>(),
@@ -144,20 +146,20 @@ namespace Strall
 
             // Act, When
 
-            var novaCópia = informationRaw.Copy();
+            var novaCópia = information.Copy();
 
             // Assert, Then
 
             novaCópia.Should().NotBeNull();
-            novaCópia.Should().NotBeSameAs(informationRaw);
-            novaCópia.Id.Should().Be(informationRaw.Id);
-            novaCópia.Description.Should().Be(informationRaw.Description);
-            novaCópia.Content.Should().Be(informationRaw.Content);
-            novaCópia.ContentType.Should().Be(informationRaw.ContentType);
-            novaCópia.ContentFromId.Should().Be(informationRaw.ContentFromId);
-            novaCópia.ParentId.Should().Be(informationRaw.ParentId);
-            novaCópia.ParentRelation.Should().Be(informationRaw.ParentRelation);
-            novaCópia.SiblingOrder.Should().Be(informationRaw.SiblingOrder);
+            novaCópia.Should().NotBeSameAs(information);
+            novaCópia.Id.Should().Be(information.Id);
+            novaCópia.Description.Should().Be(information.Description);
+            novaCópia.Content.Should().Be(information.Content);
+            novaCópia.ContentType.Should().Be(information.ContentType);
+            novaCópia.ContentFromId.Should().Be(information.ContentFromId);
+            novaCópia.ParentId.Should().Be(information.ParentId);
+            novaCópia.ParentRelation.Should().Be(information.ParentRelation);
+            novaCópia.SiblingOrder.Should().Be(information.SiblingOrder);
         }
 
         [Fact]
@@ -176,7 +178,6 @@ namespace Strall
             cópia.Should().NotBeNull();
             cópia.Should().NotBeSameAs(origem);
             cópia.GetType().Should().Be(origem.GetType());
-            cópia.GetType().Should().NotBe(typeof(InformationRaw));
         }
 
         [Fact]
@@ -184,13 +185,13 @@ namespace Strall
         {
             // Arrange, Given
 
-            InformationRaw Create() =>
-                new InformationRaw
+            Information Create() =>
+                new Information
                 {
                     Id = Guid.NewGuid(),
                     Description = this.Fixture<string>(),
                     Content = this.Fixture<string>(),
-                    ContentType = this.Fixture<string>(),
+                    ContentType = InformationType.Numeric,
                     ContentFromId = Guid.NewGuid(),
                     ParentId = Guid.NewGuid(),
                     ParentRelation = this.Fixture<string>(),

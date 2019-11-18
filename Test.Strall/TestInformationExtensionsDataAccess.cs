@@ -48,7 +48,7 @@ namespace Strall
             // será aplicado para evitar conflitos com outros testes.
             Thread.Sleep(active ? 100 : 3000);
             
-            ((InformationRaw) null).SetDataAccess(active ? _persistence : null);
+            ((Information) null).SetDataAccess(active ? _persistence : null);
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace Strall
             
             SetDataAccess(false);
 
-            var informacao = new InformationRaw();
+            var informacao = new Information();
             
             // Act, When
 
@@ -66,6 +66,7 @@ namespace Strall
             {
                 () => informacao.Exists(),
                 () => informacao.Get(),
+                () => Guid.Empty.GetInformation(),
                 () => informacao.Create(),
                 () => informacao.Update(),
                 () => informacao.Delete(),
@@ -92,9 +93,9 @@ namespace Strall
 
             SetDataAccess();
             
-            var informaçãoIndefinida = new InformationRaw{ Id = Guid.Empty };
-            var informaçãoQueNãoExiste = new InformationRaw{ Id = Guid.NewGuid() };
-            var informaçãoQueExiste = new InformationRaw().Create();
+            var informaçãoIndefinida = new Information{ Id = Guid.Empty };
+            var informaçãoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoQueExiste = new Information().Create();
             
             // Act, When
 
@@ -116,9 +117,9 @@ namespace Strall
             
             SetDataAccess();
 
-            var informaçãoIndefinida = new InformationRaw{ Id = Guid.Empty };
-            var informaçãoQueNãoExiste = new InformationRaw{ Id = Guid.NewGuid() };
-            var informaçãoQueExiste = new InformationRaw().Create();
+            var informaçãoIndefinida = new Information{ Id = Guid.Empty };
+            var informaçãoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoQueExiste = new Information().Create();
             
             // Act, When
 
@@ -133,9 +134,34 @@ namespace Strall
             resultadoParaInformaçãoQueNãoExiste.Should().NotBeNull();
             resultadoParaInformaçãoQueNãoExiste.Id.Should().BeEmpty();
             resultadoParaInformaçãoQueExiste.Should().NotBeNull().And
-                .Subject.As<IInformationRaw>().Id.Should().Be(informaçãoQueExiste.Id);
+                .Subject.As<IInformation>().Id.Should().Be(informaçãoQueExiste.Id);
         }
-        
+
+        [Fact]
+        public void verifica_funcionamento_do_método_GetInformation()
+        {
+            // Arrange, Given
+            
+            SetDataAccess();
+
+            var informaçãoIndefinida = Guid.Empty;
+            var informaçãoQueNãoExiste = Guid.NewGuid();
+            var informaçãoQueExiste = new Information().Create().Id;
+            
+            // Act, When
+
+            var resultadoParaInformaçãoIndefinida = informaçãoIndefinida.GetInformation();
+            var resultadoParaInformaçãoQueNãoExiste = informaçãoQueNãoExiste.GetInformation();
+            var resultadoParaInformaçãoQueExiste = informaçãoQueExiste.GetInformation();
+
+            // Assert, Then
+
+            resultadoParaInformaçãoIndefinida.Should().BeNull();
+            resultadoParaInformaçãoQueNãoExiste.Should().BeNull();
+            resultadoParaInformaçãoQueExiste.Should().NotBeNull().And
+                .Subject.As<IInformation>().Id.Should().Be(informaçãoQueExiste);
+        }
+
         [Fact]
         public void verifica_funcionamento_do_método_Create()
         {
@@ -144,8 +170,8 @@ namespace Strall
             SetDataAccess();
             var persistence = (IPersistenceProviderSqLite) _persistence;
             
-            var informaçãoComIdVazio = new InformationRaw{ Id = Guid.Empty };
-            var informaçãoComIdInformado = new InformationRaw{ Id = Guid.NewGuid() };
+            var informaçãoComIdVazio = new Information{ Id = Guid.Empty };
+            var informaçãoComIdInformado = new Information{ Id = Guid.NewGuid() };
             
             // Act, When
 
@@ -171,10 +197,10 @@ namespace Strall
             
             SetDataAccess();
 
-            var informaçãoComIdVazio = new InformationRaw{ Id = Guid.Empty };
-            var informaçãoComIdInformadoQueNãoExiste = new InformationRaw{ Id = Guid.NewGuid() };
+            var informaçãoComIdVazio = new Information{ Id = Guid.Empty };
+            var informaçãoComIdInformadoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
             
-            var informaçãoComIdInformadoQueExiste = new InformationRaw{ Id = Guid.NewGuid() }.Create();
+            var informaçãoComIdInformadoQueExiste = new Information{ Id = Guid.NewGuid() }.Create();
             
             // Act, When
 
@@ -190,16 +216,53 @@ namespace Strall
         }
         
         [Fact]
+        public void verifica_funcionamento_do_método_UpdateOrCreate()
+        {
+            // Arrange, Given
+            
+            SetDataAccess();
+
+            var informaçãoComIdVazioId = Guid.Empty;
+            var informaçãoComIdVazio = new Information{ Id = informaçãoComIdVazioId };
+
+            var informaçãoComIdInformadoQueNãoExisteId = Guid.NewGuid();
+            var informaçãoComIdInformadoQueNãoExiste = new Information{ Id = informaçãoComIdInformadoQueNãoExisteId };
+
+            var informaçãoComIdInformadoQueExisteId = Guid.NewGuid();
+            var informaçãoComIdInformadoQueExiste = new Information{ Id = informaçãoComIdInformadoQueExisteId }.Create();
+            
+            // Act, When
+
+            var resultadoParaInformaçãoComIdVazio = informaçãoComIdVazio.UpdateOrCreate();
+            var resultadoParaInformaçãoComIdInformadoQueNãoExiste = informaçãoComIdInformadoQueNãoExiste.UpdateOrCreate();
+            var resultadoParaInformaçãoComIdInformadoQueExiste = informaçãoComIdInformadoQueExiste.UpdateOrCreate();
+
+            // Assert, Then
+
+            resultadoParaInformaçãoComIdVazio.Should().NotBeNull();
+            resultadoParaInformaçãoComIdVazio.Id.Should().NotBeEmpty();
+            resultadoParaInformaçãoComIdVazio.Id.Should().NotBe(informaçãoComIdVazioId);
+            
+            resultadoParaInformaçãoComIdInformadoQueNãoExiste.Should().NotBeNull();
+            resultadoParaInformaçãoComIdInformadoQueNãoExiste.Id.Should().NotBeEmpty();
+            resultadoParaInformaçãoComIdInformadoQueNãoExiste.Id.Should().Be(informaçãoComIdInformadoQueNãoExisteId);
+
+            resultadoParaInformaçãoComIdInformadoQueExiste.Should().NotBeNull();
+            resultadoParaInformaçãoComIdInformadoQueExiste.Id.Should().NotBeEmpty();
+            resultadoParaInformaçãoComIdInformadoQueExiste.Id.Should().Be(informaçãoComIdInformadoQueExisteId);
+        }
+        
+        [Fact]
         public void verifica_funcionamento_do_método_Delete()
         {
             // Arrange, Given
             
             SetDataAccess();
 
-            var informaçãoComIdVazio = new InformationRaw{ Id = Guid.Empty };
-            var informaçãoComIdInformadoQueNãoExiste = new InformationRaw{ Id = Guid.NewGuid() };
+            var informaçãoComIdVazio = new Information{ Id = Guid.Empty };
+            var informaçãoComIdInformadoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
             
-            var informaçãoComIdInformadoQueExiste = new InformationRaw{ Id = Guid.NewGuid() }.Create();
+            var informaçãoComIdInformadoQueExiste = new Information{ Id = Guid.NewGuid() }.Create();
             
             // Act, When
 
@@ -221,14 +284,14 @@ namespace Strall
             
             SetDataAccess();
 
-            var informaçãoComIdVazio = new InformationRaw{ Id = Guid.Empty };
-            var informaçãoComIdInformadoQueNãoExiste = new InformationRaw{ Id = Guid.NewGuid() };
+            var informaçãoComIdVazio = new Information{ Id = Guid.Empty };
+            var informaçãoComIdInformadoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
             
-            var informaçãoComIdInformadoQueExiste = new InformationRaw{ Id = Guid.NewGuid() }.Create();
+            var informaçãoComIdInformadoQueExiste = new Information{ Id = Guid.NewGuid() }.Create();
             
-            var informaçãoComIdInformadoQueExisteComFilhos = new InformationRaw{ Id = Guid.NewGuid() }.Create();
+            var informaçãoComIdInformadoQueExisteComFilhos = new Information{ Id = Guid.NewGuid() }.Create();
 
-            var filhos = this.FixtureMany<InformationRaw>();
+            var filhos = this.FixtureMany<Information>();
             foreach (var filho in filhos)
             {
                 filho.ContentFromId = Guid.Empty;
@@ -258,14 +321,14 @@ namespace Strall
             
             SetDataAccess();
 
-            var informaçãoComIdVazio = new InformationRaw{ Id = Guid.Empty };
-            var informaçãoComIdInformadoQueNãoExiste = new InformationRaw{ Id = Guid.NewGuid() };
+            var informaçãoComIdVazio = new Information{ Id = Guid.Empty };
+            var informaçãoComIdInformadoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
             
-            var informaçãoComIdInformadoQueExiste = new InformationRaw{ Id = Guid.NewGuid() }.Create();
+            var informaçãoComIdInformadoQueExiste = new Information{ Id = Guid.NewGuid() }.Create();
             
-            var informaçãoComIdInformadoQueExisteComFilhos = new InformationRaw{ Id = Guid.NewGuid() }.Create();
+            var informaçãoComIdInformadoQueExisteComFilhos = new Information{ Id = Guid.NewGuid() }.Create();
 
-            var filhos = this.FixtureMany<InformationRaw>().ToList();
+            var filhos = this.FixtureMany<Information>().ToList();
             foreach (var filho in filhos)
             {
                 filho.ContentFromId = Guid.Empty;
@@ -296,14 +359,14 @@ namespace Strall
             
             SetDataAccess();
 
-            var informaçãoComIdVazio = new InformationRaw{ Id = Guid.Empty };
-            var informaçãoComIdInformadoQueNãoExiste = new InformationRaw{ Id = Guid.NewGuid() };
+            var informaçãoComIdVazio = new Information{ Id = Guid.Empty };
+            var informaçãoComIdInformadoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
             
-            var informaçãoComIdInformadoQueExiste = new InformationRaw{ Id = Guid.NewGuid() }.Create();
+            var informaçãoComIdInformadoQueExiste = new Information{ Id = Guid.NewGuid() }.Create();
             
-            var informaçãoComIdInformadoQueExisteComFilhos = new InformationRaw{ Id = Guid.NewGuid() }.Create();
+            var informaçãoComIdInformadoQueExisteComFilhos = new Information{ Id = Guid.NewGuid() }.Create();
 
-            var filhos = this.FixtureMany<InformationRaw>();
+            var filhos = this.FixtureMany<Information>();
             foreach (var filho in filhos)
             {
                 filho.ContentFromId = informaçãoComIdInformadoQueExisteComFilhos.Id;
@@ -333,14 +396,14 @@ namespace Strall
             
             SetDataAccess();
 
-            var informaçãoComIdVazio = new InformationRaw{ Id = Guid.Empty };
-            var informaçãoComIdInformadoQueNãoExiste = new InformationRaw{ Id = Guid.NewGuid() };
+            var informaçãoComIdVazio = new Information{ Id = Guid.Empty };
+            var informaçãoComIdInformadoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
             
-            var informaçãoComIdInformadoQueExiste = new InformationRaw{ Id = Guid.NewGuid() }.Create();
+            var informaçãoComIdInformadoQueExiste = new Information{ Id = Guid.NewGuid() }.Create();
             
-            var informaçãoComIdInformadoQueExisteComFilhos = new InformationRaw{ Id = Guid.NewGuid() }.Create();
+            var informaçãoComIdInformadoQueExisteComFilhos = new Information{ Id = Guid.NewGuid() }.Create();
 
-            var filhos = this.FixtureMany<InformationRaw>().ToList();
+            var filhos = this.FixtureMany<Information>().ToList();
             foreach (var filho in filhos)
             {
                 filho.ContentFromId = informaçãoComIdInformadoQueExisteComFilhos.Id;
@@ -371,17 +434,17 @@ namespace Strall
             
             SetDataAccess();
 
-            var informações = new List<IInformationRaw>();
+            var informações = new List<IInformation>();
             for (var i = 0; i < 3; i++)
             {
-                informações.Add(new InformationRaw
+                informações.Add(new Information
                 {
                     Id = Guid.NewGuid(),
                     ContentFromId = informações.LastOrDefault()?.Id ?? Guid.Empty
                 }.Create());
             }
 
-            var informaçãoEmLoop = new InformationRaw {Id = Guid.NewGuid()};
+            var informaçãoEmLoop = new Information {Id = Guid.NewGuid()};
             informaçãoEmLoop.ContentFromId = informaçãoEmLoop.Id;
             informaçãoEmLoop.Create();
             

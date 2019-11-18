@@ -7,7 +7,7 @@ namespace App
     {
         private static void Main()
         {
-            ((InformationRaw?)null).SetDataAccess(
+            ((Information?)null).SetDataAccess(
                 new PersistenceProviderSqLite()
                     .Open(new ConnectionInfo { Filename = "teste.db" })
                     .CreateStructure());
