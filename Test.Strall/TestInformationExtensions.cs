@@ -1,12 +1,41 @@
 ﻿using System;
+using System.IO;
+using System.Threading;
 using Cabrones.Test;
 using FluentAssertions;
+using Strall.Exceptions;
+using Strall.Persistence.SQLite;
 using Xunit;
 
 namespace Strall
 {
-    public class TestInformationExtensions
+    public class TestInformationExtensions: IDisposable
     {
+        /// <summary>
+        /// Uma persistência qualquer para fazer os testes de integração
+        /// </summary>
+        private readonly IDataAccess _persistence;
+
+        /// <summary>
+        /// Arquivo do banco de dados para este teste.
+        /// </summary>
+        private const string Database = "TestInformationExtensions";
+
+        /// <summary>
+        /// Setup do teste.
+        /// </summary>
+        public TestInformationExtensions()
+        {
+            var persistence = new PersistenceProviderSqLite();
+            persistence.Open(new ConnectionInfo { Filename = Path.Combine(Environment.CurrentDirectory, Database) });
+            _persistence = persistence;
+        }
+
+        /// <summary>
+        /// Liberação de recursos.
+        /// </summary>
+        public void Dispose() => ((PersistenceProviderSqLite)_persistence)?.Close();
+        
         [Fact]
         public void verificações_declarativas()
         {
@@ -20,9 +49,70 @@ namespace Strall
             sut.AssertMyImplementations();
             sut.AssertMyOwnImplementations();
             sut.AssertMyOwnPublicPropertiesCount(0);
-            sut.AssertMyOwnPublicMethodsCount(2);
+            sut.AssertMyOwnPublicMethodsCount(4);
             sut.AssertPublicMethodPresence("TInformacao Copy<TInformacao>(IInformationRaw, TInformacao)");
             sut.AssertPublicMethodPresence("IInformationRaw Copy(IInformationRaw)");
+            sut.AssertPublicMethodPresence("IInformationRaw SetDataAccess(IInformationRaw, IDataAccess)");
+            sut.AssertPublicMethodPresence("IDataAccess GetDataAccess(IInformationRaw)");
+        }
+        
+        [Fact]
+        public void deve_existir_um_IDataAccess_padrão_disponível()
+        {
+            // Arrange, Given
+            
+            var informationRaw = new InformationRaw();
+            
+            // Act, When
+
+            informationRaw.SetDataAccess(_persistence);
+            var persistênciaDefinida = informationRaw.GetDataAccess(); 
+            
+            // Assert, Then
+            
+            persistênciaDefinida.Should().BeSameAs(_persistence);
+        }
+        
+        [Fact]
+        public void o_método_que_define_o_IDataAccess_deve_retornar_a_instância_de_entrada()
+        {
+            // Arrange, Given
+            
+            var informationRawNula = (InformationRaw)null;
+            var informationRaw = new InformationRaw();
+            
+            // Act, When
+
+            // ReSharper disable once ExpressionIsAlwaysNull
+            var retornoParaInformationRawNula = informationRawNula.SetDataAccess(_persistence);
+            var retornoParaInformationRaw = informationRaw.SetDataAccess(_persistence);
+            
+            // Assert, Then
+            
+            // ReSharper disable once ExpressionIsAlwaysNull
+            retornoParaInformationRawNula.Should().BeSameAs(informationRawNula);
+            retornoParaInformationRaw.Should().BeSameAs(informationRaw);
+        }
+
+        [Fact]
+        public void usar_o_IDataAccess_padrão_quando_não_foi_definido_deve_disparar_exception()
+        {
+            // Arrange, Given
+            
+            // Como a manipulação é em uma propriedade estática um tempo de espera
+            // será aplicado para evitar conflitos com outros testes.
+            Thread.Sleep(1000);
+            
+            var informationRaw = new InformationRaw();
+            informationRaw.SetDataAccess(null);
+
+            // Act, When
+
+            Func<IDataAccess> lerDataAccessDefault = () => informationRaw.GetDataAccess();
+            
+            // Assert, Then
+
+            lerDataAccessDefault.Should().ThrowExactly<StrallDataAccessException>();
         }
 
         [Fact]

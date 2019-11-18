@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using Cabrones.Test;
 using FluentAssertions;
 using Strall.Persistence.SQLite;
@@ -49,8 +48,7 @@ namespace Strall
 
             sut.AssertMyImplementations(typeof(IInformation), typeof(IInformationRaw), typeof(ICloneable));
             sut.AssertMyOwnImplementations(typeof(IInformation));
-            sut.AssertMyOwnPublicPropertiesCount(2);
-            sut.AssertPublicPropertyPresence("IDataAccess DataAccessDefault { get; set; }");
+            sut.AssertMyOwnPublicPropertiesCount(0);
             sut.AssertMyOwnPublicMethodsCount(0);
         }
 
@@ -91,44 +89,11 @@ namespace Strall
         }
 
         [Fact]
-        public void deve_existir_um_IDataAccess_padrão_disponível_para_as_instâncias()
-        {
-            // Arrange, Given
-            // Act, When
-
-            Information.DataAccessDefault = _persistence;
-            
-            // Assert, Then
-            
-            Information.DataAccessDefault.Should().BeSameAs(_persistence);
-        }
-
-        [Fact]
-        public void usar_o_IDataAccess_padrão_quando_não_foi_definido_deve_disparar_exception()
-        {
-            // Arrange, Given
-            
-            // Como a manipulação é em uma propriedade estática um tempo de espera
-            // será aplicado para evitar conflitos com outros testes.
-            Thread.Sleep(1000);
-            
-            Information.DataAccessDefault = null;
-
-            // Act, When
-
-            Func<IDataAccess> lerDataAccessDefault = () => Information.DataAccessDefault;
-            
-            // Assert, Then
-
-            lerDataAccessDefault.Should().ThrowExactly<NullReferenceException>();
-        }
-
-        [Fact]
         public void confere_se_as_propriedades_foram_inicializadas_como_em_InformationRaw()
         {
             // Arrange, Given
             
-            Information.DataAccessDefault = _persistence;
+            ((InformationRaw)null).SetDataAccess(_persistence);
             
             var informationRaw = new InformationRaw();
 
@@ -202,7 +167,7 @@ namespace Strall
         {
             // Arrange, Given
 
-            Information.DataAccessDefault = _persistence;
+            ((InformationRaw)null).SetDataAccess(_persistence);
 
             var information = new Information
             {
@@ -226,7 +191,7 @@ namespace Strall
         {
             // Arrange, Given
 
-            Information.DataAccessDefault = _persistence;
+            ((InformationRaw)null).SetDataAccess(_persistence);
 
             var informationRaw = new InformationRaw
             {
@@ -259,7 +224,7 @@ namespace Strall
         {
             // Arrange, Given
 
-            Information.DataAccessDefault = _persistence;
+            ((InformationRaw)null).SetDataAccess(_persistence);
 
             var informationRaw = new InformationRaw
             {
@@ -303,7 +268,7 @@ namespace Strall
         {
             // Arrange, Given
 
-            Information.DataAccessDefault = _persistence;
+            ((InformationRaw)null).SetDataAccess(_persistence);
 
             var informationRaw = (IInformationRaw) new InformationRaw
             {
@@ -363,7 +328,7 @@ namespace Strall
         {
             // Arrange, Given
 
-            Information.DataAccessDefault = _persistence;
+            ((InformationRaw)null).SetDataAccess(_persistence);
 
             var informações = new List<IInformation>();
             for (var i = 0; i < 5; i++)

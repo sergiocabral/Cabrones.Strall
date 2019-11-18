@@ -1,4 +1,5 @@
 ﻿using System;
+using Strall.Exceptions;
 
 namespace Strall
 {
@@ -7,6 +8,30 @@ namespace Strall
     /// </summary>
     public static class InformationExtensions
     {
+        /// <summary>
+        /// Atributo para GetDataAccess e SetDataAccess.
+        /// </summary>
+        private static IDataAccess? _dataAccess;
+
+        /// <summary>
+        /// Define um IDataAccess padrão para manipulação dos dados.
+        /// É necessário definir este valor para trabalhar com instâncias dessa classe.
+        /// </summary>
+        /// <returns>O retorno é o mesmo que toReturn.</returns>
+        public static IInformationRaw? SetDataAccess(this IInformationRaw? toReturn, IDataAccess? dataAccess)
+        {
+            _dataAccess = dataAccess;
+            return toReturn;
+        }
+
+        /// <summary>
+        /// IDataAccess padrão para manipulação dos dados.
+        /// É necessário definir este valor para trabalhar com instâncias dessa classe.
+        /// </summary>
+        // ReSharper disable once UnusedParameter.Global
+        public static IDataAccess GetDataAccess(this IInformationRaw? _) =>
+            _dataAccess ?? throw new StrallDataAccessException();
+        
         /// <summary>
         /// Copia os valores dos campos entre duas informações.
         /// </summary>

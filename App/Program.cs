@@ -7,10 +7,10 @@ namespace App
     {
         private static void Main()
         {
-            Information.DataAccessDefault = 
+            ((InformationRaw?)null).SetDataAccess(
                 new PersistenceProviderSqLite()
                     .Open(new ConnectionInfo { Filename = "teste.db" })
-                    .CreateStructure();
+                    .CreateStructure());
 
 //            var information1 = new Information() as IInformation;
 //            information1.Id = Guid.Parse("df36f419-4534-4709-bfca-863f5c402a12");

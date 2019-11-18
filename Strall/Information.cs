@@ -9,19 +9,9 @@ namespace Strall
     public class Information : IInformation
     {
         /// <summary>
-        /// Valor para propriedade DataAccessDefault.
-        /// </summary>
-        private static IDataAccess? _dataAccessDefault;
-
-        /// <summary>
         /// IDataAccess padrão para manipulação dos dados.
-        /// É necessário definir este valor para trabalhar com instâncias dessa classe.
         /// </summary>
-        public static IDataAccess DataAccessDefault
-        {
-            get => _dataAccessDefault ?? throw new NullReferenceException();
-            set => _dataAccessDefault = value;
-        }
+        private IDataAccess DataAccess => this.GetDataAccess();
 
         /// <summary>
         /// Instância usada como molde para determinar os valores padrão.
@@ -89,7 +79,7 @@ namespace Strall
         /// </summary>
         public IInformation? CloneFrom 
         {
-            get => Get(DataAccessDefault.CloneFrom(CloneFromId));
+            get => Get(DataAccess.CloneFrom(CloneFromId));
             set => CloneFromId = value?.Id ?? Guid.Empty;
         }
 
@@ -119,7 +109,7 @@ namespace Strall
         private IInformation? Get(Guid informationId, bool ignoreCache = false)
         {
             if (!ignoreCache && _cache.ContainsKey(informationId)) return _cache[informationId];
-            var information = DataAccessDefault.Get(informationId)?.Copy(new Information());
+            var information = DataAccess.Get(informationId)?.Copy(new Information());
             _cache[informationId] = information;
             return information;
         }
