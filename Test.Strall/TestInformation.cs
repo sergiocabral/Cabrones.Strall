@@ -50,6 +50,7 @@ namespace Strall
             // Arrange, Given
 
             var instânciaDeComparação = Substitute.For<IInformation>();
+            instânciaDeComparação.ContentType = InformationType.Numeric;
             var instância = new Information() as IInformation;
             
             // Act, When

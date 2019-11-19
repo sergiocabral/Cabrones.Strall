@@ -253,7 +253,7 @@ namespace Strall
         }
         
         [Fact]
-        public void verifica_funcionamento_do_método_Delete()
+        public void verifica_funcionamento_do_método_Delete_sem_ser_recursivo()
         {
             // Arrange, Given
             
@@ -261,20 +261,66 @@ namespace Strall
 
             var informaçãoComIdVazio = new Information{ Id = Guid.Empty };
             var informaçãoComIdInformadoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
-            
             var informaçãoComIdInformadoQueExiste = new Information{ Id = Guid.NewGuid() }.Create();
             
             // Act, When
 
-            var resultadoParaInformaçãoComIdVazio = informaçãoComIdVazio.Delete();
-            var resultadoParaInformaçãoComIdInformadoQueNãoExiste = informaçãoComIdInformadoQueNãoExiste.Delete();
-            var resultadoParaInformaçãoComIdInformadoQueExiste = informaçãoComIdInformadoQueExiste.Delete();
+            // ReSharper disable once RedundantArgumentDefaultValue
+            var resultadoParaInformaçãoComIdVazio = informaçãoComIdVazio.Delete(false);
+            // ReSharper disable once RedundantArgumentDefaultValue
+            var resultadoParaInformaçãoComIdInformadoQueNãoExiste = informaçãoComIdInformadoQueNãoExiste.Delete(false);
+            // ReSharper disable once RedundantArgumentDefaultValue
+            var resultadoParaInformaçãoComIdInformadoQueExiste = informaçãoComIdInformadoQueExiste.Delete(false);
 
             // Assert, Then
 
-            resultadoParaInformaçãoComIdVazio.Should().BeFalse();
-            resultadoParaInformaçãoComIdInformadoQueNãoExiste.Should().BeFalse();
-            resultadoParaInformaçãoComIdInformadoQueExiste.Should().BeTrue();
+            resultadoParaInformaçãoComIdVazio.Should().Be(0);
+            resultadoParaInformaçãoComIdInformadoQueNãoExiste.Should().Be(0);
+            resultadoParaInformaçãoComIdInformadoQueExiste.Should().Be(1);
+        }
+        
+        [Fact]
+        public void verifica_funcionamento_do_método_Delete_de_forma_recursiva()
+        {
+            // Arrange, Given
+            
+            SetDataAccess();
+
+            var informaçãoComIdVazio = new Information{ Id = Guid.Empty };
+            var informaçãoComIdInformadoQueNãoExiste = new Information{ Id = Guid.NewGuid() };
+            var informaçãoComIdInformadoQueExiste = new Information{ Id = Guid.NewGuid() }.Create();
+
+            var cadeiaDeIds = new List<Guid>();
+            Guid NovoId()
+            {
+                var id = Guid.NewGuid();
+                cadeiaDeIds.Add(id);
+                return id;
+            }
+            const int quantidadePorNível = 5;
+            void Criar(int nível, Guid parentId)
+            {
+                if (nível <= 0) return;
+                for (var i = 0; i < quantidadePorNível; i++)
+                {
+                    Criar(nível - 1, new Information {Id = NovoId(), ParentId = parentId}.Create().Id);
+                }
+            }
+            Criar(3, new Information {Id = NovoId()}.Create().Id);
+            
+            // Act, When
+
+            var resultadoParaInformaçãoComIdVazio = informaçãoComIdVazio.Delete(true);
+            var resultadoParaInformaçãoComIdInformadoQueNãoExiste = informaçãoComIdInformadoQueNãoExiste.Delete(true);
+            var resultadoParaInformaçãoComIdInformadoQueExiste = informaçãoComIdInformadoQueExiste.Delete(true);
+            var resultadoParaInformaçõesEncadeadas = cadeiaDeIds[0].GetInformation().Delete(true);
+
+            // Assert, Then
+
+            resultadoParaInformaçãoComIdVazio.Should().Be(0);
+            resultadoParaInformaçãoComIdInformadoQueNãoExiste.Should().Be(0);
+            resultadoParaInformaçãoComIdInformadoQueExiste.Should().Be(1);
+            resultadoParaInformaçõesEncadeadas.Should().Be(cadeiaDeIds.Count);
         }
         
         [Fact]

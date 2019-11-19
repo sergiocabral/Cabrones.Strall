@@ -60,6 +60,6 @@ namespace Strall
         /// Faz uma cópia desta instância para uma nova instância.
         /// </summary>
         /// <returns>Nova instância.</returns>
-        public object Clone() => this.Copy();
+        public object Clone() => this.CopyTo();
     }
 }

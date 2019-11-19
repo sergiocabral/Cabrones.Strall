@@ -50,8 +50,8 @@ namespace Strall
             sut.AssertMyOwnImplementations();
             sut.AssertMyOwnPublicPropertiesCount(0);
             sut.AssertMyOwnPublicMethodsCount(16);
-            sut.AssertPublicMethodPresence("TInformacao Copy<TInformacao>(IInformation, TInformacao)");
-            sut.AssertPublicMethodPresence("IInformation Copy(IInformation)");
+            sut.AssertPublicMethodPresence("TInformacao CopyTo<TInformacao>(IInformation, TInformacao)");
+            sut.AssertPublicMethodPresence("IInformation CopyTo(IInformation)");
             sut.AssertPublicMethodPresence("IInformation SetDataAccess(IInformation, IDataAccess)");
             sut.AssertPublicMethodPresence("IDataAccess GetDataAccess(IInformation)");
             sut.AssertPublicMethodPresence("Boolean Exists(IInformation)");
@@ -60,7 +60,7 @@ namespace Strall
             sut.AssertPublicMethodPresence("IInformation Create(IInformation)");
             sut.AssertPublicMethodPresence("Boolean Update(IInformation)");
             sut.AssertPublicMethodPresence("IInformation UpdateOrCreate(IInformation)");
-            sut.AssertPublicMethodPresence("Boolean Delete(IInformation, Boolean = 'False')");
+            sut.AssertPublicMethodPresence("IEnumerable<Guid> Delete(IInformation, Boolean = 'False')");
             sut.AssertPublicMethodPresence("Boolean HasContentTo(IInformation)");
             sut.AssertPublicMethodPresence("IEnumerable<Guid> ContentTo(IInformation)");
             sut.AssertPublicMethodPresence("Guid ContentFrom(IInformation)");
@@ -146,7 +146,7 @@ namespace Strall
 
             // Act, When
 
-            var novaCópia = information.Copy();
+            var novaCópia = information.CopyTo();
 
             // Assert, Then
 
@@ -171,7 +171,7 @@ namespace Strall
 
             // Act, When
 
-            var cópia = origem.Copy();
+            var cópia = origem.CopyTo();
 
             // Assert, Then
 
@@ -203,7 +203,7 @@ namespace Strall
 
             // Act, When
 
-            var cópia = origem.Copy(destino);
+            var cópia = origem.CopyTo(destino);
 
             // Assert, Then
 

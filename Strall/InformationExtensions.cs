@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Strall.Exceptions;
 
 namespace Strall
@@ -48,7 +47,7 @@ namespace Strall
         /// <param name="source">Origem.</param>
         /// <param name="destination">Destino.</param>
         /// <returns>Retorna a mesma referência de destination.</returns>
-        public static TInformacao Copy<TInformacao>(this IInformation source, TInformacao destination) 
+        public static TInformacao CopyTo<TInformacao>(this IInformation source, TInformacao destination) 
             where TInformacao : IInformation
         {
             destination.Id = source.Id;
@@ -67,12 +66,11 @@ namespace Strall
         /// </summary>
         /// <param name="source">Origem.</param>
         /// <returns>Retorna a referência para a nova instância.</returns>
-        public static IInformation Copy(this IInformation source)
+        public static IInformation CopyTo(this IInformation source)
         {
             var type = source.GetType();
-            var instance = (IInformation?)type.GetConstructor(new Type[0])?.Invoke(new object[0]);
-            if (instance == null) throw new NotImplementedException();
-            return source.Copy(instance);
+            var instance = (IInformation)type.GetConstructor(new Type[0])?.Invoke(new object[0])!;
+            return source.CopyTo(instance);
         }
 
         /// <summary>
@@ -100,11 +98,9 @@ namespace Strall
         /// <returns>Informação.</returns>
         public static IInformation Get(this IInformation information)
         {
-            var d = information.Children().Select(a => a.GetInformation()).ToList();
-            d.Clear();
             var returned = information.Id.GetInformation();
             if (returned == null) information.Id = Guid.Empty;
-            else returned.Copy(information);
+            else returned.CopyTo(information);
             return information;
         }
 
@@ -146,11 +142,11 @@ namespace Strall
         /// </summary>
         /// <param name="information">Informação.</param>
         /// <param name="recursively">Apagar recursivamente todos os filhos.</param>
-        /// <returns>Resposta de sucesso.</returns>
-        public static bool Delete(this IInformation information, bool recursively = false)
+        /// <returns>Total de registros apagados.</returns>
+        public static int Delete(this IInformation information, bool recursively = false)
         {
-            //TODO: recursively, clone passa  para outro.
-            return DataAccess.Delete(information.Id);
+            if (recursively) return DataAccess.DeleteAll(information.Id);
+            return DataAccess.Delete(information.Id) ? 1 : 0;
         }
 
         /// <summary>

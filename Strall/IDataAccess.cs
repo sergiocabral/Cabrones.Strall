@@ -49,6 +49,15 @@ namespace Strall
         bool Delete(Guid informationId);
 
         /// <summary>
+        /// Apaga uma informação.
+        /// Equivalente a DELETE.
+        /// É recursivo para seus filhos.
+        /// </summary>
+        /// <param name="informationId">Id.</param>
+        /// <returns>Total de registros apagados.</returns>
+        int DeleteAll(Guid informationId);
+
+        /// <summary>
         /// Verifica se tem clones.
         /// Equivalente a SELECT TOP 1
         /// </summary>

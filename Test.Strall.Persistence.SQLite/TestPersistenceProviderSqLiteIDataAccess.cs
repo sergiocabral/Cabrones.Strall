@@ -396,12 +396,14 @@ namespace Strall.Persistence.SQLite
             
             // Act, When
 
+            var informaçãoVazia = _sut.ContentFrom(Guid.Empty);
             var origemDoPrimeiro = _sut.ContentFrom(informações.First().Id);
             var origemDoÚltimo = _sut.ContentFrom(informações.Last().Id);
             var origemDoLoop = _sut.ContentFrom(informaçãoEmLoop.Id);
 
             // Assert, Then
 
+            informaçãoVazia.Should().BeEmpty();
             origemDoPrimeiro.Should().Be(informações.First().Id);
             origemDoÚltimo.Should().Be(informações.First().Id);
             origemDoLoop.Should().BeEmpty();

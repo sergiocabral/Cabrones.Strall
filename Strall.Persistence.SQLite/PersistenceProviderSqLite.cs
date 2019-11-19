@@ -359,6 +359,81 @@ WHERE
         }
 
         /// <summary>
+        /// Apaga uma informação.
+        /// Equivalente a DELETE.
+        /// É recursivo para seus filhos.
+        /// </summary>
+        /// <param name="informationId">Id.</param>
+        /// <returns>Total de registros apagados.</returns>
+        public int DeleteAll(Guid informationId)
+        {
+            if (informationId == Guid.Empty) return 0;
+
+            IEnumerable<KeyValuePair<Guid, int>> GetListToDelete(Guid id)
+            {
+                var commandText = $@"
+SELECT {SqlNames.TableInformationColumnId}
+  FROM {SqlNames.TableInformation}
+ WHERE {SqlNames.TableInformationColumnParentId} = @{SqlNames.TableInformationColumnId};
+";
+
+                var index = 0;
+                var result = new Dictionary<Guid, int> {[id] = index};
+                do
+                {
+                    using var command = Connection.CreateCommand();
+                    command.CommandText = commandText;
+                    command.Parameters.AddRange(FactoryParameters(result.ElementAt(index++).Key));
+                    using var reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var readId = reader.GetValue(0).ToGuid();
+                        if (readId != Guid.Empty && !result.ContainsKey(readId)) result.Add(readId, index);
+                    }
+                } while (index < result.Count);
+
+                return result;
+            }
+
+            string SqlWhere(string fieldName, ICollection<Guid> ids)
+            {
+                var statementIn = new List<string>();
+                const int inOperatorLimite = 1000;
+                var page = 0;
+                while (page * inOperatorLimite < ids.Count)
+                {
+                    statementIn.Add($"{fieldName} IN (" + ids.Skip(inOperatorLimite * page++).Take(inOperatorLimite).Aggregate("", 
+                        (acc, cur) => acc == "" ? $"'{cur.ToDatabaseText()}'" : $"{acc}, '{cur.ToDatabaseText()}'") + ")");
+                }
+
+                var result = statementIn.Aggregate("", 
+                    (acc, cur) => acc == "" ? cur : $"{acc} OR {cur}");
+
+                return result;
+            }
+
+            int Delete(IEnumerable<Guid> ids)
+            {
+                var commandText = $@"
+DELETE 
+  FROM {SqlNames.TableInformation} 
+ WHERE {SqlWhere(SqlNames.TableInformationColumnId, ids.ToList())};
+";
+
+                using var command = Connection.CreateCommand();
+                command.CommandText = commandText;
+                return command.ExecuteNonQuery();
+            }
+
+            return GetListToDelete(informationId)
+                .GroupBy(a => a.Value)
+                .OrderByDescending(a => a.Key)
+                .Select(a => a.Select(b => b.Key).ToList())
+                .Sum(Delete);
+        }
+
+        /// <summary>
         /// Verifica se tem clones.
         /// Equivalente a SELECT TOP 1
         /// </summary>
