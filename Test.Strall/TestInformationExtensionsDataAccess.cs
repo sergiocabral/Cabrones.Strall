@@ -480,8 +480,9 @@ namespace Strall
             
             SetDataAccess();
 
+            const int níveis = 5;
             var informações = new List<IInformation>();
-            for (var i = 0; i < 3; i++)
+            for (var i = 0; i < níveis; i++)
             {
                 informações.Add(new Information
                 {
@@ -505,6 +506,54 @@ namespace Strall
             origemDoPrimeiro.Should().Be(informações.First().Id);
             origemDoÚltimo.Should().Be(informações.First().Id);
             origemDoLoop.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void verifica_funcionamento_do_método_Content()
+        {
+            // Arrange, Given
+            
+            SetDataAccess();
+
+            const int níveis = 5;
+            var informações = new List<IInformation>();
+            for (var i = 0; i < níveis; i++)
+            {
+                informações.Add(new Information
+                {
+                    Id = Guid.NewGuid(),
+                    Content = this.Fixture<string>(),
+                    ContentFromId = informações.LastOrDefault()?.Id ?? Guid.Empty
+                }.Create());
+            }
+
+            var informaçãoEmLoop = new Information
+            {
+                Id = Guid.NewGuid(),
+                Content = this.Fixture<string>()
+            };
+            informaçãoEmLoop.ContentFromId = informaçãoEmLoop.Id;
+            informaçãoEmLoop.Create();
+
+            var informaçãoInexistente = new Information
+            {
+                Id = Guid.NewGuid(),
+                Content = this.Fixture<string>()
+            };
+            
+            // Act, When
+
+            var origemDoPrimeiro = informações.First().ContentLoad();
+            var origemDoÚltimo = informações.Last().ContentLoad();
+            var origemDoLoop = informaçãoEmLoop.ContentLoad();
+            var origemDoInexistente = informaçãoInexistente.ContentLoad();
+
+            // Assert, Then
+
+            origemDoPrimeiro.Should().Be(informações.First().Content);
+            origemDoÚltimo.Should().Be(informações.First().Content);
+            origemDoLoop.Should().Be(informaçãoEmLoop.Content);
+            origemDoInexistente.Should().Be(informaçãoInexistente.Content);
         }
         
     }

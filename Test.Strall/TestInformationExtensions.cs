@@ -49,7 +49,7 @@ namespace Strall
             sut.AssertMyImplementations();
             sut.AssertMyOwnImplementations();
             sut.AssertMyOwnPublicPropertiesCount(0);
-            sut.AssertMyOwnPublicMethodsCount(16);
+            sut.AssertMyOwnPublicMethodsCount(17);
             sut.AssertPublicMethodPresence("TInformacao CopyTo<TInformacao>(IInformation, TInformacao)");
             sut.AssertPublicMethodPresence("IInformation CopyTo(IInformation)");
             sut.AssertPublicMethodPresence("IInformation SetDataAccess(IInformation, IDataAccess)");
@@ -60,7 +60,7 @@ namespace Strall
             sut.AssertPublicMethodPresence("IInformation Create(IInformation)");
             sut.AssertPublicMethodPresence("Boolean Update(IInformation)");
             sut.AssertPublicMethodPresence("IInformation UpdateOrCreate(IInformation)");
-            sut.AssertPublicMethodPresence("IEnumerable<Guid> Delete(IInformation, Boolean = 'False')");
+            sut.AssertPublicMethodPresence("Int32 Delete(IInformation, Boolean = 'False')");
             sut.AssertPublicMethodPresence("Boolean HasContentTo(IInformation)");
             sut.AssertPublicMethodPresence("IEnumerable<Guid> ContentTo(IInformation)");
             sut.AssertPublicMethodPresence("Guid ContentFrom(IInformation)");

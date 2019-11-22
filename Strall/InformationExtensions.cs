@@ -112,6 +112,7 @@ namespace Strall
         /// <returns>Id.</returns>
         public static IInformation Create(this IInformation information)
         {
+            information.Content = information.ContentLoad();
             information.Id = DataAccess.Create(information);
             return information;
         }
@@ -122,8 +123,11 @@ namespace Strall
         /// </summary>
         /// <param name="information">Informação.</param>
         /// <returns>Resposta de sucesso.</returns>
-        public static bool Update(this IInformation information) =>
-            DataAccess.Update(information);
+        public static bool Update(this IInformation information)
+        {
+            information.Content = information.ContentLoad();
+            return DataAccess.Update(information);
+        }
 
         /// <summary>
         /// Atualiza, ou cria se não existir, esta informação.
@@ -176,6 +180,25 @@ namespace Strall
         /// </returns>
         public static Guid ContentFrom(this IInformation information) =>
             DataAccess.ContentFrom(information.Id);
+
+        /// <summary>
+        /// Localiza o conteúdo no clone de origem
+        /// e atualiza o valo do conteúdo atual.
+        /// </summary>
+        /// <param name="information">Informação.</param>
+        /// <returns>
+        /// Conteúdo no clone de origem.
+        /// Caso não seja possível retorna o conteúdo do atual.
+        /// </returns>
+        public static string ContentLoad(this IInformation information)
+        {
+            var id = information.ContentFrom();
+            return information.Content = 
+                id == Guid.Empty
+                    ? information.Content
+                    : id.GetInformation()?.Content
+                      ?? information.Content;
+        }
 
         /// <summary>
         /// Verifica se tem filhos.

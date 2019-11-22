@@ -24,7 +24,7 @@ namespace Strall
             sut.AssertPublicMethodPresence("Guid Create(IInformation)");
             sut.AssertPublicMethodPresence("Boolean Update(IInformation)");
             sut.AssertPublicMethodPresence("Boolean Delete(Guid)");
-            sut.AssertPublicMethodPresence("IEnumerable<Guid> DeleteAll(Guid)");
+            sut.AssertPublicMethodPresence("Int32 DeleteAll(Guid)");
             sut.AssertPublicMethodPresence("Boolean HasContentTo(Guid)");
             sut.AssertPublicMethodPresence("IEnumerable<Guid> ContentTo(Guid)");
             sut.AssertPublicMethodPresence("Guid ContentFrom(Guid)");
