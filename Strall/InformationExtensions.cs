@@ -93,7 +93,7 @@ namespace Strall
 
         /// <summary>
         /// Obtem uma informação.
-        /// Se não existir apagar o valor do Id.
+        /// Se não existir não causa nenhum efeito.
         /// </summary>
         /// <param name="information">Informação.</param>
         /// <param name="contentSynchronize">Sincroniza o conteúdo com base nas réplicas.</param>
@@ -101,8 +101,7 @@ namespace Strall
         public static IInformation Get(this IInformation information, bool contentSynchronize = true)
         {
             var returned = information.Id.GetInformation(contentSynchronize);
-            if (returned == null) information.Id = Guid.Empty;
-            else returned.CopyTo(information);
+            returned?.CopyTo(information);
             return information;
         }
 

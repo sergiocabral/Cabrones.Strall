@@ -135,9 +135,9 @@ namespace Strall
             // Assert, Then
 
             resultadoParaInformaçãoIndefinida.Should().NotBeNull();
-            resultadoParaInformaçãoIndefinida.Id.Should().BeEmpty();
+            resultadoParaInformaçãoIndefinida.Id.Should().Be(informaçãoIndefinida.Id);
             resultadoParaInformaçãoQueNãoExiste.Should().NotBeNull();
-            resultadoParaInformaçãoQueNãoExiste.Id.Should().BeEmpty();
+            resultadoParaInformaçãoQueNãoExiste.Id.Should().Be(informaçãoQueNãoExiste.Id);
             resultadoParaInformaçãoQueExiste.Should().NotBeNull().And
                 .Subject.As<IInformation>().Id.Should().Be(informaçãoQueExiste.Id);
         }

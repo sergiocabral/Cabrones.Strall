@@ -60,6 +60,6 @@ namespace Strall.Persistence.SqlServer
         /// <param name="database">Nome do banco de dados.</param>
         /// <returns>String de conexão.</returns>
         private static string CreateConnectionString(string? database) =>
-            $"Server=.;Database={database};Trusted_Connection=True;";
+            $"Server=.;Database={database};Trusted_Connection=True;Connection Timeout=1;";
     }
 }
