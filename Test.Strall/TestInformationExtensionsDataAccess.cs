@@ -87,7 +87,7 @@ namespace Strall
         }
 
         [Fact]
-        public void verifica_funcionamento_do_método_Exists()
+        public void Exists_deve_verificar_se_uma_informação_existe()
         {
             // Arrange, Given
 
@@ -111,7 +111,7 @@ namespace Strall
         }
         
         [Fact]
-        public void verifica_funcionamento_do_método_Get()
+        public void Get_deve_carregar_do_banco_de_dados_os_valores_dos_campos_da_informação()
         {
             // Arrange, Given
             
@@ -138,7 +138,7 @@ namespace Strall
         }
 
         [Fact]
-        public void verifica_funcionamento_do_método_GetInformation()
+        public void GetInformation_deve_consultar_no_banco_de_dados_uma_informação()
         {
             // Arrange, Given
             
@@ -163,7 +163,7 @@ namespace Strall
         }
 
         [Fact]
-        public void verifica_funcionamento_do_método_Create()
+        public void Create_deve_criar_uma_informação()
         {
             // Arrange, Given
 
@@ -191,7 +191,7 @@ namespace Strall
         }
         
         [Fact]
-        public void verifica_funcionamento_do_método_Update()
+        public void Update_deve_atualizar_uma_informação()
         {
             // Arrange, Given
             
@@ -216,7 +216,7 @@ namespace Strall
         }
         
         [Fact]
-        public void verifica_funcionamento_do_método_UpdateOrCreate()
+        public void UpdateOrCreate_deve_atualizar_uma_informação_mas_se_não_existir_deve_criar()
         {
             // Arrange, Given
             
@@ -253,7 +253,7 @@ namespace Strall
         }
         
         [Fact]
-        public void verifica_funcionamento_do_método_Delete_sem_ser_recursivo()
+        public void Delete_deve_poder_apagar_uma_informação_sem_ser_recursivo()
         {
             // Arrange, Given
             
@@ -280,7 +280,7 @@ namespace Strall
         }
         
         [Fact]
-        public void verifica_funcionamento_do_método_Delete_de_forma_recursiva()
+        public void Delete_deve_poder_apagar_uma_informação_de_forma_recursiva()
         {
             // Arrange, Given
             
@@ -324,7 +324,7 @@ namespace Strall
         }
         
         [Fact]
-        public void verifica_funcionamento_do_método_HasChildren()
+        public void HasChildren_verifica_se_a_informação_tem_informação_dependentes()
         {
             // Arrange, Given
             
@@ -361,7 +361,7 @@ namespace Strall
         }
         
         [Fact]
-        public void verifica_funcionamento_do_método_Children()
+        public void Children_deve_retornar_as_informações_imediatamente_dependentes()
         {
             // Arrange, Given
             
@@ -399,7 +399,7 @@ namespace Strall
         }
         
         [Fact]
-        public void verifica_funcionamento_do_método_HasClones()
+        public void HasContentTo_verifica_se_o_conteúdo_é_clonado_por_outras_informações()
         {
             // Arrange, Given
             
@@ -436,7 +436,7 @@ namespace Strall
         }
         
         [Fact]
-        public void verifica_funcionamento_do_método_ContentTo()
+        public void ContentTo_retorna_as_informações_que_clonam_o_conteúdo()
         {
             // Arrange, Given
             
@@ -474,7 +474,7 @@ namespace Strall
         }
 
         [Fact]
-        public void verifica_funcionamento_do_método_ContentFrom()
+        public void ContentFrom_retorna_a_informação_de_onde_o_conteúdo_é_clonado()
         {
             // Arrange, Given
             
@@ -509,7 +509,7 @@ namespace Strall
         }
 
         [Fact]
-        public void verifica_funcionamento_do_método_Content()
+        public void ContentLoad_deve_carregar_o_conteúdo_da_informação_de_origem()
         {
             // Arrange, Given
             

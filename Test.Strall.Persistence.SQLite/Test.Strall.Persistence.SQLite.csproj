@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.0</TargetFramework>
         <IsPackable>false</IsPackable>
-        <Version>0.0.0.436</Version>
+        <Version>0.0.0.437</Version>
         <RootNamespace>Strall.Persistence.SqLite</RootNamespace>
     </PropertyGroup>
 
