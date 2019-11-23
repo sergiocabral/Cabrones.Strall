@@ -4,7 +4,7 @@ using System.Threading;
 using Cabrones.Test;
 using FluentAssertions;
 using Strall.Exceptions;
-using Strall.Persistence.SQLite;
+using Strall.Persistence.SqLite;
 using Xunit;
 
 namespace Strall
@@ -27,7 +27,7 @@ namespace Strall
         public TestInformationExtensions()
         {
             var persistence = new PersistenceProviderSqLite();
-            persistence.Open(new ConnectionInfo { Filename = Path.Combine(Environment.CurrentDirectory, Database) });
+            persistence.Open(new SqLiteConnectionInfo { Filename = Path.Combine(Environment.CurrentDirectory, Database) });
             _persistence = persistence;
         }
 

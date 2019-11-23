@@ -12,7 +12,8 @@ namespace Strall.Persistence.Sql
     /// Provê os meios de gravação das informações.
     /// Banco de dados tipo SQL.
     /// </summary>
-    public abstract class PersistenceProviderSql<TConnectionInfo>: IPersistenceProviderSql<TConnectionInfo>
+    public abstract class PersistenceProviderSql<TConnectionInfo>: IPersistenceProviderSql, IPersistenceProvider<TConnectionInfo>
+        where TConnectionInfo: IConnectionInfo
     {
         /// <summary>
         /// Conexão com o banco de dados.

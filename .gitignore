@@ -5,3 +5,5 @@
 /_build
 /_test
 *_build/
+*.DotSettings.user
+*.DotSettings

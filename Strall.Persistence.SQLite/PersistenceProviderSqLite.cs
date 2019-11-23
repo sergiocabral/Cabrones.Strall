@@ -4,13 +4,13 @@ using Microsoft.Data.Sqlite;
 using Strall.Exceptions;
 using Strall.Persistence.Sql;
 
-namespace Strall.Persistence.SQLite
+namespace Strall.Persistence.SqLite
 {
     /// <summary>
     /// Provê os meios de gravação das informações.
     /// Banco de dados SQLite.
     /// </summary>
-    public class PersistenceProviderSqLite: PersistenceProviderSql<IConnectionInfo>, IPersistenceProviderSqLite
+    public class PersistenceProviderSqLite: PersistenceProviderSql<ISqLiteConnectionInfo>, IPersistenceProviderSqLite
     {
         /// <summary>
         /// Valor para propriedade ConnectionSpecialized.
@@ -47,7 +47,7 @@ namespace Strall.Persistence.SQLite
         /// <summary>
         /// Cria a estrutura do banco de dados.
         /// </summary>
-        public override IPersistenceProvider<IConnectionInfo> CreateStructure()
+        public override IPersistenceProvider<ISqLiteConnectionInfo> CreateStructure()
         {
             var commandText = $@"
 CREATE TABLE IF NOT EXISTS {SqlNames.TableInformation} (
@@ -87,14 +87,14 @@ CREATE INDEX IF NOT EXISTS IDX_{SqlNames.TableInformation}_{SqlNames.TableInform
         /// <summary>
         /// Inicia a conexão.
         /// </summary>
-        /// <param name="connectionInfo">Informações para conexão.</param>
-        public override IPersistenceProvider<IConnectionInfo> Open(IConnectionInfo connectionInfo)
+        /// <param name="sqLiteConnectionInfo">Informações para conexão.</param>
+        public override IPersistenceProvider<ISqLiteConnectionInfo> Open(ISqLiteConnectionInfo sqLiteConnectionInfo)
         {
             if (_connection != null) throw new StrallConnectionIsOpenException();
             
-            var createdDatabase = connectionInfo.CreateDatabase();
+            var createdDatabase = sqLiteConnectionInfo.CreateDatabase();
             
-            _connection = new SqliteConnection(connectionInfo.ConnectionString);
+            _connection = new SqliteConnection(sqLiteConnectionInfo.ConnectionString);
             _connection.Open();
             
             if (createdDatabase) CreateStructure();
@@ -107,7 +107,7 @@ CREATE INDEX IF NOT EXISTS IDX_{SqlNames.TableInformation}_{SqlNames.TableInform
         /// <summary>
         /// Fecha a conexão.
         /// </summary>
-        public override IPersistenceProvider<IConnectionInfo> Close()
+        public override IPersistenceProvider<ISqLiteConnectionInfo> Close()
         {
             if (ConnectionOpened != null) Dispose();
             return this;

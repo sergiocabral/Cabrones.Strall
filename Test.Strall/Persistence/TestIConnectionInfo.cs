@@ -1,9 +1,9 @@
 ﻿using Cabrones.Test;
 using Xunit;
 
-namespace Strall.Persistence.Sql
+namespace Strall.Persistence
 {
-    public class TestIPersistenceProviderSql
+    public class TestIConnectionInfo
     {
         [Fact]
         public void verificações_declarativas()
@@ -11,15 +11,13 @@ namespace Strall.Persistence.Sql
             // Arrange, Given
             // Act, When
 
-            var sut = typeof(IPersistenceProviderSql);
+            var sut = typeof(IConnectionInfo);
 
             // Assert, Then
 
             sut.AssertMyImplementations();
             sut.AssertMyOwnImplementations();
-            sut.AssertMyOwnPublicPropertiesCount(3);
-            sut.AssertPublicPropertyPresence("DbConnection Connection { get; }");
-            sut.AssertPublicPropertyPresence("ISqlNames SqlNames { get; set; }");
+            sut.AssertMyOwnPublicPropertiesCount(0);
             sut.AssertMyOwnPublicMethodsCount(0);
         }
     }

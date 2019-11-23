@@ -12,7 +12,7 @@ namespace Strall.Persistence
             // Arrange, Given
             // Act, When
 
-            var sut = typeof(IPersistenceProvider<object>);
+            var sut = typeof(IPersistenceProvider<ConnectionInfo>);
 
             // Assert, Then
 
@@ -21,9 +21,9 @@ namespace Strall.Persistence
             sut.AssertMyOwnPublicPropertiesCount(1);
             sut.AssertPublicPropertyPresence("PersistenceProviderMode Mode { get; }");
             sut.AssertMyOwnPublicMethodsCount(3);
-            sut.AssertPublicMethodPresence("IPersistenceProvider<Object> CreateStructure()");
-            sut.AssertPublicMethodPresence("IPersistenceProvider<Object> Open(Object)");
-            sut.AssertPublicMethodPresence("IPersistenceProvider<Object> Close()");
+            sut.AssertPublicMethodPresence("IPersistenceProvider<ConnectionInfo> CreateStructure()");
+            sut.AssertPublicMethodPresence("IPersistenceProvider<ConnectionInfo> Open(ConnectionInfo)");
+            sut.AssertPublicMethodPresence("IPersistenceProvider<ConnectionInfo> Close()");
         }
     }
 }

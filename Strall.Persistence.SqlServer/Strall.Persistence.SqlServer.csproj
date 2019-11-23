@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>0.0.0.664</Version>
+        <Version>0.0.0.90</Version>
         <Nullable>enable</Nullable>
         <TargetFramework>netcoreapp3.0</TargetFramework>
     </PropertyGroup>
@@ -20,7 +20,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Cabrones.Utils" Version="2.2.3.158" />
+        <ProjectReference Include="..\Strall\Strall.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Cabrones.Utils" Version="2.2.3.158" />
+        <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
     </ItemGroup>
 
 </Project>

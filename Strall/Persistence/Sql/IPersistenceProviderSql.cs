@@ -6,7 +6,7 @@ namespace Strall.Persistence.Sql
     /// Provê os meios de gravação das informações.
     /// Banco de dados SQLite.
     /// </summary>
-    public interface IPersistenceProviderSql<in TConnectionInfo>: IPersistenceProvider<TConnectionInfo>
+    public interface IPersistenceProviderSql
     {
         /// <summary>
         /// Conexão com o SQLite.

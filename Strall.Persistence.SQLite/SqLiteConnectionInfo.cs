@@ -1,12 +1,12 @@
 ﻿using System.IO;
 using Strall.Exceptions;
 
-namespace Strall.Persistence.SQLite
+namespace Strall.Persistence.SqLite
 {
     /// <summary>
-    /// Informações para conexão com o SQLite.
+    /// Informações para conexão com o banco de dados.
     /// </summary>
-    public class ConnectionInfo: IConnectionInfo
+    public class SqLiteConnectionInfo: ConnectionInfo, ISqLiteConnectionInfo
     {
         /// <summary>
         /// Arquivo.

@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Cabrones.Test;
 using FluentAssertions;
 using Strall.Exceptions;
 using Strall.Persistence.Sql;
 using Xunit;
 
-namespace Strall.Persistence.SQLite
+namespace Strall.Persistence.SqLite
 {
     
     public class TestPersistenceProviderSqLite
@@ -25,7 +23,7 @@ namespace Strall.Persistence.SQLite
 
             // Assert, Then
 
-            sut.AssertMyImplementations(typeof(PersistenceProviderSql<IConnectionInfo>), typeof(IPersistenceProviderSql<IConnectionInfo>), typeof(IPersistenceProviderSqLite), typeof(IPersistenceProvider<IConnectionInfo>), typeof(IDataAccess), typeof(IDisposable));
+            sut.AssertMyImplementations(typeof(PersistenceProviderSql<ISqLiteConnectionInfo>), typeof(IPersistenceProviderSql), typeof(IPersistenceProvider<ISqLiteConnectionInfo>), typeof(IPersistenceProviderSqLite), typeof(IDataAccess), typeof(IDisposable));
             sut.AssertMyOwnImplementations(typeof(IPersistenceProviderSqLite));
             sut.AssertMyOwnPublicPropertiesCount(0);
             sut.AssertMyOwnPublicMethodsCount(0);
@@ -36,7 +34,7 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
+            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProvider<ISqLiteConnectionInfo>;
             
             // Act, When
 
@@ -52,12 +50,12 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
-            var connectionInfo = new ConnectionInfo
+            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProvider<ISqLiteConnectionInfo>;
+            var connectionInfo = new SqLiteConnectionInfo
             {
                 Filename = Path.Combine(Environment.CurrentDirectory, this.Fixture<string>()),
                 CreateDatabaseIfNotExists = true
-            } as IConnectionInfo;
+            } as ISqLiteConnectionInfo;
             
             // Act, When
 
@@ -75,11 +73,11 @@ namespace Strall.Persistence.SQLite
             // Arrange, Given
 
             var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
-            var connectionInfo = new ConnectionInfo
+            var connectionInfo = new SqLiteConnectionInfo
             {
                 Filename = Path.Combine(Environment.CurrentDirectory, this.Fixture<string>()),
                 CreateDatabaseIfNotExists = true
-            } as IConnectionInfo;
+            } as ISqLiteConnectionInfo;
             
             // Act, When
 
@@ -96,12 +94,12 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
-            var connectionInfo = new ConnectionInfo
+            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProvider<ISqLiteConnectionInfo>;
+            var connectionInfo = new SqLiteConnectionInfo
             {
                 Filename = Path.Combine(Environment.CurrentDirectory, this.Fixture<string>()),
                 CreateDatabaseIfNotExists = true
-            } as IConnectionInfo;
+            } as ISqLiteConnectionInfo;
             
             // Act, When
 
@@ -117,12 +115,12 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
-            var connectionInfo = new ConnectionInfo
+            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProvider<ISqLiteConnectionInfo>;
+            var connectionInfo = new SqLiteConnectionInfo
             {
                 Filename = Path.Combine(Environment.CurrentDirectory, this.Fixture<string>()),
                 CreateDatabaseIfNotExists = true
-            } as IConnectionInfo;
+            } as ISqLiteConnectionInfo;
             persistenceProviderSqLite.Open(connectionInfo);
             
             // Act, When
@@ -140,11 +138,11 @@ namespace Strall.Persistence.SQLite
             // Arrange, Given
 
             var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
-            var connectionInfo = new ConnectionInfo
+            var connectionInfo = new SqLiteConnectionInfo
             {
                 Filename = Path.Combine(Environment.CurrentDirectory, this.Fixture<string>()),
                 CreateDatabaseIfNotExists = true
-            } as IConnectionInfo;
+            } as ISqLiteConnectionInfo;
             persistenceProviderSqLite.Open(connectionInfo);
             
             // Act, When
@@ -161,7 +159,7 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
+            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProvider<ISqLiteConnectionInfo>;
             
             // Act, When
 
@@ -180,11 +178,12 @@ namespace Strall.Persistence.SQLite
             var arquivo = Path.Combine(Environment.CurrentDirectory, this.Fixture<string>());
             File.Create(arquivo).Close();
             
-            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
-            var connectionInfo = new ConnectionInfo
+            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProvider<ISqLiteConnectionInfo>;
+            var connectionInfo = new SqLiteConnectionInfo
             {
-                Filename = arquivo
-            } as IConnectionInfo;
+                Filename = arquivo,
+                CreateDatabaseIfNotExists = false
+            } as ISqLiteConnectionInfo;
             persistenceProviderSqLite.Open(connectionInfo);
             
             // Act, When
@@ -206,11 +205,11 @@ namespace Strall.Persistence.SQLite
             var arquivo = Path.Combine(Environment.CurrentDirectory, this.Fixture<string>());
             
             var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
-            var connectionInfo = new ConnectionInfo
+            var connectionInfo = new SqLiteConnectionInfo
             {
                 Filename = arquivo,
                 CreateDatabaseIfNotExists = true
-            } as IConnectionInfo;
+            } as ISqLiteConnectionInfo;
             
             // Act, When
 
@@ -231,7 +230,7 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
+            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProvider<ISqLiteConnectionInfo>;
             
             // Act, When
 
@@ -249,12 +248,12 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
-            var connectionInfo = new ConnectionInfo
+            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProvider<ISqLiteConnectionInfo>;
+            var connectionInfo = new SqLiteConnectionInfo
             {
                 Filename = Path.Combine(Environment.CurrentDirectory, this.Fixture<string>()),
                 CreateDatabaseIfNotExists = true
-            } as IConnectionInfo;
+            } as ISqLiteConnectionInfo;
             
             // Act, When
 
@@ -271,56 +270,6 @@ namespace Strall.Persistence.SQLite
             {
                 retorno.Should().BeSameAs(persistenceProviderSqLite);
             }
-        }
-
-        [Fact]
-        public void ao_localizar_a_origem_do_clone_retorna_vazio_se_a_sequência_de_apontamentos_dos_clones_estiver_quebrada()
-        {
-            // Arrange, Given
-
-            void RemoverConstraintsDoBancoDeDados(IPersistenceProviderSqLite persistence)
-            {
-                using var command = persistence.Connection.CreateCommand();
-                command.CommandText =
-                    $"SELECT sql FROM sqlite_master WHERE name='{persistence.SqlNames.TableInformation}';";
-                var sql = (string) command.ExecuteScalar();
-                sql = $"DROP TABLE {persistence.SqlNames.TableInformation}; " +
-                      Regex.Replace(sql, @",\s*?FOREIGN.*(?=\))", string.Empty,
-                          RegexOptions.Singleline | RegexOptions.IgnoreCase);
-                command.CommandText = sql;
-                command.ExecuteNonQuery();
-            }
-            
-            var persistenceProviderSqLite =
-                (IPersistenceProviderSqLite)
-                new PersistenceProviderSqLite()
-                    .Open(
-                        new ConnectionInfo
-                        {
-                            Filename = Path.Combine(Environment.CurrentDirectory, this.Fixture<string>())
-                        });
-
-            RemoverConstraintsDoBancoDeDados(persistenceProviderSqLite);
-
-            var informações = new List<IInformation>();
-            for (var i = 0; i < 3; i++)
-            {
-                var informação = new Information
-                {
-                    Id = Guid.NewGuid(),
-                    ContentFromId = informações.LastOrDefault()?.Id ?? Guid.NewGuid()
-                };
-                informações.Add(informação);
-                persistenceProviderSqLite.Create(informação);
-            }
-            
-            // Act, When
-
-            var origemDoClone = persistenceProviderSqLite.ContentFrom(informações.Last().Id);
-
-            // Assert, Then
-
-            origemDoClone.Should().BeEmpty();
         }
     }
 }

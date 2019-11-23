@@ -1,7 +1,7 @@
 ﻿using Cabrones.Test;
 using Xunit;
 
-namespace Strall.Persistence.SQLite
+namespace Strall.Persistence.SqlServer
 {
     public class TestIConnectionInfo
     {
@@ -11,14 +11,14 @@ namespace Strall.Persistence.SQLite
             // Arrange, Given
             // Act, When
 
-            var sut = typeof(IConnectionInfo);
+            var sut = typeof(ISqlServerConnectionInfo);
 
             // Assert, Then
 
-            sut.AssertMyImplementations();
+            sut.AssertMyImplementations(typeof(IConnectionInfo));
             sut.AssertMyOwnImplementations();
             sut.AssertMyOwnPublicPropertiesCount(5);
-            sut.AssertPublicPropertyPresence("String Filename { get; set; }");
+            sut.AssertPublicPropertyPresence("String Database { get; set; }");
             sut.AssertPublicPropertyPresence("Boolean CreateDatabaseIfNotExists { get; set; }");
             sut.AssertPublicPropertyPresence("String ConnectionString { get; }");
             sut.AssertMyOwnPublicMethodsCount(1);

@@ -10,6 +10,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strall.Persistence.SqLite",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Strall.Persistence.SqLite", "Test.Strall.Persistence.SqLite\Test.Strall.Persistence.SqLite.csproj", "{8D72EFAD-57E2-4EA8-A5BE-ABEC647B8BF3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strall.Persistence.SqlServer", "Strall.Persistence.SqlServer\Strall.Persistence.SqlServer.csproj", "{0C38C905-D222-4A50-B374-9E9BA9DF5E18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Strall.Persistence.SqlServer", "Test.Strall.Persistence.SqlServer\Test.Strall.Persistence.SqlServer.csproj", "{38DCD14C-58A0-4B9B-A15D-C3D14094D26F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +40,13 @@ Global
 		{8D72EFAD-57E2-4EA8-A5BE-ABEC647B8BF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D72EFAD-57E2-4EA8-A5BE-ABEC647B8BF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D72EFAD-57E2-4EA8-A5BE-ABEC647B8BF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C38C905-D222-4A50-B374-9E9BA9DF5E18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C38C905-D222-4A50-B374-9E9BA9DF5E18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C38C905-D222-4A50-B374-9E9BA9DF5E18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C38C905-D222-4A50-B374-9E9BA9DF5E18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38DCD14C-58A0-4B9B-A15D-C3D14094D26F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38DCD14C-58A0-4B9B-A15D-C3D14094D26F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38DCD14C-58A0-4B9B-A15D-C3D14094D26F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38DCD14C-58A0-4B9B-A15D-C3D14094D26F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

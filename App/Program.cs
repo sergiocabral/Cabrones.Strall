@@ -1,6 +1,6 @@
 ﻿using System;
 using Strall;
-using Strall.Persistence.SQLite;
+using Strall.Persistence.SqlServer;
 
 namespace App
 {
@@ -9,17 +9,17 @@ namespace App
         private static void Main()
         {
             ((Information?)null).SetDataAccess(
-                new PersistenceProviderSqLite()
-                    .Open(new ConnectionInfo { Filename = "teste.db" })
+                new PersistenceProviderSqlServer()
+                    .Open(new SqlServerConnectionInfo { Database = "strall" })
                     .CreateStructure());
 
             var information1 = new Information() as IInformation;
-            information1.Id = Guid.Parse("66e35dca-3822-4686-a6a5-885aeb9489e4");
+            information1.Id = Guid.Parse("95579031-B1BA-480E-9189-DE8EBD09C8D7");
             information1.Get();
             information1.Update();
             
             var information2 = new Information() as IInformation;
-            information2.Id = Guid.Parse("b935e71d-57d2-4193-be20-f2122cc0f95f");
+            information2.Id = Guid.Parse("5005D67F-4D7C-44D7-9EC0-441ADC6F6E2D");
             information2.Get();
 
             information2.ContentFromId = information1.Id;

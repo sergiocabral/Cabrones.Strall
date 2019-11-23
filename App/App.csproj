@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>0.0.0.275</Version>
+        <Version>0.0.0.324</Version>
         <Nullable>enable</Nullable>
         <TargetFramework>netcoreapp3.0</TargetFramework>
         <OutputType>Exe</OutputType>
@@ -21,7 +21,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Strall.Persistence.SQLite\Strall.Persistence.SQLite.csproj" />
+      <ProjectReference Include="..\Strall.Persistence.SqLite\Strall.Persistence.SqLite.csproj" />
+      <ProjectReference Include="..\Strall.Persistence.SqlServer\Strall.Persistence.SqlServer.csproj" />
       <ProjectReference Include="..\Strall\Strall.csproj" />
     </ItemGroup>
 

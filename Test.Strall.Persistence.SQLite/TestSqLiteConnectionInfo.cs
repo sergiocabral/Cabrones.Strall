@@ -5,9 +5,9 @@ using FluentAssertions;
 using Strall.Exceptions;
 using Xunit;
 
-namespace Strall.Persistence.SQLite
+namespace Strall.Persistence.SqLite
 {
-    public class TestConnectionInfo
+    public class TestSqLiteConnectionInfo
     {
         [Fact]
         public void verificações_declarativas()
@@ -15,12 +15,12 @@ namespace Strall.Persistence.SQLite
             // Arrange, Given
             // Act, When
 
-            var sut = typeof(ConnectionInfo);
+            var sut = typeof(SqLiteConnectionInfo);
 
             // Assert, Then
 
-            sut.AssertMyImplementations(typeof(IConnectionInfo));
-            sut.AssertMyOwnImplementations(typeof(IConnectionInfo));
+            sut.AssertMyImplementations(typeof(ISqLiteConnectionInfo), typeof(ConnectionInfo), typeof(IConnectionInfo));
+            sut.AssertMyOwnImplementations(typeof(ISqLiteConnectionInfo));
             sut.AssertMyOwnPublicPropertiesCount(0);
             sut.AssertMyOwnPublicMethodsCount(0);
         }
@@ -31,10 +31,10 @@ namespace Strall.Persistence.SQLite
             // Arrange, Given
             // Act, When
             
-            Func<ConnectionInfo> construir = () =>
+            Func<SqLiteConnectionInfo> construir = () =>
             {
-                var constructorInfo = typeof(ConnectionInfo).GetConstructor(new Type [0]);
-                return constructorInfo?.Invoke(new object[0]) as ConnectionInfo;
+                var constructorInfo = typeof(SqLiteConnectionInfo).GetConstructor(new Type [0]);
+                return constructorInfo?.Invoke(new object[0]) as SqLiteConnectionInfo;
             };
             
             // Assert, Then
@@ -48,10 +48,10 @@ namespace Strall.Persistence.SQLite
             // Arrange, Given
 
             var arquivo = this.Fixture<string>();
-            var connectionInfo = new ConnectionInfo
+            var connectionInfo = new SqLiteConnectionInfo
             {
                 Filename = arquivo
-            } as IConnectionInfo;
+            } as ISqLiteConnectionInfo;
             var stringDeConexãoEsperada = $"Data Source={arquivo};";
             
             // Act, When
@@ -69,11 +69,11 @@ namespace Strall.Persistence.SQLite
             // Arrange, Given
 
             var arquivo = Path.Combine(Environment.CurrentDirectory, this.Fixture<string>());
-            var connectionInfo = new ConnectionInfo
+            var connectionInfo = new SqLiteConnectionInfo
             {
                 Filename = arquivo,
                 CreateDatabaseIfNotExists = false
-            } as IConnectionInfo;
+            } as ISqLiteConnectionInfo;
             
             // Act, When
 
@@ -90,11 +90,11 @@ namespace Strall.Persistence.SQLite
             // Arrange, Given
 
             var arquivo = Path.Combine(Environment.CurrentDirectory, this.Fixture<string>());
-            var connectionInfo = new ConnectionInfo
+            var connectionInfo = new SqLiteConnectionInfo
             {
                 Filename = arquivo,
                 CreateDatabaseIfNotExists = true
-            } as IConnectionInfo;
+            } as ISqLiteConnectionInfo;
             
             // Act, When
 
@@ -115,11 +115,11 @@ namespace Strall.Persistence.SQLite
             var conteúdoEscrito = this.Fixture<string>();
             File.WriteAllText(arquivo, conteúdoEscrito);
 
-            var connectionInfo = new ConnectionInfo
+            var connectionInfo = new SqLiteConnectionInfo
             {
                 Filename = arquivo,
                 CreateDatabaseIfNotExists = true
-            } as IConnectionInfo;
+            } as ISqLiteConnectionInfo;
             
             // Act, When
 
@@ -138,7 +138,7 @@ namespace Strall.Persistence.SQLite
             // Arrange, Given
             // Act, When
             
-            var connectionInfo = new ConnectionInfo() as IConnectionInfo;
+            var connectionInfo = new SqLiteConnectionInfo() as ISqLiteConnectionInfo;
 
             // Assert, Then
 
@@ -153,11 +153,11 @@ namespace Strall.Persistence.SQLite
             var valorInicialParaFilename = this.Fixture<string>();
             var valorInicialParaCreateDatabaseIfNotExists = this.Fixture<bool>();
             
-            var connectionInfo = new ConnectionInfo
+            var connectionInfo = new SqLiteConnectionInfo
             {
                 Filename = valorInicialParaFilename,
                 CreateDatabaseIfNotExists = valorInicialParaCreateDatabaseIfNotExists
-            } as IConnectionInfo;
+            } as ISqLiteConnectionInfo;
             
             // Act, When
             

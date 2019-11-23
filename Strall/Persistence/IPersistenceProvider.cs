@@ -5,7 +5,8 @@ namespace Strall.Persistence
     /// <summary>
     /// Provê os meios de gravação das informações.
     /// </summary>
-    public interface IPersistenceProvider<in TConnectionInfo>: IDataAccess, IDisposable
+    public interface IPersistenceProvider<in TConnectionInfo>: IDataAccess, IDisposable 
+        where TConnectionInfo: IConnectionInfo
     {
         /// <summary>
         /// Cria a estrutura do banco de dados.

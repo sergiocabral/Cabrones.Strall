@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Cabrones.Test;
 using FluentAssertions;
 using Strall.Exceptions;
+using Strall.Persistence.SqLite;
 using Xunit;
 
-namespace Strall.Persistence.SQLite
+namespace Strall.Persistence.Sql
 {
-    public class TestPersistenceProviderSqLiteIDataAccess: IDisposable
+    public class TestPersistenceProviderSqlIDataAccess: IDisposable
     {
         /// <summary>
         /// Sistema sob teste (SUT = System Under Test)
         /// </summary>
-        private readonly IPersistenceProviderSqLite _sut;
+        private readonly IDataAccess _sut;
 
         /// <summary>
         /// Arquivo do banco de dados para este teste.
@@ -24,23 +27,24 @@ namespace Strall.Persistence.SQLite
         /// <summary>
         /// Setup do teste.
         /// </summary>
-        public TestPersistenceProviderSqLiteIDataAccess()
+        public TestPersistenceProviderSqlIDataAccess()
         {
+            // Qualquer persistência para testar a interface.
             _sut = new PersistenceProviderSqLite();
-            _sut.Open(new ConnectionInfo { Filename = Path.Combine(Environment.CurrentDirectory, Database) });
+            ((PersistenceProviderSqLite)_sut).Open(new SqLiteConnectionInfo { Filename = Path.Combine(Environment.CurrentDirectory, Database) });
         }
 
         /// <summary>
         /// Liberação de recursos.
         /// </summary>
-        public void Dispose() => _sut?.Close();
+        public void Dispose() => ((PersistenceProviderSqLite)_sut)?.Close();
 
         [Fact]
         public void para_manipular_dados_a_conexão_com_o_banco_de_dados_deve_estar_aberta()
         {
             // Arrange, Given
 
-            var persistence = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
+            var persistence = new PersistenceProviderSqLite() as IDataAccess;
             
             // Act, When
 
@@ -72,7 +76,7 @@ namespace Strall.Persistence.SQLite
         {
             // Arrange, Given
 
-            var persistence = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
+            var persistence = new PersistenceProviderSqLite() as IDataAccess;
             
             // Act, When
             
@@ -169,8 +173,8 @@ namespace Strall.Persistence.SQLite
             resultadoParaInformaçãoComIdVazio.Should().NotBeEmpty();
             resultadoParaInformaçãoComIdInformado.Should().NotBeEmpty().And
                 .Subject.Should().Be(informaçãoComIdInformado.Id);
-            criarDuplicado.Should().ThrowExactly<Microsoft.Data.Sqlite.SqliteException>()
-                .Which.Message.Should().Be($"SQLite Error 19: 'UNIQUE constraint failed: {_sut.SqlNames.TableInformation}.{_sut.SqlNames.TableInformationColumnId}'.");
+            criarDuplicado.Should().Throw<DbException>()
+                .Which.Message.Should().Contain("UNIQUE");
         }
         
         [Fact]
@@ -407,6 +411,56 @@ namespace Strall.Persistence.SQLite
             origemDoPrimeiro.Should().Be(informações.First().Id);
             origemDoÚltimo.Should().Be(informações.First().Id);
             origemDoLoop.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void ao_localizar_a_origem_do_clone_retorna_vazio_se_a_sequência_de_apontamentos_dos_clones_estiver_quebrada()
+        {
+            // Arrange, Given
+
+            void RemoverConstraintsDoBancoDeDados(IPersistenceProviderSqLite persistence)
+            {
+                using var command = persistence.Connection.CreateCommand();
+                command.CommandText =
+                    $"SELECT sql FROM sqlite_master WHERE name='{persistence.SqlNames.TableInformation}';";
+                var sql = (string) command.ExecuteScalar();
+                sql = $"DROP TABLE {persistence.SqlNames.TableInformation}; " +
+                      Regex.Replace(sql, @",\s*?FOREIGN.*(?=\))", string.Empty,
+                          RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                command.CommandText = sql;
+                command.ExecuteNonQuery();
+            }
+            
+            var persistenceProviderSqLite =
+                (IPersistenceProviderSqLite)
+                new PersistenceProviderSqLite()
+                    .Open(
+                        new SqLiteConnectionInfo
+                        {
+                            Filename = Path.Combine(Environment.CurrentDirectory, this.Fixture<string>())
+                        });
+
+            RemoverConstraintsDoBancoDeDados(persistenceProviderSqLite);
+
+            var informações = new List<IInformation>();
+            for (var i = 0; i < 3; i++)
+            {
+                var informação = new Information
+                {
+                    Id = Guid.NewGuid(),
+                    ContentFromId = informações.LastOrDefault()?.Id ?? Guid.NewGuid()
+                };
+                informações.Add(informação);
+                persistenceProviderSqLite.Create(informação);
+            }
+            
+            // Act, When
+
+            var origemDoClone = persistenceProviderSqLite.ContentFrom(informações.Last().Id);
+
+            // Assert, Then
+
+            origemDoClone.Should().BeEmpty();
         }
     }
 }

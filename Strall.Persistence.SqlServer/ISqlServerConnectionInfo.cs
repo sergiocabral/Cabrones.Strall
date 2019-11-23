@@ -1,14 +1,14 @@
-﻿namespace Strall.Persistence.SQLite
+﻿namespace Strall.Persistence.SqlServer
 {
     /// <summary>
-    /// Informações para conexão com o SQLite.
+    /// Informações para conexão com o banco de dados.
     /// </summary>
-    public interface IConnectionInfo
+    public interface ISqlServerConnectionInfo: IConnectionInfo
     {
         /// <summary>
-        /// Arquivo.
+        /// Nome do banco de dados.
         /// </summary>
-        string? Filename { get; set; }
+        string? Database { get; set; }
 
         /// <summary>
         /// Cria o arquivo do banco de dados caso não exista.
