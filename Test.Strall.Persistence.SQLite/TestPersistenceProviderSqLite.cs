@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Cabrones.Test;
 using FluentAssertions;
-using NSubstitute;
 using Strall.Exceptions;
+using Strall.Persistence.Sql;
 using Xunit;
 
 namespace Strall.Persistence.SQLite
@@ -25,7 +25,7 @@ namespace Strall.Persistence.SQLite
 
             // Assert, Then
 
-            sut.AssertMyImplementations(typeof(IPersistenceProviderSqLite), typeof(IPersistenceProvider<IConnectionInfo>), typeof(IDataAccess), typeof(IDisposable));
+            sut.AssertMyImplementations(typeof(PersistenceProviderSql<IConnectionInfo>), typeof(IPersistenceProviderSql<IConnectionInfo>), typeof(IPersistenceProviderSqLite), typeof(IPersistenceProvider<IConnectionInfo>), typeof(IDataAccess), typeof(IDisposable));
             sut.AssertMyOwnImplementations(typeof(IPersistenceProviderSqLite));
             sut.AssertMyOwnPublicPropertiesCount(0);
             sut.AssertMyOwnPublicMethodsCount(0);
@@ -224,52 +224,6 @@ namespace Strall.Persistence.SQLite
 
             totalDeTabelas.Should().BeGreaterThan(0);
             new FileInfo(arquivo).Length.Should().BeGreaterThan(0);
-        }
-
-        [Fact]
-        public void deve_ser_possível_substituir_o_ISqlNames_para_alterar_os_nomes_dos_objetos_do_banco_de_dados()
-        {
-            // Arrange, Given
-
-            var persistenceProviderSqLite = new PersistenceProviderSqLite() as IPersistenceProviderSqLite;
-            var connectionInfo = new ConnectionInfo
-            {
-                Filename = Path.Combine(Environment.CurrentDirectory, this.Fixture<string>()),
-                CreateDatabaseIfNotExists = true
-            } as IConnectionInfo;
-
-            var sqlNames = Substitute.For<ISqlNames>();
-            sqlNames.TableInformation.Returns($"tb_{this.Fixture<string>().Substring(0, 8)}");
-            sqlNames.TableInformationColumnId.Returns($"col_{this.Fixture<string>().Substring(0, 8)}");
-            sqlNames.TableInformationColumnDescription.Returns($"col_{this.Fixture<string>().Substring(0, 8)}");
-            sqlNames.TableInformationColumnContent.Returns($"col_{this.Fixture<string>().Substring(0, 8)}");
-            sqlNames.TableInformationColumnContentType.Returns($"col_{this.Fixture<string>().Substring(0, 8)}");
-            sqlNames.TableInformationColumnContentFromId.Returns($"col_{this.Fixture<string>().Substring(0, 8)}");
-            sqlNames.TableInformationColumnParentId.Returns($"col_{this.Fixture<string>().Substring(0, 8)}");
-            sqlNames.TableInformationColumnParentRelation.Returns($"col_{this.Fixture<string>().Substring(0, 8)}");
-            sqlNames.TableInformationColumnSiblingOrder.Returns($"col_{this.Fixture<string>().Substring(0, 8)}");
-            
-            // Act, When
-
-            persistenceProviderSqLite.SqlNames = sqlNames;
-            persistenceProviderSqLite.Open(connectionInfo);
-            
-            // Assert, Then
-            
-            using var command = persistenceProviderSqLite.Connection.CreateCommand();
-            command.CommandText = $"SELECT sql FROM sqlite_master WHERE name = '{sqlNames.TableInformation}'";
-            var ddl = (string)command.ExecuteScalar();
-
-            persistenceProviderSqLite.SqlNames.Should().BeSameAs(sqlNames);
-            ddl.Should().NotBeNull();
-            ddl.Should().Contain(sqlNames.TableInformationColumnId);
-            ddl.Should().Contain(sqlNames.TableInformationColumnDescription);
-            ddl.Should().Contain(sqlNames.TableInformationColumnContent);
-            ddl.Should().Contain(sqlNames.TableInformationColumnContentType);
-            ddl.Should().Contain(sqlNames.TableInformationColumnContentFromId);
-            ddl.Should().Contain(sqlNames.TableInformationColumnParentId);
-            ddl.Should().Contain(sqlNames.TableInformationColumnParentRelation);
-            ddl.Should().Contain(sqlNames.TableInformationColumnSiblingOrder);
         }
 
         [Fact]

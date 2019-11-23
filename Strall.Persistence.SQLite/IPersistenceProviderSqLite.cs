@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using Strall.Persistence.Sql;
 
 namespace Strall.Persistence.SQLite
 {
@@ -6,16 +7,11 @@ namespace Strall.Persistence.SQLite
     /// Provê os meios de gravação das informações.
     /// Banco de dados SQLite.
     /// </summary>
-    public interface IPersistenceProviderSqLite: IPersistenceProvider<IConnectionInfo>
+    public interface IPersistenceProviderSqLite: IPersistenceProviderSql<IConnectionInfo>
     {
         /// <summary>
         /// Conexão com o SQLite.
         /// </summary>
-        SqliteConnection? Connection { get; }
-        
-        /// <summary>
-        /// Nomes no contexto do SQL.
-        /// </summary>
-        ISqlNames SqlNames { get; set; }
+        new SqliteConnection? Connection { get; }
     }
 }

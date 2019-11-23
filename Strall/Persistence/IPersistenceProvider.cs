@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Strall
+namespace Strall.Persistence
 {
     /// <summary>
     /// Provê os meios de gravação das informações.

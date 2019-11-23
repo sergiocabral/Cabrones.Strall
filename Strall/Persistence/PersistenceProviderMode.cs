@@ -1,4 +1,4 @@
-﻿namespace Strall
+﻿namespace Strall.Persistence
 {
     /// <summary>
     /// Modos possíveis para um IPersistenceProvider.

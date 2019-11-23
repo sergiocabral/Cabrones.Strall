@@ -1,5 +1,6 @@
 ﻿using System;
 using Cabrones.Test;
+using Strall.Persistence.Sql;
 using Xunit;
 
 namespace Strall.Persistence.SQLite
@@ -16,11 +17,10 @@ namespace Strall.Persistence.SQLite
 
             // Assert, Then
 
-            sut.AssertMyImplementations(typeof(IPersistenceProvider<IConnectionInfo>), typeof(IDataAccess), typeof(IDisposable));
+            sut.AssertMyImplementations(typeof(IPersistenceProviderSql<IConnectionInfo>), typeof(IPersistenceProvider<IConnectionInfo>), typeof(IDataAccess), typeof(IDisposable));
             sut.AssertMyOwnImplementations();
-            sut.AssertMyOwnPublicPropertiesCount(3);
+            sut.AssertMyOwnPublicPropertiesCount(1);
             sut.AssertPublicPropertyPresence("SqliteConnection Connection { get; }");
-            sut.AssertPublicPropertyPresence("ISqlNames SqlNames { get; set; }");
             sut.AssertMyOwnPublicMethodsCount(0);
         }
     }

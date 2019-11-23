@@ -2,7 +2,7 @@
 using Cabrones.Test;
 using Xunit;
 
-namespace Strall
+namespace Strall.Persistence
 {
     public class TestIPersistenceProvider
     {

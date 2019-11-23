@@ -1,61 +1,61 @@
-﻿namespace Strall.Persistence.SQLite
+﻿namespace Strall.Persistence.Sql
 {
     /// <summary>
     /// Nomes no contexto do SQL.
     /// </summary>
-    public class SqlNames : ISqlNames
+    public interface ISqlNames
     {
         /// <summary>
         /// Tabela: Information
         /// </summary>
-        public string TableInformation => "Information";
+        string TableInformation { get; }
 
         /// <summary>
         /// Tabela: Information
         /// Coluna: Id 
         /// </summary>
-        public string TableInformationColumnId => "Id";
+        string TableInformationColumnId { get; }
 
         /// <summary>
         /// Tabela: Information
         /// Coluna: Description
         /// </summary>
-        public string TableInformationColumnDescription => "Description";
+        string TableInformationColumnDescription { get; }
         
         /// <summary>
         /// Tabela: Information
         /// Coluna: Content 
         /// </summary>
-        public string TableInformationColumnContent => "Content";
+        string TableInformationColumnContent { get; }
         
         /// <summary>
         /// Tabela: Information
         /// Coluna: ContentType 
         /// </summary>
-        public string TableInformationColumnContentType => "ContentType";
+        string TableInformationColumnContentType { get; }
         
         /// <summary>
         /// Tabela: Information
         /// Coluna: CloneId 
         /// </summary>
-        public string TableInformationColumnContentFromId => "ContentFromId";
+        string TableInformationColumnContentFromId { get; }
         
         /// <summary>
         /// Tabela: Information
         /// Coluna: ParentId 
         /// </summary>
-        public string TableInformationColumnParentId => "ParentId";
+        string TableInformationColumnParentId { get; }
         
         /// <summary>
         /// Tabela: Information
         /// Coluna: ParentRelation 
         /// </summary>
-        public string TableInformationColumnParentRelation => "ParentRelation";
+        string TableInformationColumnParentRelation { get; }
         
         /// <summary>
         /// Tabela: Information
         /// Coluna: SiblingOrder 
         /// </summary>
-        public string TableInformationColumnSiblingOrder => "SiblingOrder";
+        string TableInformationColumnSiblingOrder { get; }
     }
 }

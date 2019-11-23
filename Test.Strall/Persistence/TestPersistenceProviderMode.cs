@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Xunit;
 
-namespace Strall
+namespace Strall.Persistence
 {
     public class TestPersistenceProviderMode
     {

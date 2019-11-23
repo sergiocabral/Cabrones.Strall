@@ -1,7 +1,7 @@
 ﻿using Cabrones.Test;
 using Xunit;
 
-namespace Strall.Persistence.SQLite
+namespace Strall.Persistence.Sql
 {
     public class TestISqlNames
     {

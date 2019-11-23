@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Xunit;
 
-namespace Strall.Persistence.SQLite
+namespace Strall.Persistence.Sql
 {
     public class TestSqlNames
     {
