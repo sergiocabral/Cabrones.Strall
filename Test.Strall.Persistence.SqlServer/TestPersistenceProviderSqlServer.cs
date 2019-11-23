@@ -82,11 +82,13 @@ namespace Strall.Persistence.SqlServer
             // Act, When
 
             persistenceProviderSqlServer.Open(connectionInfo);
+            Action consultaQualquer = () => persistenceProviderSqlServer.Exists(Guid.NewGuid());
             
             // Assert, Then
 
             persistenceProviderSqlServer.Connection.Should().NotBeNull();
             persistenceProviderSqlServer.Connection.State.Should().Be(ConnectionState.Open);
+            consultaQualquer.Should().NotThrow();
         }
         
         [Fact]

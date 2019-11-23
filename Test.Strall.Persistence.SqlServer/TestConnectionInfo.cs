@@ -109,6 +109,33 @@ namespace Strall.Persistence.SqlServer
         }
 
         [Fact]
+        public void deve_retornar_verdadeiro_para_criação_do_banco_de_dados_com_sucesso_e_vice_versa()
+        {
+            // Arrange, Given
+
+            var connectionInfoVálido = new SqlServerConnectionInfo
+            {
+                Database = "temp_" + this.Fixture<string>().Substring(0, 8),
+                CreateDatabaseIfNotExists = true
+            } as ISqlServerConnectionInfo;
+            var connectionInfoInválido = new SqlServerConnectionInfo
+            {
+                Database = "temp_'" + this.Fixture<string>().Substring(0, 8),
+                CreateDatabaseIfNotExists = true
+            } as ISqlServerConnectionInfo;
+            
+            // Act, When
+
+            var criaçãoQuandoÉVálido = connectionInfoVálido.CreateDatabase();
+            var criaçãoQuandoÉInválido = connectionInfoInválido.CreateDatabase();
+            
+            // Assert, Then
+
+            criaçãoQuandoÉVálido.Should().BeTrue();
+            criaçãoQuandoÉInválido.Should().BeFalse();
+        }
+
+        [Fact]
         public void não_deve_criar_o_banco_de_dados_se_for_autorizado_mas_arquivo_já_existir()
         {
             // Arrange, Given

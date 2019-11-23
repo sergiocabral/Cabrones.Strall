@@ -86,19 +86,21 @@ namespace Strall
         /// Obtem uma informação.
         /// </summary>
         /// <param name="informationId">Informação.</param>
+        /// <param name="contentSynchronize">Sincroniza o conteúdo com base nas réplicas.</param>
         /// <returns>Informação.</returns>
-        public static IInformation? GetInformation(this Guid informationId) =>
-            DataAccess.Get(informationId);
+        public static IInformation? GetInformation(this Guid informationId, bool contentSynchronize = true) =>
+            contentSynchronize ? DataAccess.Get(informationId)?.ContentLoad(false) : DataAccess.Get(informationId);
 
         /// <summary>
         /// Obtem uma informação.
         /// Se não existir apagar o valor do Id.
         /// </summary>
         /// <param name="information">Informação.</param>
+        /// <param name="contentSynchronize">Sincroniza o conteúdo com base nas réplicas.</param>
         /// <returns>Informação.</returns>
-        public static IInformation Get(this IInformation information)
+        public static IInformation Get(this IInformation information, bool contentSynchronize = true)
         {
-            var returned = information.Id.GetInformation();
+            var returned = information.Id.GetInformation(contentSynchronize);
             if (returned == null) information.Id = Guid.Empty;
             else returned.CopyTo(information);
             return information;
@@ -109,11 +111,12 @@ namespace Strall
         /// Equivalente a INSERT.
         /// </summary>
         /// <param name="information">Informação.</param>
+        /// <param name="contentSynchronize">Sincroniza o conteúdo com base nas réplicas.</param>
         /// <returns>Id.</returns>
-        public static IInformation Create(this IInformation information)
+        public static IInformation Create(this IInformation information, bool contentSynchronize = true)
         {
-            information.Content = information.ContentLoad();
             information.Id = DataAccess.Create(information);
+            if (contentSynchronize) information.ContentSave(false);
             return information;
         }
 
@@ -122,21 +125,25 @@ namespace Strall
         /// Equivalente a UPDATE.
         /// </summary>
         /// <param name="information">Informação.</param>
+        /// <param name="contentSynchronize">Sincroniza o conteúdo com base nas réplicas.</param>
         /// <returns>Resposta de sucesso.</returns>
-        public static bool Update(this IInformation information)
+        public static bool Update(this IInformation information, bool contentSynchronize = true)
         {
-            information.Content = information.ContentLoad();
-            return DataAccess.Update(information);
+            var updated = DataAccess.Update(information);
+            if (updated && contentSynchronize) information.ContentSave(false);
+            return updated;
         }
 
         /// <summary>
         /// Atualiza, ou cria se não existir, esta informação.
         /// </summary>
+        /// <param name="information">Informação.</param>
+        /// <param name="contentSynchronize">Sincroniza o conteúdo com base nas réplicas.</param>
         /// <returns>Total de registro afetados.</returns>
-        public static IInformation UpdateOrCreate(this IInformation information)
+        public static IInformation UpdateOrCreate(this IInformation information, bool contentSynchronize = true)
         {
-            if (!information.Exists()) return information.Create();
-            information.Update();
+            if (!information.Exists()) return information.Create(contentSynchronize);
+            information.Update(contentSynchronize);
             return information;
         }
 
@@ -183,21 +190,47 @@ namespace Strall
 
         /// <summary>
         /// Localiza o conteúdo no clone de origem
-        /// e atualiza o valo do conteúdo atual.
+        /// e atualiza o valor do conteúdo atual.
         /// </summary>
         /// <param name="information">Informação.</param>
+        /// <param name="queryPersistence">Faz consulta no banco de dados para confirmar as informações.</param>
         /// <returns>
-        /// Conteúdo no clone de origem.
-        /// Caso não seja possível retorna o conteúdo do atual.
+        /// Mesma referência de information.
         /// </returns>
-        public static string ContentLoad(this IInformation information)
+        public static IInformation ContentLoad(this IInformation information, bool queryPersistence = true)
         {
-            var id = information.ContentFrom();
-            return information.Content = 
-                id == Guid.Empty
+            var contentFromId = queryPersistence ? information.ContentFrom() : information.ContentFromId;
+            information.Content = 
+                contentFromId == Guid.Empty
                     ? information.Content
-                    : id.GetInformation()?.Content
+                    : contentFromId.GetInformation(false)?.Content
                       ?? information.Content;
+            return information;
+        }
+
+        /// <summary>
+        /// Localiza o conteúdo no clone de origem
+        /// e atualiza o valor na origem.
+        /// </summary>
+        /// <param name="information">Informação.</param>
+        /// <param name="queryPersistence">Faz consulta no banco de dados para confirmar as informações.</param>
+        /// <returns>
+        /// Mesma referência de information.
+        /// </returns>
+        public static IInformation ContentSave(this IInformation information, bool queryPersistence = true)
+        {
+            if (!queryPersistence && information.ContentFromId == Guid.Empty) return information;
+
+            var informationSource = queryPersistence
+                ? information.ContentFrom().GetInformation(false)
+                : information.ContentFromId.GetInformation(false);
+            
+            if (informationSource == null) return information;
+            
+            informationSource.Content = information.Content;
+            informationSource.Update(false);
+            
+            return information;
         }
 
         /// <summary>

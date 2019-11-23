@@ -8,6 +8,7 @@ using FluentAssertions;
 using Strall.Exceptions;
 using Strall.Persistence.SqLite;
 using Xunit;
+// ReSharper disable RedundantArgumentDefaultValue
 
 namespace Strall
 {
@@ -65,14 +66,18 @@ namespace Strall
             var métodos = new List<Action>
             {
                 () => informacao.Exists(),
-                () => informacao.Get(),
-                () => Guid.Empty.GetInformation(),
-                () => informacao.Create(),
-                () => informacao.Update(),
+                () => informacao.Get(false),
+                () => informacao.Get(true),
+                () => Guid.Empty.GetInformation(true),
+                () => informacao.Create(false),
+                () => informacao.Create(true),
+                () => informacao.Update(true),
                 () => informacao.Delete(),
                 () => informacao.HasContentTo(),
                 // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
                 () => informacao.ContentTo().ToList(),
+                () => informacao.ContentLoad(true),
+                () => informacao.ContentSave(true),
                 () => informacao.HasChildren(),
                 // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
                 () => informacao.Children().ToList()
@@ -123,9 +128,9 @@ namespace Strall
             
             // Act, When
 
-            var resultadoParaInformaçãoIndefinida = informaçãoIndefinida.Get();
-            var resultadoParaInformaçãoQueNãoExiste = informaçãoQueNãoExiste.Get();
-            var resultadoParaInformaçãoQueExiste = informaçãoQueExiste.Get();
+            var resultadoParaInformaçãoIndefinida = informaçãoIndefinida.Get(false);
+            var resultadoParaInformaçãoQueNãoExiste = informaçãoQueNãoExiste.Get(false);
+            var resultadoParaInformaçãoQueExiste = informaçãoQueExiste.Get(false);
 
             // Assert, Then
 
@@ -138,6 +143,37 @@ namespace Strall
         }
 
         [Fact]
+        public void Get_deve_carregar_do_banco_de_dados_os_valores_dos_campos_da_informação_com_opção_de_sincronizar_o_conteúdo_ou_não()
+        {
+            // Arrange, Given
+            
+            SetDataAccess();
+
+            var conteúdoDaInformaçãoOriginal = this.Fixture<string>();
+            var informaçãoOriginal = new Information
+            {
+                Content = conteúdoDaInformaçãoOriginal
+            }.Create(false);
+
+            var conteúdoDaInformaçãoClone = this.Fixture<string>();
+            var informaçãoClone = new Information
+            {
+                Content = conteúdoDaInformaçãoClone, 
+                ContentFromId = informaçãoOriginal.Id
+            }.Create(false);
+            
+            // Act, When
+
+            var conteúdoSemSincronizar = informaçãoClone.Get(false).Content;
+            var conteúdoSincronizando = informaçãoClone.Get(true).Content;
+
+            // Assert, Then
+
+            conteúdoSemSincronizar.Should().Be(conteúdoDaInformaçãoClone);
+            conteúdoSincronizando.Should().Be(conteúdoDaInformaçãoOriginal);
+        }
+        
+        [Fact]
         public void GetInformation_deve_consultar_no_banco_de_dados_uma_informação()
         {
             // Arrange, Given
@@ -146,13 +182,13 @@ namespace Strall
 
             var informaçãoIndefinida = Guid.Empty;
             var informaçãoQueNãoExiste = Guid.NewGuid();
-            var informaçãoQueExiste = new Information().Create().Id;
+            var informaçãoQueExiste = new Information().Create(false).Id;
             
             // Act, When
 
-            var resultadoParaInformaçãoIndefinida = informaçãoIndefinida.GetInformation();
-            var resultadoParaInformaçãoQueNãoExiste = informaçãoQueNãoExiste.GetInformation();
-            var resultadoParaInformaçãoQueExiste = informaçãoQueExiste.GetInformation();
+            var resultadoParaInformaçãoIndefinida = informaçãoIndefinida.GetInformation(false);
+            var resultadoParaInformaçãoQueNãoExiste = informaçãoQueNãoExiste.GetInformation(false);
+            var resultadoParaInformaçãoQueExiste = informaçãoQueExiste.GetInformation(false);
 
             // Assert, Then
 
@@ -160,6 +196,37 @@ namespace Strall
             resultadoParaInformaçãoQueNãoExiste.Should().BeNull();
             resultadoParaInformaçãoQueExiste.Should().NotBeNull().And
                 .Subject.As<IInformation>().Id.Should().Be(informaçãoQueExiste);
+        }
+
+        [Fact]
+        public void GetInformation_deve_consultar_no_banco_de_dados_uma_informação_com_opção_de_sincronizar_o_conteúdo_ou_não()
+        {
+            // Arrange, Given
+            
+            SetDataAccess();
+
+            var conteúdoDaInformaçãoOriginal = this.Fixture<string>();
+            var informaçãoOriginal = new Information
+            {
+                Content = conteúdoDaInformaçãoOriginal
+            }.Create(false);
+
+            var conteúdoDaInformaçãoClone = this.Fixture<string>();
+            var informaçãoClone = new Information
+            {
+                Content = conteúdoDaInformaçãoClone, 
+                ContentFromId = informaçãoOriginal.Id
+            }.Create(false);
+            
+            // Act, When
+
+            var conteúdoSemSincronizar = informaçãoClone.Id.GetInformation(false)?.Content;
+            var conteúdoSincronizando = informaçãoClone.Id.GetInformation(true)?.Content;
+
+            // Assert, Then
+
+            conteúdoSemSincronizar.Should().Be(conteúdoDaInformaçãoClone);
+            conteúdoSincronizando.Should().Be(conteúdoDaInformaçãoOriginal);
         }
 
         [Fact]
@@ -175,9 +242,9 @@ namespace Strall
             
             // Act, When
 
-            var resultadoParaInformaçãoComIdVazio = informaçãoComIdVazio.Create();
-            var resultadoParaInformaçãoComIdInformado = informaçãoComIdInformado.Create();
-            Action criarDuplicado = () => informaçãoComIdInformado.Create();
+            var resultadoParaInformaçãoComIdVazio = informaçãoComIdVazio.Create(false);
+            var resultadoParaInformaçãoComIdInformado = informaçãoComIdInformado.Create(false);
+            Action criarDuplicado = () => informaçãoComIdInformado.Create(false);
 
             // Assert, Then
 
@@ -188,6 +255,43 @@ namespace Strall
                 .Subject.Should().Be(informaçãoComIdInformado.Id);
             criarDuplicado.Should().ThrowExactly<Microsoft.Data.Sqlite.SqliteException>()
                 .Which.Message.Should().Be($"SQLite Error 19: 'UNIQUE constraint failed: {persistence.SqlNames.TableInformation}.{persistence.SqlNames.TableInformationColumnId}'.");
+        }
+
+        [Fact]
+        public void Create_deve_criar_uma_informação_com_opção_de_sincronizar_o_conteúdo_ou_não()
+        {
+            // Arrange, Given
+            
+            SetDataAccess();
+
+            var conteúdoDaInformaçãoOriginal = this.Fixture<string>();
+            var informaçãoOriginal = new Information
+            {
+                Content = conteúdoDaInformaçãoOriginal
+            }.Create(false);
+
+            var conteúdoDaInformaçãoClone = this.Fixture<string>();
+            
+            // Act, When
+
+            new Information
+            {
+                Content = conteúdoDaInformaçãoClone, 
+                ContentFromId = informaçãoOriginal.Id
+            }.Create(false);
+            var conteúdoOriginalSemSincronizar = informaçãoOriginal.Id.GetInformation(false).Content;
+            
+            new Information
+            {
+                Content = conteúdoDaInformaçãoClone, 
+                ContentFromId = informaçãoOriginal.Id
+            }.Create(true);
+            var conteúdoOriginalSincronizando = informaçãoOriginal.Id.GetInformation(false).Content;
+
+            // Assert, Then
+
+            conteúdoOriginalSemSincronizar.Should().Be(conteúdoDaInformaçãoOriginal);
+            conteúdoOriginalSincronizando.Should().Be(conteúdoDaInformaçãoClone);
         }
         
         [Fact]
@@ -204,15 +308,52 @@ namespace Strall
             
             // Act, When
 
-            var resultadoParaInformaçãoComIdVazio = informaçãoComIdVazio.Update();
-            var resultadoParaInformaçãoComIdInformadoQueNãoExiste = informaçãoComIdInformadoQueNãoExiste.Update();
-            var resultadoParaInformaçãoComIdInformadoQueExiste = informaçãoComIdInformadoQueExiste.Update();
+            var resultadoParaInformaçãoComIdVazio = informaçãoComIdVazio.Update(false);
+            var resultadoParaInformaçãoComIdInformadoQueNãoExiste = informaçãoComIdInformadoQueNãoExiste.Update(false);
+            var resultadoParaInformaçãoComIdInformadoQueExiste = informaçãoComIdInformadoQueExiste.Update(false);
 
             // Assert, Then
 
             resultadoParaInformaçãoComIdVazio.Should().BeFalse();
             resultadoParaInformaçãoComIdInformadoQueNãoExiste.Should().BeFalse();
             resultadoParaInformaçãoComIdInformadoQueExiste.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Update_deve_atualizar_uma_informação_com_opção_de_sincronizar_o_conteúdo_ou_não()
+        {
+            // Arrange, Given
+            
+            SetDataAccess();
+
+            var conteúdoDaInformaçãoOriginal = this.Fixture<string>();
+            var informaçãoOriginal = new Information
+            {
+                Content = conteúdoDaInformaçãoOriginal
+            }.Create(false);
+
+            var conteúdoDaInformaçãoClone = this.Fixture<string>();
+            
+            // Act, When
+
+            new Information
+            {
+                Content = conteúdoDaInformaçãoClone, 
+                ContentFromId = informaçãoOriginal.Id
+            }.Create(false).Update(false);
+            var conteúdoOriginalSemSincronizar = informaçãoOriginal.Id.GetInformation(false).Content;
+            
+            new Information
+            {
+                Content = conteúdoDaInformaçãoClone, 
+                ContentFromId = informaçãoOriginal.Id
+            }.Create(false).Update(true);
+            var conteúdoOriginalSincronizando = informaçãoOriginal.Id.GetInformation(false).Content;
+
+            // Assert, Then
+
+            conteúdoOriginalSemSincronizar.Should().Be(conteúdoDaInformaçãoOriginal);
+            conteúdoOriginalSincronizando.Should().Be(conteúdoDaInformaçãoClone);
         }
         
         [Fact]
@@ -233,9 +374,9 @@ namespace Strall
             
             // Act, When
 
-            var resultadoParaInformaçãoComIdVazio = informaçãoComIdVazio.UpdateOrCreate();
-            var resultadoParaInformaçãoComIdInformadoQueNãoExiste = informaçãoComIdInformadoQueNãoExiste.UpdateOrCreate();
-            var resultadoParaInformaçãoComIdInformadoQueExiste = informaçãoComIdInformadoQueExiste.UpdateOrCreate();
+            var resultadoParaInformaçãoComIdVazio = informaçãoComIdVazio.UpdateOrCreate(false);
+            var resultadoParaInformaçãoComIdInformadoQueNãoExiste = informaçãoComIdInformadoQueNãoExiste.UpdateOrCreate(false);
+            var resultadoParaInformaçãoComIdInformadoQueExiste = informaçãoComIdInformadoQueExiste.UpdateOrCreate(false);
 
             // Assert, Then
 
@@ -250,6 +391,64 @@ namespace Strall
             resultadoParaInformaçãoComIdInformadoQueExiste.Should().NotBeNull();
             resultadoParaInformaçãoComIdInformadoQueExiste.Id.Should().NotBeEmpty();
             resultadoParaInformaçãoComIdInformadoQueExiste.Id.Should().Be(informaçãoComIdInformadoQueExisteId);
+        }
+
+        [Fact]
+        public void UpdateOrCreate_deve_atualizar_uma_informação_mas_se_não_existir_deve_criar_com_opção_de_sincronizar_o_conteúdo_ou_não()
+        {
+            // Arrange, Given
+            
+            SetDataAccess();
+
+            var conteúdoDaInformaçãoOriginal = this.Fixture<string>();
+            var informaçãoOriginalParaUpdate = new Information
+            {
+                Content = conteúdoDaInformaçãoOriginal
+            }.Create(false);
+            var informaçãoOriginalParaCreate = new Information
+            {
+                Content = conteúdoDaInformaçãoOriginal
+            }.Create(false);
+
+            var conteúdoDaInformaçãoClone = this.Fixture<string>();
+            
+            // Act, When
+
+            new Information
+            {
+                Content = conteúdoDaInformaçãoClone, 
+                ContentFromId = informaçãoOriginalParaCreate.Id
+            }.UpdateOrCreate(false);
+            var conteúdoOriginalSemSincronizarForçandoCreate = informaçãoOriginalParaCreate.Id.GetInformation(false).Content;
+            
+            new Information
+            {
+                Content = conteúdoDaInformaçãoClone, 
+                ContentFromId = informaçãoOriginalParaCreate.Id
+            }.UpdateOrCreate(true);
+            var conteúdoOriginalSincronizandoForçandoCreate = informaçãoOriginalParaCreate.Id.GetInformation(false).Content;
+            
+            new Information
+            {
+                Content = conteúdoDaInformaçãoClone, 
+                ContentFromId = informaçãoOriginalParaUpdate.Id
+            }.Create(false).UpdateOrCreate(false);
+            var conteúdoOriginalSemSincronizarForçandoUpdate = informaçãoOriginalParaUpdate.Id.GetInformation(false).Content;
+            
+            new Information
+            {
+                Content = conteúdoDaInformaçãoClone, 
+                ContentFromId = informaçãoOriginalParaUpdate.Id
+            }.Create(false).UpdateOrCreate(true);
+            var conteúdoOriginalSincronizandoForçandoUpdate = informaçãoOriginalParaUpdate.Id.GetInformation(false).Content;
+
+            // Assert, Then
+
+            conteúdoOriginalSemSincronizarForçandoCreate.Should().Be(conteúdoDaInformaçãoOriginal);
+            conteúdoOriginalSincronizandoForçandoCreate.Should().Be(conteúdoDaInformaçãoClone);
+
+            conteúdoOriginalSemSincronizarForçandoUpdate.Should().Be(conteúdoDaInformaçãoOriginal);
+            conteúdoOriginalSincronizandoForçandoUpdate.Should().Be(conteúdoDaInformaçãoClone);
         }
         
         [Fact]
@@ -303,17 +502,17 @@ namespace Strall
                 if (nível <= 0) return;
                 for (var i = 0; i < quantidadePorNível; i++)
                 {
-                    Criar(nível - 1, new Information {Id = NovoId(), ParentId = parentId}.Create().Id);
+                    Criar(nível - 1, new Information {Id = NovoId(), ParentId = parentId}.Create(false).Id);
                 }
             }
-            Criar(3, new Information {Id = NovoId()}.Create().Id);
+            Criar(3, new Information {Id = NovoId()}.Create(false).Id);
             
             // Act, When
 
             var resultadoParaInformaçãoComIdVazio = informaçãoComIdVazio.Delete(true);
             var resultadoParaInformaçãoComIdInformadoQueNãoExiste = informaçãoComIdInformadoQueNãoExiste.Delete(true);
             var resultadoParaInformaçãoComIdInformadoQueExiste = informaçãoComIdInformadoQueExiste.Delete(true);
-            var resultadoParaInformaçõesEncadeadas = cadeiaDeIds[0].GetInformation().Delete(true);
+            var resultadoParaInformaçõesEncadeadas = cadeiaDeIds[0].GetInformation(false).Delete(true);
 
             // Assert, Then
 
@@ -488,7 +687,7 @@ namespace Strall
                 {
                     Id = Guid.NewGuid(),
                     ContentFromId = informações.LastOrDefault()?.Id ?? Guid.Empty
-                }.Create());
+                }.Create(false));
             }
 
             var informaçãoEmLoop = new Information {Id = Guid.NewGuid()};
@@ -524,7 +723,7 @@ namespace Strall
                     Id = Guid.NewGuid(),
                     Content = this.Fixture<string>(),
                     ContentFromId = informações.LastOrDefault()?.Id ?? Guid.Empty
-                }.Create());
+                }.Create(false));
             }
 
             var informaçãoEmLoop = new Information
@@ -543,18 +742,168 @@ namespace Strall
             
             // Act, When
 
-            var origemDoPrimeiro = informações.First().ContentLoad();
-            var origemDoÚltimo = informações.Last().ContentLoad();
-            var origemDoLoop = informaçãoEmLoop.ContentLoad();
-            var origemDoInexistente = informaçãoInexistente.ContentLoad();
+            var carregamentoNoPrimeiro = informações.First().ContentLoad(true);
+            var carregamentoNoÚltimo = informações.Last().ContentLoad(true);
+            var carregamentoNoLoop = informaçãoEmLoop.ContentLoad(true);
+            var carregamentoNoInexistente = informaçãoInexistente.ContentLoad(true);
 
             // Assert, Then
 
-            origemDoPrimeiro.Should().Be(informações.First().Content);
-            origemDoÚltimo.Should().Be(informações.First().Content);
-            origemDoLoop.Should().Be(informaçãoEmLoop.Content);
-            origemDoInexistente.Should().Be(informaçãoInexistente.Content);
+            carregamentoNoPrimeiro.Should().BeSameAs(informações.First());
+            carregamentoNoPrimeiro.Content.Should().Be(informações.First().Content);
+
+            carregamentoNoÚltimo.Should().BeSameAs(informações.Last());
+            carregamentoNoÚltimo.Content.Should().Be(informações.First().Content);
+            
+            carregamentoNoLoop.Should().BeSameAs(informaçãoEmLoop);
+            carregamentoNoLoop.Content.Should().Be(informaçãoEmLoop.Content);
+            
+            carregamentoNoInexistente.Should().BeSameAs(informaçãoInexistente);
+            carregamentoNoInexistente.Content.Should().Be(informaçãoInexistente.Content);
         }
-        
+
+        [Fact]
+        public void ContentLoad_deve_carregar_o_conteúdo_da_informação_de_origem_com_a_opção_antes_de_atualizar_as_informações_ou_não()
+        {
+            // Arrange, Given
+            
+            SetDataAccess();
+
+            var informaçãoOriginalVerdadeira = new Information
+            {
+                Content = this.Fixture<string>()
+            }.Create(false);
+            
+            var informaçãoOriginalFalsa = new Information
+            {
+                Content = this.Fixture<string>()
+            }.Create(false);
+            
+            var informaçãoClone = new Information
+            {
+                ContentFromId = informaçãoOriginalVerdadeira.Id
+            }.Create(false);
+
+            
+            // Act, When
+
+            informaçãoClone.ContentFromId = informaçãoOriginalFalsa.Id;
+            
+            var conteúdoSemConsultarBanco = informaçãoClone.ContentLoad(false).Content;
+            var conteúdoConsultandoBanco = informaçãoClone.ContentLoad(true).Content;
+
+            // Assert, Then
+
+            conteúdoSemConsultarBanco.Should().Be(informaçãoOriginalFalsa.Content);
+            conteúdoConsultandoBanco.Should().Be(informaçãoOriginalVerdadeira.Content);
+        }
+
+        [Fact]
+        public void ContentSave_deve_atualizar_o_conteúdo_da_informação_de_origem()
+        {
+            // Arrange, Given
+            
+            SetDataAccess();
+
+            const int níveis = 5;
+            var informações = new List<IInformation>();
+            for (var i = 0; i < níveis; i++)
+            {
+                informações.Add(new Information
+                {
+                    Id = Guid.NewGuid(),
+                    Content = this.Fixture<string>(),
+                    ContentFromId = informações.LastOrDefault()?.Id ?? Guid.Empty
+                }.Create(false));
+            }
+
+            // Act, When
+
+            var gravaçãoNoÚltimo = informações.Last().ContentSave(true);
+            var conteúdoDoPrimeiro = informações.First().Get(false);
+
+            // Assert, Then
+
+            gravaçãoNoÚltimo.Should().BeSameAs(informações.Last());
+            gravaçãoNoÚltimo.Content.Should().Be(conteúdoDoPrimeiro.Content);
+        }
+
+        [Fact]
+        public void ContentSave_deve_atualizar_o_conteúdo_da_informação_de_origem_com_a_opção_antes_de_atualizar_as_informações_ou_não()
+        {
+            // Arrange, Given
+
+            SetDataAccess();
+            
+            var conteúdoParaInformaçãoOriginalVerdadeira = this.Fixture<string>();
+            var informaçãoOriginalVerdadeira = new Information().Create(false);
+            
+            var conteúdoParaInformaçãoOriginalFalsa = this.Fixture<string>();
+            var informaçãoOriginalFalsa = new Information().Create(false);
+
+            var informaçãoClone = new Information
+            {
+                ContentFromId = informaçãoOriginalVerdadeira.Id,
+                Content = this.Fixture<string>()
+            }.Create(false);
+
+            void RedefinirValoresIniciais()
+            {
+                informaçãoOriginalVerdadeira.Content = conteúdoParaInformaçãoOriginalVerdadeira;
+                informaçãoOriginalVerdadeira.Update(false);
+                informaçãoOriginalFalsa.Content = conteúdoParaInformaçãoOriginalFalsa;
+                informaçãoOriginalFalsa.Update(false);
+            }
+
+            // Act, When
+
+            informaçãoClone.ContentFromId = informaçãoOriginalFalsa.Id;
+
+            RedefinirValoresIniciais();
+            informaçãoClone.ContentSave(false);
+            var conteúdoSemConsultarBancoDaVerdadeira = informaçãoOriginalVerdadeira.Id.GetInformation(false).Content;
+            var conteúdoSemConsultarBancoDaFalse = informaçãoOriginalFalsa.Id.GetInformation(false).Content;
+
+            RedefinirValoresIniciais();
+            informaçãoClone.ContentSave(true);
+            var conteúdoConsultandoBancoDaVerdadeira = informaçãoOriginalVerdadeira.Id.GetInformation(false).Content;
+            var conteúdoConsultandoBancoDaFalsa = informaçãoOriginalFalsa.Id.GetInformation(false).Content;
+
+            // Assert, Then
+
+            conteúdoSemConsultarBancoDaVerdadeira.Should().Be(conteúdoParaInformaçãoOriginalVerdadeira);
+            conteúdoSemConsultarBancoDaFalse.Should().Be(informaçãoClone.Content);
+            
+            conteúdoConsultandoBancoDaVerdadeira.Should().Be(informaçãoClone.Content);
+            conteúdoConsultandoBancoDaFalsa.Should().Be(conteúdoParaInformaçãoOriginalFalsa);
+        }
+
+        [Fact]
+        public void ContentSave_não_deve_gerar_erro_se_não_localizar_o_clone()
+        {
+            // Arrange, Given
+            
+            SetDataAccess();
+
+            var informaçãoNãoExisteNemTemClone = new Information
+            {
+                Content = this.Fixture<string>()
+            };
+
+            var informaçãoExisteMasNãoÉClone = new Information
+            {
+                Content = this.Fixture<string>()
+            }.Create();
+
+            // Act, When
+
+            var gravaçãoParaInformaçãoQueNãoExisteNemTemClone = informaçãoNãoExisteNemTemClone.ContentSave(true);
+            var gravaçãoParaInformaçãoQueExisteMasNãoÉClone = informaçãoExisteMasNãoÉClone.ContentSave(true);
+
+            // Assert, Then
+
+            gravaçãoParaInformaçãoQueNãoExisteNemTemClone.Should().BeSameAs(informaçãoNãoExisteNemTemClone);
+            gravaçãoParaInformaçãoQueExisteMasNãoÉClone.Should().BeSameAs(informaçãoExisteMasNãoÉClone);
+        }
     }
 }
